@@ -124,6 +124,21 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
 }
 
+/* ==========================================================================
+   2.2. ACTIVE MENU STYLING
+   ========================================================================== */
+
+/* Beri sedikit padding pada semua item menu agar background terlihat bagus */
+.main-nav a {
+    padding: 30px 16px;
+    border-radius: 0px;
+}
+
+/* Gaya khusus untuk menu yang sedang aktif */
+.main-nav li.active a {
+    background-color: rgba(173, 225, 254, 0.255); /* Latar belakang semi-transparan */
+    opacity: 1; /* Pastikan teksnya terlihat jelas */
+}
 
 /* ==========================================================================
    3. HERO BANNER (HOMEPAGE)
@@ -138,8 +153,8 @@ h1, h2, h3, h4, h5, h6 {
     min-height: 750px;
     color: var(--white);
     background-color: #001e36;
-    background-image: linear-gradient(rgba(0, 30, 54, 0.5), rgba(0, 30, 54, 0.5)), url('https://images.pexels.com/photos/5374774/pexels-photo-5374774.jpeg');
-    background-size: auto;
+    background-image: linear-gradient(rgba(0, 30, 54, 0.5), rgba(0, 30, 54, 0.5)), url('Images/Unila\ E-Journal\ System.png');
+    background-size: auto, auto;
     background-position: center, center;
     position: relative;
 }
@@ -588,6 +603,152 @@ main {
     font-weight: 600;
 }
 
+/* ==========================================================================
+   6.1. PUBLISHER LIST PAGE (REVISED - REFERENCE STYLE)
+   ========================================================================== */
+
+/* Top bar for publisher page (Sort By, Search, Total) */
+.publisher-page-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--white);
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* For responsiveness */
+    gap: 15px;
+}
+
+.publisher-page-controls .sort-by,
+.publisher-page-controls .publisher-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.publisher-page-controls .sort-by label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.publisher-page-controls select {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--white);
+    font-size: 0.9rem;
+}
+
+.publisher-page-controls .publisher-search input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    width: 200px; /* Adjust as needed */
+}
+
+.publisher-page-controls .publisher-search button {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.publisher-page-controls .publisher-search button:hover {
+    background-color: var(--accent-color);
+}
+
+.publisher-page-controls .total-publishers-info {
+    text-align: right;
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.publisher-page-controls .total-publishers-info .number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.publisher-page-controls .total-publishers-info .label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    text-transform: uppercase;
+}
+
+/* List container for publisher cards */
+.publisher-list-wrapper {
+    margin-top: 20px;
+}
+
+.publisher-entry-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 10px; /* Jarak antar kartu */
+    text-decoration: none; /* Hilangkan garis bawah link */
+    color: var(--text-color);
+    transition: all 0.2s ease;
+}
+
+.publisher-entry-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+}
+
+.publisher-entry-card .card-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.publisher-entry-card .publisher-card-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px; /* Sedikit rounded corner untuk logo */
+    flex-shrink: 0;
+}
+
+.publisher-entry-card .publisher-card-info h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--heading-color);
+}
+
+.publisher-entry-card .publisher-card-info p {
+    margin: 2px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--secondary-text-color);
+}
+
+.publisher-entry-card .card-right {
+    text-align: right;
+}
+
+.publisher-entry-card .journal-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block; /* Agar di baris baru */
+    line-height: 1.1;
+}
+
+.publisher-entry-card .journal-label {
+    font-size: 0.8rem;
+    color: var(--secondary-text-color);
+}
 
 /* ==========================================================================
    7. ADMIN DASHBOARD

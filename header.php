@@ -1,7 +1,11 @@
 <?php
+// Memulai session jika belum ada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Mendapatkan nama file halaman yang sedang dibuka, contoh: "index.php"
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -9,10 +13,12 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unila E-Journal System</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
     <link rel="stylesheet" href="/Journal-OAI/frontend/dist/styles.css">
+
     <link rel="stylesheet" href="style.css">
-    <link href="../bootstrap/css/bootstrap.min.css">
 </head>
 <body>
     <header class="site-header">
@@ -23,9 +29,25 @@ if (session_status() === PHP_SESSION_NONE) {
                 </a>
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="index.php">Home</a></li>
-                        <li><a href="fakultas.php">Fakultas</a></li>
-                        <li><a href="#">Tentang Kami</a></li>
+                        <li class="<?php if ($current_page == 'index.php') { echo 'active'; } ?>">
+                            <a href="index.php">Home</a>
+                        </li>
+
+                        <li class="<?php if ($current_page == 'fakultas.php' || $current_page == 'jurnal_fak.php') { echo 'active'; } ?>">
+                            <a href="fakultas.php">Fakultas</a>
+                        </li>
+
+                        <li class="<?php if ($current_page == 'penerbit.php') { echo 'active'; } ?>">
+                            <a href="penerbit.php">Penerbit</a>
+                        </li>
+                        
+                        <li class="<?php if ($current_page == 'subjek.php') { echo 'active'; } ?>">
+                            <a href="subjek.php">Subjek</a>
+                        </li>
+
+                        <li class="<?php if ($current_page == 'statistik.php') { echo 'active'; } ?>">
+                            <a href="statistik.php">Statistik</a>
+                        </li>
                     </ul>
                 </nav>
             </div>
