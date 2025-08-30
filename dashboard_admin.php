@@ -38,6 +38,7 @@ include 'header.php';
                             <label for="journal_website_url">URL Website Jurnal*</label>
                             <input type="url" id="journal_website_url" name="journal_website_url" placeholder="https://..." required>
                         </div>
+                        
                          <div class="form-group">
                             <label for="fakultas">Fakultas*</label>
                             <select id="fakultas" name="fakultas" required>
@@ -50,6 +51,29 @@ include 'header.php';
                                 <option value="MIPA">MIPA</option>
                                 <option value="Keguruan dan Ilmu Pendidikan">Keguruan dan Ilmu Pendidikan</option>
                                 <option value="Ekonomi dan Bisnis">Ekonomi dan Bisnis</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="akreditasi_sinta">Akreditasi Sinta</label>
+                            <select id="akreditasi_sinta" name="akreditasi_sinta">
+                                <option value="">-- Pilih Akreditasi --</option>
+                                <option value="Sinta 1">Sinta 1</option>
+                                <option value="Sinta 2">Sinta 2</option>
+                                <option value="Sinta 3">Sinta 3</option>
+                                <option value="Sinta 4">Sinta 4</option>
+                                <option value="Sinta 5">Sinta 5</option>
+                                <option value="Sinta 6">Sinta6</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="scopus_index">Indexing Scopus</label>
+                            <select id="scopus_index" name="scopus_index">
+                                <option value="">-- Pilih Indeks --</option>
+                                <option value="Q1">Q1</option>
+                                <option value="Q2">Q2</option>
+                                <option value="Q3">Q3</option>
+                                <option value="Q4">Q4</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -76,6 +100,11 @@ include 'header.php';
                             <label for="contact_email">Email Kontak PIC</label>
                             <input type="email" id="contact_email" name="contact_email">
                         </div>
+                        <div class ="form-group">
+                            <label for="editorial_team">Editorial Team</label>
+                            <textarea id="editorial_team" name="editorial_team" rows=5 placeholder="1. ... &#10;2. ... &#10;3. ..."></textarea> 
+                        </div>
+
                     </fieldset>
                     
                     <fieldset>
@@ -130,6 +159,14 @@ include 'header.php';
                          <div class="form-group">
                             <label for="editorial_board_url">URL Dewan Editorial</label>
                             <input type="url" id="editorial_board_url" name="editorial_board_url">
+                        </div>
+                        <div class="form-group">
+                            <label for="sinta_url">URL Sinta</label>
+                            <input type="url" id="sinta_url" name="sinta_url" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="garuda_url">URL Garuda Kemdikbud</label>
+                            <input type="url" id="garuda_url" name="garuda_url" placeholder="https://...">
                         </div>
                     </fieldset>
                     

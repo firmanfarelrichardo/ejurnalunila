@@ -134,20 +134,26 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 120px 20px;
+    padding: 120px;
     min-height: 750px;
     color: var(--white);
     background-color: #001e36;
     background-image: linear-gradient(rgba(0, 30, 54, 0.5), rgba(0, 30, 54, 0.5)), url('https://images.pexels.com/photos/5374774/pexels-photo-5374774.jpeg');
-    background-size: auto, auto;
+    background-size: auto;
     background-position: center, center;
     position: relative;
 }
 
+.hero-content {
+    margin-bottom: auto;
+    margin-top: -30px;
+}
+
 .hero-content h1 {
-    font-size: 3.5rem;
-    font-weight: 550;
-    margin-bottom: 10px;
+    font-size: 3.7rem;
+    font-weight: 600;
+    margin-bottom: 1px;
+    margin-top: 0%;
     color: var(--white);
     text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
@@ -160,7 +166,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-search-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto 30px auto;
     background-color: var(--white);
     border-radius: 5px;

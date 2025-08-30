@@ -53,5 +53,6 @@
 </footer>
 
 <script type="module" src="/Journal-OAI/frontend/dist/main.js"></script>
+<script src="./js/bootstrap.min.js"></script>
 </body>
 </html>
