@@ -302,13 +302,6 @@ h1, h2, h3, h4, h5, h6 {
     padding: 9px 18px;
     font-weight: 500;
 }
-
-.subjects-list a.tag-large {
-    font-size: 1.25rem;
-    padding: 11px 22px;
-    font-weight: 600; /* Lebih tebal untuk tag besar */
-}
-
 /* ==========================================================================
    3.2. STATS BAR (DI BAWAH SEARCH)
    ========================================================================== */

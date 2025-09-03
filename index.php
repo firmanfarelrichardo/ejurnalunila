@@ -82,7 +82,7 @@
                     ];
 
                     // Daftar kelas CSS untuk ukuran yang berbeda
-                    $size_classes = ['tag-medium', 'tag-large', 'tag-small', 'tag-medium'];
+                    $size_classes = ['tag-medium'];
 
                     // Acak urutan kata kunci agar tampilan selalu bervariasi
                     shuffle($keywords);
