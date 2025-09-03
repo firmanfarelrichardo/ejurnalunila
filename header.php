@@ -19,6 +19,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="/Journal-OAI/frontend/dist/styles.css">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <header class="site-header">
