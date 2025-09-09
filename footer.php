@@ -109,6 +109,18 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-toggle');
+    const navWrapper = document.getElementById('nav-wrapper');
+
+    if (mobileMenuButton && navWrapper) {
+        mobileMenuButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Mencegah event lain terpanggil
+            navWrapper.classList.toggle('open');
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
     // Membuka modal
     document.querySelectorAll('[data-modal-target]').forEach(trigger => {
         trigger.addEventListener('click', event => {

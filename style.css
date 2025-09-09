@@ -50,11 +50,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   2. HEADER & NAVIGATION
+   2. HEADER & NAVIGATION (RESPONSIVE FINAL)
    ========================================================================== */
 .site-header {
     background-color: var(--header-blue);
-    padding: 20px 0;
+    padding: 15px 0;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -66,53 +66,55 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--white);
-    font-size: 1.2rem;
-    font-weight: 600;
-    text-decoration: none;
-}
-
 .logo img {
     height: 40px;
+    display: block;
 }
 
-.main-nav {
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
-    padding-left: 30px;
+.nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Biarkan nav wrapper mengisi ruang tengah */
 }
 
 .main-nav ul {
     list-style: none;
     display: flex;
-    gap: 25px;
+    gap: 15px;
 }
 
 .main-nav a {
     color: var(--white);
     font-weight: 500;
     opacity: 0.8;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: 5px;
+    white-space: nowrap;
 }
 
 .main-nav a:hover {
     opacity: 1;
-    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.main-nav li.active a {
+    background-color: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .user-actions a {
     color: var(--white);
     font-weight: 500;
     font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 .user-actions a i {
@@ -120,8 +122,68 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .user-actions .logout-link {
-    margin-left: 20px;
     opacity: 0.8;
+}
+
+/* Tombol Hamburger (disembunyikan di desktop) */
+.mobile-menu-button {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+
+/* Tampilan Mobile - breakpoint 992px */
+@media (max-width: 992px) {
+    .mobile-menu-button {
+        display: block; /* Tampilkan tombol hamburger */
+    }
+
+    .nav-wrapper {
+        display: none; /* Sembunyikan navigasi desktop */
+        position: absolute;
+        top: 70px; /* Sesuaikan dengan tinggi header */
+        left: 0;
+        width: 100%;
+        background-color: var(--header-blue);
+        flex-direction: column; /* Ubah jadi vertikal */
+        align-items: flex-start; /* Rata kiri */
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    .nav-wrapper.open {
+        display: flex; /* Tampilkan saat di-klik */
+    }
+    
+    .main-nav {
+        width: 100%;
+    }
+
+    .main-nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+    
+    .main-nav li a {
+        display: block;
+        width: 100%;
+        padding: 12px 15px;
+    }
+
+    .user-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
 }
 
 /* ==========================================================================
@@ -130,7 +192,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Beri sedikit padding pada semua item menu agar background terlihat bagus */
 .main-nav a {
-    padding: 30px 16px;
+    padding: 25px 16px;
     border-radius: 0px;
 }
 
