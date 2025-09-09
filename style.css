@@ -985,6 +985,47 @@ main {
 }
 
 /* ==========================================================================
+   6.4. INFO PAGE STYLES
+   ========================================================================== */
+.info-content-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.info-card {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.info-card i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.info-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--heading-color);
+}
+
+.info-card p, .info-card ul {
+    text-align: left;
+    line-height: 1.7;
+    color: var(--text-color);
+}
+
+.info-card ul {
+    padding-left: 20px;
+}
+
+/* ==========================================================================
    7. ADMIN DASHBOARD
    ========================================================================== */
 .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 20px; background-color: var(--white);}
@@ -1007,3 +1048,55 @@ main {
 .submit-btn2 { background-color: #27ae60; color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease;}
 
 
+/* ==========================================================================
+   8. MODAL STYLES
+   ========================================================================== */
+.info-modal {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 600px;
+    padding: 0;
+    /* Tambahan untuk memposisikan di tengah */
+    margin: auto; 
+}
+
+/* Style untuk backdrop gelap di belakang modal */
+.info-modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.info-modal .modal-content {
+    padding: 30px;
+    position: relative;
+}
+
+.info-modal .modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: var(--heading-color);
+}
+
+.info-modal .modal-content p {
+    line-height: 1.7;
+    color: var(--text-color);
+}
+
+.info-modal .close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.info-modal .close-button:hover {
+    color: #333;
+}
