@@ -2,7 +2,6 @@
 // Mulai atau lanjutkan sesi
 session_start();
 
-// Periksa apakah pengguna sudah login dan memiliki peran superadmin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: login.php");
     exit();
@@ -23,14 +22,23 @@ if ($conn->connect_error) {
 // Inisialisasi pesan
 $message = '';
 
-// Handle aksi dari formulir (terutama untuk update status)
+// Handle aksi dari formulir untuk update status
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
-    $submissionId = $_POST['submission_id'];
+    $jurnalId = $_POST['jurnal_id'];
     $newStatus = $_POST['status'];
-    $notes = $_POST['notes'];
+    
+    // Perbaikan: Konversi nilai status dari form agar sesuai dengan database
+    if ($newStatus == 'approved') {
+        $newStatus = 'selesai';
+    } elseif ($newStatus == 'rejected') {
+        $newStatus = 'ditolak';
+    } elseif ($newStatus == 'needs_edit') {
+        $newStatus = 'butuh_edit';
+    }
 
-    $stmt = $conn->prepare("UPDATE jurnal_submissions SET status = ?, notes = ? WHERE id = ?");
-    $stmt->bind_param("ssi", $newStatus, $notes, $submissionId);
+    // Query untuk memperbarui status di tabel jurnal_sumber
+    $stmt = $conn->prepare("UPDATE jurnal_sumber SET status = ? WHERE id = ?");
+    $stmt->bind_param("si", $newStatus, $jurnalId);
     if ($stmt->execute()) {
         $message = "<div class='success-message'>Status jurnal berhasil diperbarui!</div>";
     } else {
@@ -39,17 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     $stmt->close();
 }
 
-// Ambil daftar jurnal submissions dari database
-$submissions = [];
-$sql = "SELECT js.*, u.nama AS pengelola_nama, u.nip AS pengelola_nip 
-        FROM jurnal_submissions js 
-        LEFT JOIN users u ON js.submitted_by_nip = u.nip
-        ORDER BY js.submission_date DESC";
+// Ambil daftar jurnal dari database jurnal_sumber
+$jurnals = [];
+$sql = "SELECT js.id, js.judul_jurnal, u.nama AS pengelola_nama, u.nip AS pengelola_nip, js.status, js.created_at
+        FROM jurnal_sumber js 
+        LEFT JOIN users u ON js.pengelola_id = u.id
+        ORDER BY js.created_at DESC";
 $result = $conn->query($sql);
 
 if ($result) {
     while ($row = $result->fetch_assoc()) {
-        $submissions[] = $row;
+        $jurnals[] = $row;
     }
 }
 ?>
@@ -59,7 +67,7 @@ if ($result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Jurnal - Superadmin</title>
+    <title>Kelola Jurnal - Admin</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -106,30 +114,38 @@ if ($result) {
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+         .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        .status-pending { background-color: #f39c12; }
+        .status-approved { background-color: #2ecc71; }
+        .status-rejected { background-color: #e74c3c; }
+        .status-needs_edit { background-color: #3498db; }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
-                <h2>Superadmin</h2>
+                <h2>Admin</h2>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
                 <li><a href="manage_journal.php" class="active"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
-        <!-- End Sidebar -->
-
-        <!-- Main Content -->
         <div class="main-content">
             <div class="header">
                 <h1>Kelola Jurnal Submissions</h1>
                 <div class="user-profile">
-                    <span>Role: Superadmin</span>
+                    <span>Role: Admin</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>
@@ -137,39 +153,41 @@ if ($result) {
             <div class="content-area">
                 <?php echo $message; ?>
                 <div class="card">
-                    <h3>Daftar Submissions Jurnal</h3>
+                    <h3>Daftar Jurnal</h3>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Judul Jurnal</th>
-                                <th>Pengelola</th>
+                                <th>Nama</th>
+                                <th>pengelola_nip</th>
                                 <th>Status</th>
                                 <th>Tanggal Submit</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($submissions as $submission): ?>
+                            <?php foreach ($jurnals as $jurnal): ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($submission['id']); ?></td>
-                                    <td><?php echo htmlspecialchars($submission['journal_title']); ?></td>
-                                    <td><?php echo htmlspecialchars($submission['pengelola_nama']); ?> (<?php echo htmlspecialchars($submission['pengelola_nip']); ?>)</td>
+                                    <td><?php echo htmlspecialchars($jurnal['id']); ?></td>
+                                    <td><?php echo htmlspecialchars($jurnal['judul_jurnal']); ?></td>
+                                    <td><?php echo htmlspecialchars($jurnal['pengelola_nama']); ?></td>
+                                    <td><?php echo htmlspecialchars($jurnal['pengelola_nip']); ?></td>
                                     <td>
                                         <form method="POST" class="status-form">
-                                            <input type="hidden" name="submission_id" value="<?php echo htmlspecialchars($submission['id']); ?>">
+                                            <input type="hidden" name="jurnal_id" value="<?php echo htmlspecialchars($jurnal['id']); ?>">
                                             <select name="status">
-                                                <option value="pending" <?php echo $submission['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
-                                                <option value="approved" <?php echo $submission['status'] == 'approved' ? 'selected' : ''; ?>>Disetujui</option>
-                                                <option value="rejected" <?php echo $submission['status'] == 'rejected' ? 'selected' : ''; ?>>Ditolak</option>
-                                                <option value="needs_edit" <?php echo $submission['status'] == 'needs_edit' ? 'selected' : ''; ?>>Butuh Edit</option>
+                                                <option value="pending" <?php echo $jurnal['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                                <option value="selesai" <?php echo $jurnal['status'] == 'selesai' ? 'selected' : ''; ?>>Disetujui</option>
+                                                <option value="ditolak" <?php echo $jurnal['status'] == 'ditolak' ? 'selected' : ''; ?>>Ditolak</option>
+                                                <option value="butuh_edit" <?php echo $jurnal['status'] == 'butuh_edit' ? 'selected' : ''; ?>>Butuh Edit</option>
                                             </select>
                                             <button type="submit" name="update_status">Update</button>
                                         </form>
                                     </td>
-                                    <td><?php echo htmlspecialchars($submission['submission_date']); ?></td>
+                                    <td><?php echo htmlspecialchars($jurnal['created_at']); ?></td>
                                     <td>
-                                        <a href="view_jurnal_details.php?id=<?php echo htmlspecialchars($submission['id']); ?>">Lihat Detail</a>
+                                        <a href="tinjau_jurnal.php?id=<?php echo htmlspecialchars($jurnal['id']); ?>">Lihat & Tinjau</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -178,8 +196,7 @@ if ($result) {
                 </div>
             </div>
         </div>
-        <!-- End Main Content -->
-    </div>
+        </div>
 </body>
 </html>
 <?php

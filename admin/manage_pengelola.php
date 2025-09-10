@@ -2,7 +2,6 @@
 // Mulai atau lanjutkan sesi
 session_start();
 
-// Periksa apakah pengguna sudah login dan memiliki peran superadmin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: login.php");
     exit();
@@ -48,7 +47,7 @@ if ($result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Pengelola - Superadmin</title>
+    <title>Kelola Pengelola - Admin</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -139,12 +138,13 @@ if ($result) {
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="logo">
-                <h2>Superadmin</h2>
+                <h2>Admin</h2>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="manage_pengelola.php" class="active"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -158,7 +158,7 @@ if ($result) {
             <div class="header">
                 <h1>Kelola Akun Pengelola</h1>
                 <div class="user-profile">
-                    <span>Role: Superadmin</span>
+                    <span>Role: Admin</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>

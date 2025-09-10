@@ -2,7 +2,6 @@
 // Mulai atau lanjutkan sesi
 session_start();
 
-// Periksa apakah pengguna sudah login dan memiliki peran superadmin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: login.php");
     exit();
@@ -58,7 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_pengelola'])) {
 
 /* ===== Area utama ===== */
 .content-area {
-display: flex;
   justify-content: center;   /* bikin ke tengah horizontal */
   align-items: flex-start; 
   background: #f7fafd; /* biar lembut dan konsisten */
@@ -158,7 +156,7 @@ display: flex;
             <div class="header">
                 <h1>Tambah Pengelola Baru</h1>
                 <div class="user-profile">
-                    <span>Role: Superadmin</span>
+                    <span>Role: Admin</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>

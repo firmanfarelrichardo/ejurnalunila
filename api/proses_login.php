@@ -16,8 +16,8 @@ if ($conn->connect_error) {
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-// Ambil data user dari DB
-$stmt = $conn->prepare("SELECT nip, nama, password, role FROM users WHERE email = ?");
+// PERBAIKAN: Tambahkan 'id' ke dalam query SELECT
+$stmt = $conn->prepare("SELECT id, nip, nama, password, role FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -28,7 +28,9 @@ if ($result->num_rows === 1) {
     // Verifikasi password yang di-hash
     if (password_verify($password, $user_data['password'])) {
         // Password cocok, simpan data ke session
-        $_SESSION['user_id'] = $user_data['nip'];
+        // PERBAIKAN: Simpan 'id' asli pengguna, bukan 'nip'
+        $_SESSION['user_id'] = $user_data['id']; 
+        $_SESSION['user_nip'] = $user_data['nip']; // nip bisa disimpan di variabel session lain jika masih dibutuhkan
         $_SESSION['user_name'] = $user_data['nama'];
         $_SESSION['user_role'] = $user_data['role'];
 

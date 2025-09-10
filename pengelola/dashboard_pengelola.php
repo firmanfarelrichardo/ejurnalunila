@@ -21,32 +21,45 @@ if ($conn->connect_error) {
 }
 
 // Ambil data statistik untuk dashboard pengelola
-$pengelolaId = $_SESSION['user_id'];
+$pengelola_id = $_SESSION['user_id'];
 
-// Total submissions yang dibuat oleh pengelola
-$stmt = $conn->prepare("SELECT COUNT(*) FROM jurnal_submissions WHERE submitted_by_nip = ?");
-$stmt->bind_param("s", $pengelolaId);
+// Mengambil data statistik untuk dashboard pengelola dari tabel jurnal_sumber
+// 1. Total submissions yang dibuat oleh pengelola
+$stmt = $conn->prepare("SELECT COUNT(*) FROM jurnal_sumber WHERE pengelola_id = ?");
+$stmt->bind_param("i", $pengelola_id);
 $stmt->execute();
 $stmt->bind_result($totalSubmissions);
 $stmt->fetch();
 $stmt->close();
 
-// Total submissions yang masih pending
-$stmt = $conn->prepare("SELECT COUNT(*) FROM jurnal_submissions WHERE submitted_by_nip = ? AND status = 'pending'");
-$stmt->bind_param("s", $pengelolaId);
+// 2. Total submissions yang masih pending
+$stmt = $conn->prepare("SELECT COUNT(*) FROM jurnal_sumber WHERE pengelola_id = ? AND status = 'pending'");
+$stmt->bind_param("i", $pengelola_id);
 $stmt->execute();
 $stmt->bind_result($pendingSubmissions);
 $stmt->fetch();
 $stmt->close();
 
-// Total submissions yang sudah disetujui
-$stmt = $conn->prepare("SELECT COUNT(*) FROM jurnal_submissions WHERE submitted_by_nip = ? AND status = 'approved'");
-$stmt->bind_param("s", $pengelolaId);
+// 3. Total submissions yang sudah disetujui
+$stmt = $conn->prepare("SELECT COUNT(*) FROM jurnal_sumber WHERE pengelola_id = ? AND status = 'selesai'");
+$stmt->bind_param("i", $pengelola_id);
 $stmt->execute();
 $stmt->bind_result($approvedSubmissions);
 $stmt->fetch();
 $stmt->close();
 
+// Query ini tidak diperlukan karena sudah ada di daftar_jurnal.php, tapi tidak masalah jika ada.
+$sql = "SELECT id, judul_jurnal, created_at, status FROM jurnal_sumber WHERE pengelola_id = ? ORDER BY created_at DESC";
+$stmt = mysqli_prepare($conn, $sql);
+
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $pengelola_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+} else {
+    echo "Error: Gagal menyiapkan statement SQL.";
+    $result = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -56,16 +69,20 @@ $stmt->close();
     <title>Dashboard Pengelola</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .dashboard-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-    </style>
 </head>
 <body>
     <div class="dashboard-container">
+        <?php
+        // --- Blok PHP untuk Menampilkan Notifikasi ---
+        if (isset($_SESSION['success_message'])) {
+            echo '<div class="notification success">' . $_SESSION['success_message'] . '</div>';
+            unset($_SESSION['success_message']);
+        }
+        if (isset($_SESSION['error_message'])) {
+            echo '<div class="notification error">' . $_SESSION['error_message'] . '</div>';
+            unset($_SESSION['error_message']);
+        }
+        ?>
         <div class="sidebar" id="sidebar">
             <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
@@ -75,8 +92,8 @@ $stmt->close();
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_pengelola.php" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="register_journal.php"><i class="fas fa-plus-circle"></i> <span>Daftar Jurnal Baru</span></a></li>
-                <li><a href="view_my_submissions.php"><i class="fas fa-list-alt"></i> <span>Daftar & Status Jurnal</span></a></li>
+                <li><a href="tambah_jurnal.php"><i class="fas fa-plus-circle"></i> <span>Daftar Jurnal Baru</span></a></li>
+                <li><a href="daftar_jurnal.php"><i class="fas fa-list-alt"></i> <span>Daftar & Status Jurnal</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>

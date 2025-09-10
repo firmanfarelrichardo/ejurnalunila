@@ -22,8 +22,10 @@ if ($conn->connect_error) {
 
 // Ambil data statistik untuk dashboard
 $totalPengelola = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'pengelola'")->fetch_row()[0];
-$totalJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_submissions")->fetch_row()[0];
-$pendingJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_submissions WHERE status = 'pending'")->fetch_row()[0];
+$totalJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_sumber")->fetch_row()[0];
+$pendingJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_sumber WHERE status = 'pending'")->fetch_row()[0];
+$pendingRequests = $conn->query("SELECT COUNT(*) FROM submission_requests WHERE status = 'pending'")->fetch_row()[0];
+
 
 ?>
 <!DOCTYPE html>
@@ -46,6 +48,7 @@ $pendingJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_submissions WHERE st
                 <li><a href="dashboard_admin.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -70,6 +73,7 @@ $pendingJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_submissions WHERE st
                     <h3>Status Jurnal</h3>
                     <p>Total Submissions: **<?php echo $totalJurnals; ?>**</p>
                     <p>Menunggu Persetujuan: **<?php echo $pendingJurnals; ?>**</p>
+                    <p>Permintaan Tertunda: **<?php echo $pendingRequests; ?>**</p>
                 </div>
             </div>
         </div>

@@ -1,3 +1,4 @@
+/* pengelola/admin_style.css */
 /* --- Admin Dashboard Styles --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -167,6 +168,7 @@ body {
 .card {
     background-color: #ffffff;
     padding: 20px;
+    margin-bottom: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: transform 0.3s;

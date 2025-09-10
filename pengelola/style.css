@@ -1,0 +1,157 @@
+
+/* Reset dan Pengaturan Dasar Body 
+  Perubahan: Menghapus 'display: flex', 'justify-content', 'align-items', dan 'min-height'
+  agar tidak mengganggu layout utama dari admin_style.css
+*/
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6; /* Warna ini akan terlihat di belakang dashboard-container */
+    color: #333;
+    margin: 0;
+    padding: 0; /* Padding diatur oleh .main-content di admin_style.css */
+}
+
+/* Kontainer Utama Formulir 
+  Perubahan: Menghapus 'max-width: 900px' agar kontainer bisa mengisi
+  seluruh lebar yang tersedia di .main-content
+*/
+.form-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box; /* Pastikan padding termasuk dalam total lebar */
+}
+
+
+
+/* Fieldset untuk Mengelompokkan Input */
+fieldset {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+legend {
+    font-weight: 600;
+    color: #34495e;
+    padding: 0 10px;
+}
+
+/* Grup Form untuk Label dan Input */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* Styling untuk semua tipe input, select, dan textarea */
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="tel"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Agar padding tidak menambah lebar elemen */
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #e74c3c;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
+}
+
+textarea {
+    resize: vertical; /* Memungkinkan user mengubah tinggi textarea */
+}
+
+/* Layout untuk form-group yang berdampingan */
+.form-group-row {
+    display: flex;
+    gap: 20px; /* Jarak antar kolom */
+    flex-wrap: wrap; /* Agar responsif di layar kecil */
+}
+
+.form-group-row .form-group {
+    flex: 1; /* Membuat setiap grup memiliki lebar yang sama */
+    min-width: 200px; /* Lebar minimum sebelum pindah baris */
+}
+
+/* Styling untuk Radio Button dan Checkbox */
+.radio-group, .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.radio-group label, .checkbox-group label {
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.checkbox-grid {
+    display: grid   ;
+    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); /* Grid responsif */
+    align-self: start;
+}
+.checkbox-grid label {
+    font-weight: 400;
+}
+
+/* Tombol Aksi */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* Posisi tombol di kanan */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #c0392b;
+}
+
+.btn-secondary {
+    background-color: #bdc3c7;
+    color: #2c3e50;
+}
+.btn-secondary:hover {
+    background-color: #95a5a6;
+}
