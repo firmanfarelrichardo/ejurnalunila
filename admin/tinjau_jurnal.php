@@ -3,7 +3,6 @@ session_start();
 
 // Cek apakah pengguna sudah login dan memiliki peran yang sesuai
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    // Jika tidak, arahkan ke halaman login
     header("Location: login.php");
     exit();
 }
@@ -19,33 +18,127 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error); 
 }
 
+$message = '';
+
 // BAGIAN 1: PROSES FORM JIKA ADA DATA YANG DI-POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Mengambil data dari form
     $jurnal_id = (int)$_POST['jurnal_id'];
     $new_status = $_POST['status'];
     $catatan = trim($_POST['catatan_admin']);
     
+    // Perbarui semua data jurnal
+    $nama_kontak = trim($_POST['nama_kontak']);
+    $email_kontak = trim($_POST['email_kontak']);
+    $institusi = trim($_POST['institusi']);
+    $fakultas = $_POST['fakultas'];
+    $judul_jurnal_asli = trim($_POST['judul_jurnal_asli']);
+    $judul_jurnal = trim($_POST['judul_jurnal']);
+    $doi = trim($_POST['doi']);
+    $journal_type = $_POST['journal_type'];
+    $p_issn = trim($_POST['p_issn']);
+    $e_issn = trim($_POST['e_issn']);
+    $akreditasi_sinta = $_POST['akreditasi_sinta'];
+    $index_scopus = $_POST['index_scopus'];
+    $penerbit = trim($_POST['penerbit']);
+    $country_of_publisher = $_POST['country_of_publisher'];
+    $website_url = trim($_POST['website_url']);
+    $journal_contact_name = trim($_POST['journal_contact_name']);
+    $journal_official_email = trim($_POST['journal_official_email']);
+    $journal_contact_phone = trim($_POST['journal_contact_phone']);
+    $start_year = $_POST['start_year'];
+    $issue_period = isset($_POST['issue_period']) ? implode(',', $_POST['issue_period']) : '';
+    $editorial_team = trim($_POST['editorial_team']);
+    $editorial_address = trim($_POST['editorial_address']);
+    $aim_and_scope = trim($_POST['aim_and_scope']);
+    $has_homepage = $_POST['has_homepage'];
+    $is_using_ojs = $_POST['is_using_ojs'];
+    $ojs_link = trim($_POST['ojs_link']);
+    $open_access_link = trim($_POST['open_access_link']);
+    $url_editorial_board = trim($_POST['url_editorial_board']);
+    $url_contact = trim($_POST['url_contact']);
+    $url_reviewer = trim($_POST['url_reviewer']);
+    $url_google_scholar = trim($_POST['url_google_scholar']);
+    $link_sinta = trim($_POST['link_sinta']);
+    $link_garuda = trim($_POST['link_garuda']);
+    $url_cover = trim($_POST['url_cover']);
+    $subject_arjuna = $_POST['subject_arjuna'];
+    $sub_subject_arjuna = $_POST['sub_subject_arjuna'];
+    $subject_garuda = isset($_POST['subject_garuda']) ? implode(',', $_POST['subject_garuda']) : '';
+    
     // Validasi status
     $allowed_statuses = ['pending', 'selesai', 'ditolak', 'butuh_edit'];
-    if (in_array($new_status, $allowed_statuses)) {
-        
-        // Query untuk memperbarui status DAN catatan admin di tabel jurnal_sumber
-        $sql_update = "UPDATE jurnal_sumber SET status = ?, catatan_admin = ? WHERE id = ?";
-        $stmt_update = mysqli_prepare($conn, $sql_update);
-        
-        if ($stmt_update) {
-            mysqli_stmt_bind_param($stmt_update, "ssi", $new_status, $catatan, $jurnal_id);
-            if (mysqli_stmt_execute($stmt_update)) {
-                $_SESSION['success_message'] = "Status jurnal berhasil diperbarui.";
-            } else {
-                $_SESSION['error_message'] = "Gagal memperbarui status: " . mysqli_stmt_error($stmt_update);
-            }
-            mysqli_stmt_close($stmt_update);
-        } else {
-             $_SESSION['error_message'] = "Gagal menyiapkan statement: " . mysqli_error($conn);
-        }
-    } else {
+    if (!in_array($new_status, $allowed_statuses)) {
         $_SESSION['error_message'] = "Status tidak valid.";
+        header("Location: manage_journal.php");
+        exit();
+    }
+    
+    // Query untuk memperbarui semua kolom di tabel jurnal_sumber
+    $sql_update = "UPDATE jurnal_sumber SET
+        status = ?,
+        catatan_admin = ?,
+        nama_kontak = ?,
+        email_kontak = ?,
+        institusi = ?,
+        fakultas = ?,
+        judul_jurnal_asli = ?,
+        judul_jurnal = ?,
+        doi = ?,
+        journal_type = ?,
+        p_issn = ?,
+        e_issn = ?,
+        akreditasi_sinta = ?,
+        index_scopus = ?,
+        penerbit = ?,
+        country_of_publisher = ?,
+        website_url = ?,
+        journal_contact_name = ?,
+        journal_official_email = ?,
+        journal_contact_phone = ?,
+        start_year = ?,
+        issue_period = ?,
+        editorial_team = ?,
+        editorial_address = ?,
+        aim_and_scope = ?,
+        has_homepage = ?,
+        is_using_ojs = ?,
+        ojs_link = ?,
+        open_access_link = ?,
+        url_editorial_board = ?,
+        url_contact = ?,
+        url_reviewer = ?,
+        url_google_scholar = ?,
+        link_sinta = ?,
+        link_garuda = ?,
+        url_cover = ?,
+        subject_arjuna = ?,
+        sub_subject_arjuna = ?,
+        subject_garuda = ?
+    WHERE id = ?";
+
+    $stmt_update = mysqli_prepare($conn, $sql_update);
+    
+    if ($stmt_update) {
+        // Perbaikan: String tipe data disesuaikan menjadi 40 karakter
+        mysqli_stmt_bind_param($stmt_update, "ssssssssssssssssssssissssiissssssssssssi",
+            $new_status, $catatan, $nama_kontak, $email_kontak, $institusi, $fakultas, $judul_jurnal_asli,
+            $judul_jurnal, $doi, $journal_type, $p_issn, $e_issn, $akreditasi_sinta, $index_scopus,
+            $penerbit, $country_of_publisher, $website_url, $journal_contact_name, $journal_official_email,
+            $journal_contact_phone, $start_year, $issue_period, $editorial_team, $editorial_address,
+            $aim_and_scope, $has_homepage, $is_using_ojs, $ojs_link, $open_access_link,
+            $url_editorial_board, $url_contact, $url_reviewer, $url_google_scholar, $link_sinta,
+            $link_garuda, $url_cover, $subject_arjuna, $sub_subject_arjuna, $subject_garuda, $jurnal_id
+        );
+        
+        if (mysqli_stmt_execute($stmt_update)) {
+            $_SESSION['success_message'] = "Status dan detail jurnal berhasil diperbarui.";
+        } else {
+            $_SESSION['error_message'] = "Gagal memperbarui jurnal: " . mysqli_stmt_error($stmt_update);
+        }
+        mysqli_stmt_close($stmt_update);
+    } else {
+         $_SESSION['error_message'] = "Gagal menyiapkan statement: " . mysqli_error($conn);
     }
     
     header("Location: manage_journal.php");
@@ -54,7 +147,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // BAGIAN 2: TAMPILKAN DATA JURNAL (GET REQUEST)
 if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
-    header("Location: index.php");
+    $_SESSION['error_message'] = "ID Jurnal tidak valid.";
+    header("Location: manage_journal.php");
     exit();
 }
 $jurnal_id = (int)$_GET['id'];
@@ -70,7 +164,7 @@ mysqli_stmt_close($stmt_select);
 
 if (!$jurnal) {
     $_SESSION['error_message'] = "Jurnal tidak ditemukan.";
-    header("Location: index.php");
+    header("Location: manage_journal.php");
     exit();
 }
 ?>
@@ -81,115 +175,79 @@ if (!$jurnal) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tinjau Jurnal - <?php echo htmlspecialchars($jurnal['judul_jurnal']); ?></title>
     <link rel="stylesheet" href="admin_style.css">
+    <link rel="stylesheet" href="style.css">     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .admin-fieldset {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 35px;
+            background-color: #fdfdfd;
+        }
+        .admin-fieldset legend {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            padding: 0 15px;
+        }
+        .status-needs-edit { background-color: #9b59b6; color: white; }
+        .status-badge { display: inline-block; padding: 5px 10px; border-radius: 12px; font-weight: bold; color: white; }
+        .status-pending { background-color: #f39c12; }
+        .status-approved { background-color: #2ecc71; }
+        .status-rejected { background-color: #e74c3c; }
+        .status-butuh_edit { background-color: #3498db; }
+        .form-group-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .form-group-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 15px; }
+        .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background-color 0.3s, transform 0.2s; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .checkbox-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px; /* Memberi jarak antara checkbox dan teks */
+            align-items: start; 
+        }
+    </style>
 </head>
-
-<style>
-    .admin-fieldset {
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 25px;
-        margin-bottom: 35px;
-        background-color: #fdfdfd;
-    }
-
-    .admin-fieldset legend {
-        font-size: 18px;
-        font-weight: 600;
-        color: #2c3e50;
-        padding: 0 15px;
-    }
-
-    .status-needs-edit {
-        background-color: #9b59b6; /* Ungu */
-        color: white;
-    }
-    
-    .status-badge {
-        display: inline-block;
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-weight: bold;
-        color: white;
-    }
-    .status-pending { background-color: #f39c12; }
-    .status-approved { background-color: #2ecc71; }
-    .status-rejected { background-color: #e74c3c; }
-    .status-needs_edit { background-color: #3498db; }
-    
-    .detail-group {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 12px 0;
-        border-bottom: 1px solid #f1f1f1;
-        font-size: 14px;
-    }
-    
-    .detail-label {
-        flex-basis: 30%;
-        font-weight: 500;
-        color: #555;
-        padding-right: 15px;
-    }
-    
-    .detail-value {
-        flex-basis: 70%;
-        color: #333;
-        word-break: break-word;
-    }
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-    }
-    
-    .form-group select, .form-group textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-    
-    .form-actions {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end;
-    }
-    
-    .btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: background-color 0.3s, transform 0.2s;
-    }
-
-    .btn-primary {
-        background-color: #3498db;
-        color: white;
-    }
-    
-</style>
 
 <body>
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Admin</h2>
-            </div>
+            <div class="logo"><h2>Admin</h2></div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
                 <li><a href="manage_journal.php" class="active"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
+                <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -210,71 +268,276 @@ if (!$jurnal) {
                     
                     <h2 class="journal-title">Judul Jurnal: <?php echo htmlspecialchars($jurnal['judul_jurnal']); ?></h2>
                     
-                    <fieldset>
-                        <legend>Contact Detail</legend>
-                        <div class="detail-group"><span class="detail-label">Nama Kontak:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['nama_kontak']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Email Kontak:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['email_kontak']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Institusi:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['institusi']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Fakultas:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['fakultas']); ?></span></div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Journal Information</legend>
-                        <div class="detail-group"><span class="detail-label">Judul Asli:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['judul_jurnal_asli']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Judul :</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['judul_jurnal']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">DOI:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['doi'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Tipe:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['journal_type']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">ISSN (Cetak):</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['p_issn'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">e-ISSN (Online):</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['e_issn'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Akreditasi SINTA:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['akreditasi_sinta'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Indeks Scopus:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['index_scopus'] ?: '-'); ?></span></div>
+                    <form id="journalForm" action="tinjau_jurnal.php" method="POST">
+                        <input type="hidden" name="jurnal_id" value="<?php echo htmlspecialchars($jurnal['id']); ?>">
+                        
+                        <fieldset>
+                            <legend>Contact Detail</legend>
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="nama_kontak">Nama Kontak</label>
+                                    <input type="text" id="nama_kontak" name="nama_kontak" value="<?php echo htmlspecialchars($jurnal['nama_kontak']); ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email_kontak">Email Kontak</label>
+                                    <input type="email" id="email_kontak" name="email_kontak" value="<?php echo htmlspecialchars($jurnal['email_kontak']); ?>" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="institusi">Institusi</label>
+                                <input type="text" id="institusi" name="institusi" value="<?php echo htmlspecialchars($jurnal['institusi']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fakultas">Fakultas</label>
+                                <select id="fakultas" name="fakultas" required>
+                                    <option value="Fakultas Ekonomi dan Bisnis" <?php echo ($jurnal['fakultas'] == 'Fakultas Ekonomi dan Bisnis') ? 'selected' : ''; ?>>Fakultas Ekonomi dan Bisnis</option>
+                                    <option value="Fakultas Hukum" <?php echo ($jurnal['fakultas'] == 'Fakultas Hukum') ? 'selected' : ''; ?>>Fakultas Hukum</option>
+                                    <option value="Fakultas Ilmu Sosial dan Ilmu Politik" <?php echo ($jurnal['fakultas'] == 'Fakultas Ilmu Sosial dan Ilmu Politik') ? 'selected' : ''; ?>>Fakultas Ilmu Sosial dan Ilmu Politik</option>
+                                    <option value="Fakultas Kedokteran" <?php echo ($jurnal['fakultas'] == 'Fakultas Kedokteran') ? 'selected' : ''; ?>>Fakultas Kedokteran</option>
+                                    <option value="Fakultas Keguruan dan Ilmu Pendidikan" <?php echo ($jurnal['fakultas'] == 'Fakultas Keguruan dan Ilmu Pendidikan') ? 'selected' : ''; ?>>Fakultas Keguruan dan Ilmu Pendidikan</option>
+                                    <option value="Fakultas Matematika dan Ilmu Pengetahuan Alam" <?php echo ($jurnal['fakultas'] == 'Fakultas Matematika dan Ilmu Pengetahuan Alam') ? 'selected' : ''; ?>>Fakultas Matematika dan Ilmu Pengetahuan Alam</option>
+                                    <option value="Fakultas Pertanian" <?php echo ($jurnal['fakultas'] == 'Fakultas Pertanian') ? 'selected' : ''; ?>>Fakultas Pertanian</option>
+                                    <option value="Fakultas Teknik" <?php echo ($jurnal['fakultas'] == 'Fakultas Teknik') ? 'selected' : ''; ?>>Fakultas Teknik</option>
+                                </select>
+                            </div>
                         </fieldset>
 
-                    <fieldset>
-                        <legend>Publisher & Journal Contact</legend>
-                        <div class="detail-group"><span class="detail-label">Penerbit:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['penerbit']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Negara Penerbit:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['country_of_publisher']); ?></span></div>
-                        <div class="detail-group">
-                            <span class="detail-label">Website Jurnal:</span>
-                            <span class="detail-value"><a href="<?php echo htmlspecialchars($jurnal['website_url']); ?>" target="_blank" rel="noopener noreferrer"><?php echo htmlspecialchars($jurnal['website_url']); ?></a></span>
-                        </div>
-                        <div class="detail-group"><span class="detail-label">Nama Kontak Jurnal:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['journal_contact_name']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Email Resmi Jurnal:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['journal_official_email']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Telepon Kontak Jurnal:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['journal_contact_phone'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Tahun Mulai Online:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['start_year']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Periode Terbit:</span><span class="detail-value"><?php echo htmlspecialchars(str_replace(',', ', ', $jurnal['issue_period'])); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Tim Editor:</span><span class="detail-value"><?php echo htmlspecialchars(str_replace(',', ', ', $jurnal['editorial_team'])); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Alamat Editorial:</span><span class="detail-value"><?php echo nl2br(htmlspecialchars($jurnal['editorial_address'])); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Aim dan Scope:</span><span class="detail-value"><?php echo nl2br(htmlspecialchars($jurnal['aim_and_scope'])); ?></span></div>
-                    </fieldset>
+                        <fieldset>
+                            <legend>Journal Information</legend>
+                            <div class="form-group">
+                                <label for="judul_jurnal_asli">Judul Asli</label>
+                                <input type="text" id="judul_jurnal_asli" name="judul_jurnal_asli" value="<?php echo htmlspecialchars($jurnal['judul_jurnal_asli']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="judul_jurnal">Judul</label>
+                                <input type="text" id="judul_jurnal" name="judul_jurnal" value="<?php echo htmlspecialchars($jurnal['judul_jurnal']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="doi">DOI</label>
+                                <input type="text" id="doi" name="doi" value="<?php echo htmlspecialchars($jurnal['doi']); ?>">
+                            </div>
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="journal_type">Tipe Jurnal</label>
+                                    <select id="journal_type" name="journal_type">
+                                        <option value="Journal" <?php echo ($jurnal['journal_type'] == 'Journal') ? 'selected' : ''; ?>>Journal</option>
+                                        <option value="Conference" <?php echo ($jurnal['journal_type'] == 'Conference') ? 'selected' : ''; ?>>Conference</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="p_issn">ISSN (Cetak)</label>
+                                    <input type="text" id="p_issn" name="p_issn" value="<?php echo htmlspecialchars($jurnal['p_issn']); ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="e_issn">e-ISSN (Online)</label>
+                                    <input type="text" id="e_issn" name="e_issn" value="<?php echo htmlspecialchars($jurnal['e_issn']); ?>">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="akreditasi_sinta">Akreditasi SINTA</label>
+                                <select id="akreditasi_sinta" name="akreditasi_sinta" required>
+                                    <option value="Belum Terakreditasi" <?php echo ($jurnal['akreditasi_sinta'] == 'Belum Terakreditasi') ? 'selected' : ''; ?>>Belum Terakreditasi</option>
+                                    <option value="Sinta 1" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 1') ? 'selected' : ''; ?>>Sinta 1</option>
+                                    <option value="Sinta 2" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 2') ? 'selected' : ''; ?>>Sinta 2</option>
+                                    <option value="Sinta 3" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 3') ? 'selected' : ''; ?>>Sinta 3</option>
+                                    <option value="Sinta 4" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 4') ? 'selected' : ''; ?>>Sinta 4</option>
+                                    <option value="Sinta 5" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 5') ? 'selected' : ''; ?>>Sinta 5</option>
+                                    <option value="Sinta 6" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 6') ? 'selected' : ''; ?>>Sinta 6</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="index_scopus">Indeks Scopus</label>
+                                <select id="index_scopus" name="index_scopus">
+                                    <option value="Belum Terindeks" <?php echo ($jurnal['index_scopus'] == 'Belum Terindeks') ? 'selected' : ''; ?>>Belum Terindeks</option>
+                                    <option value="Q1" <?php echo ($jurnal['index_scopus'] == 'Q1') ? 'selected' : ''; ?>>Q1</option>
+                                    <option value="Q2" <?php echo ($jurnal['index_scopus'] == 'Q2') ? 'selected' : ''; ?>>Q2</option>
+                                    <option value="Q3" <?php echo ($jurnal['index_scopus'] == 'Q3') ? 'selected' : ''; ?>>Q3</option>
+                                    <option value="Q4" <?php echo ($jurnal['index_scopus'] == 'Q4') ? 'selected' : ''; ?>>Q4</option>
+                                </select>
+                            </div>
+                        </fieldset>
 
-                    <fieldset>
-                        <legend>Additional Information & URLs</legend>
-                        <div class="detail-group"><span class="detail-label">Memiliki Homepage?:</span><span class="detail-value"><?php echo $jurnal['has_homepage'] ? 'Ya' : 'Tidak'; ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Menggunakan OJS?:</span><span class="detail-value"><?php echo $jurnal['is_using_ojs'] ? 'Ya' : 'Tidak'; ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Link OJS:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['ojs_link'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Link Open Access:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['open_access_link'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">URL Editorial Board:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['url_editorial_board']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">URL Kontak:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['url_contact']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">URL Reviewer:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['url_reviewer'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">URL Google Scholar:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['url_google_scholar'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">URL Sinta:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['link_sinta'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">URL Garuda:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['link_garuda'] ?: '-'); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">URL Cover:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['url_cover'] ?: '-'); ?></span></div>
-                    </fieldset>
+                        <fieldset>
+                            <legend>Publisher & Journal Contact</legend>
+                            <div class="form-group">
+                                <label for="penerbit">Penerbit</label>
+                                <input type="text" id="penerbit" name="penerbit" value="<?php echo htmlspecialchars($jurnal['penerbit']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="country_of_publisher">Negara Penerbit</label>
+                                <input type="text" id="country_of_publisher" name="country_of_publisher" value="<?php echo htmlspecialchars($jurnal['country_of_publisher']); ?>" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="website_url">Website Jurnal</label>
+                                <input type="url" id="website_url" name="website_url" value="<?php echo htmlspecialchars($jurnal['website_url']); ?>" required>
+                            </div>
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="journal_contact_name">Nama Kontak Jurnal</label>
+                                    <input type="text" id="journal_contact_name" name="journal_contact_name" value="<?php echo htmlspecialchars($jurnal['journal_contact_name']); ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="journal_official_email">Email Resmi Jurnal</label>
+                                    <input type="email" id="journal_official_email" name="journal_official_email" value="<?php echo htmlspecialchars($jurnal['journal_official_email']); ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="journal_contact_phone">Telepon Kontak Jurnal</label>
+                                    <input type="tel" id="journal_contact_phone" name="journal_contact_phone" value="<?php echo htmlspecialchars($jurnal['journal_contact_phone']); ?>">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="start_year">Tahun Mulai Online</label>
+                                <input type="number" id="start_year" name="start_year" min="1900" max="2099" step="1" placeholder="YYYY" value="<?php echo htmlspecialchars($jurnal['start_year']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="issue_period">Periode Terbit</label>
+                                <div class="checkbox-group">
+                                    <?php
+                                    $issue_periods_array = explode(',', $jurnal['issue_period']);
+                                    $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                                    foreach ($months as $month): ?>
+                                        <div>
+                                            <input type="checkbox" id="month_<?php echo strtolower($month); ?>" name="issue_period[]" value="<?php echo $month; ?>" <?php echo in_array($month, $issue_periods_array) ? 'checked' : ''; ?>>
+                                            <label for="month_<?php echo strtolower($month); ?>"><?php echo $month; ?></label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="editorial_team">Tim Editor</label>
+                                <textarea id="editorial_team" name="editorial_team" rows="4" required><?php echo htmlspecialchars($jurnal['editorial_team']); ?></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editorial_address">Alamat Editorial</label>
+                                <textarea id="editorial_address" name="editorial_address" rows="4" required><?php echo htmlspecialchars($jurnal['editorial_address']); ?></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="aim_and_scope">Aim dan Scope</label>
+                                <textarea id="aim_and_scope" name="aim_and_scope" rows="6" required><?php echo htmlspecialchars($jurnal['aim_and_scope']); ?></textarea>
+                            </div>
+                        </fieldset>
 
-                    <fieldset>
-                        <legend>Subject Area</legend>
-                        <div class="detail-group"><span class="detail-label">Subjek Arjuna:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['subject_arjuna']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Sub-subjek Arjuna:</span><span class="detail-value"><?php echo htmlspecialchars($jurnal['sub_subject_arjuna']); ?></span></div>
-                        <div class="detail-group"><span class="detail-label">Subjek Garuda:</span><span class="detail-value"><?php echo htmlspecialchars(str_replace(',', ', ', $jurnal['subject_garuda'])); ?></span></div>
-                    </fieldset>
-                
-                    <fieldset class="admin-fieldset">
-                        <legend>📝 Tindakan Admin</legend>
-                        <form action="tinjau_jurnal.php" method="POST">
-                            <input type="hidden" name="jurnal_id" value="<?php echo $jurnal['id']; ?>">
-                            
+                        <fieldset>
+                            <legend>Additional Information & URLs</legend>
+                            <div class="form-group">
+                                <label>Memiliki Homepage?</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="has_homepage" value="1" <?php echo $jurnal['has_homepage'] ? 'checked' : ''; ?>> Ya</label>
+                                    <label><input type="radio" name="has_homepage" value="0" <?php echo !$jurnal['has_homepage'] ? 'checked' : ''; ?>> Tidak</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Menggunakan OJS?</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="is_using_ojs" value="1" <?php echo $jurnal['is_using_ojs'] ? 'checked' : ''; ?>> Ya</label>
+                                    <label><input type="radio" name="is_using_ojs" value="0" <?php echo !$jurnal['is_using_ojs'] ? 'checked' : ''; ?>> Tidak</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ojs_link">Link OJS</label>
+                                <input type="url" id="ojs_link" name="ojs_link" value="<?php echo htmlspecialchars($jurnal['ojs_link']); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="open_access_link">Link Open Access</label>
+                                <input type="url" id="open_access_link" name="open_access_link" value="<?php echo htmlspecialchars($jurnal['open_access_link']); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="url_editorial_board">URL Editorial Board</label>
+                                <input type="url" id="url_editorial_board" name="url_editorial_board" value="<?php echo htmlspecialchars($jurnal['url_editorial_board']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="url_contact">URL Kontak</label>
+                                <input type="url" id="url_contact" name="url_contact" value="<?php echo htmlspecialchars($jurnal['url_contact']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="url_reviewer">URL Reviewer</label>
+                                <input type="url" id="url_reviewer" name="url_reviewer" value="<?php echo htmlspecialchars($jurnal['url_reviewer']); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="url_google_scholar">URL Google Scholar</label>
+                                <input type="url" id="url_google_scholar" name="url_google_scholar" value="<?php echo htmlspecialchars($jurnal['url_google_scholar']); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="link_sinta">URL Sinta</label>
+                                <input type="url" id="link_sinta" name="link_sinta" value="<?php echo htmlspecialchars($jurnal['link_sinta']); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="link_garuda">URL Garuda</label>
+                                <input type="url" id="link_garuda" name="link_garuda" value="<?php echo htmlspecialchars($jurnal['link_garuda']); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="url_cover">URL Cover</label>
+                                <input type="url" id="url_cover" name="url_cover" value="<?php echo htmlspecialchars($jurnal['url_cover']); ?>">
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Subject Area</legend>
+                            <div class="form-group">
+                                <label for="subject_arjuna">Subjek Arjuna</label>
+                                <select id="subject_arjuna" name="subject_arjuna">
+                                    <option value="Biokimia, Genetika dan Biologi Molekuler" <?php echo ($jurnal['subject_arjuna'] == 'Biokimia, Genetika dan Biologi Molekuler') ? 'selected' : ''; ?>>Biokimia, Genetika dan Biologi Molekuler</option>
+                                    <option value="Bisnis, Menejemen, dan Akutansi (semua kategori)" <?php echo ($jurnal['subject_arjuna'] == 'Bisnis, Menejemen, dan Akutansi (semua kategori)') ? 'selected' : ''; ?>>Bisnis, Menejemen, dan Akutansi (semua kategori)</option>
+                                    <option value="Energi (semua kategori)" <?php echo ($jurnal['subject_arjuna'] == 'Energi (semua kategori)') ? 'selected' : ''; ?>>Energi (semua kategori)</option>
+                                    <option value="Fisika dan Astronomi" <?php echo ($jurnal['subject_arjuna'] == 'Fisika dan Astronomi') ? 'selected' : ''; ?>>Fisika dan Astronomi</option>
+                                    <option value="Ilmu Bumi dan Planet (semua kategori)" <?php echo ($jurnal['subject_arjuna'] == 'Ilmu Bumi dan Planet (semua kategori)') ? 'selected' : ''; ?>>Ilmu Bumi dan Planet (semua kategori)</option>
+                                    <option value="Ilmu Ekonomi, Ekonometrika dan Keuangan (semua kategori)" <?php echo ($jurnal['subject_arjuna'] == 'Ilmu Ekonomi, Ekonometrika dan Keuangan (semua kategori)') ? 'selected' : ''; ?>>Ilmu Ekonomi, Ekonometrika dan Keuangan (semua kategori)</option>
+                                    <option value="Ilmu Komputer (semua kategori)" <?php echo ($jurnal['subject_arjuna'] == 'Ilmu Komputer (semua kategori)') ? 'selected' : ''; ?>>Ilmu Komputer (semua kategori)</option>
+                                    <option value="Ilmu Material (semua kategori)" <?php echo ($jurnal['subject_arjuna'] == 'Ilmu Material (semua kategori)') ? 'selected' : ''; ?>>Ilmu Material (semua kategori)</option>
+                                    <option value="Teknik (semua kategori)" <?php echo ($jurnal['subject_arjuna'] == 'Teknik (semua kategori)') ? 'selected' : ''; ?>>Teknik (semua kategori)</option>
+                                    <option value="Umum" <?php echo ($jurnal['subject_arjuna'] == 'Umum') ? 'selected' : ''; ?>>Umum</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sub_subject_arjuna">Sub Subjek Arjuna</label>
+                                <select id="sub_subject_arjuna" name="sub_subject_arjuna">
+                                    <option value="Arsitektur" <?php echo ($jurnal['sub_subject_arjuna'] == 'Arsitektur') ? 'selected' : ''; ?>>Arsitektur</option>
+                                    <option value="Komputasi Mekanik" <?php echo ($jurnal['sub_subject_arjuna'] == 'Komputasi Mekanik') ? 'selected' : ''; ?>>Komputasi Mekanik</option>
+                                    <option value="Teknik Listrik dan Elektro" <?php echo ($jurnal['sub_subject_arjuna'] == 'Teknik Listrik dan Elektro') ? 'selected' : ''; ?>>Teknik Listrik dan Elektro</option>
+                                    <option value="Teknik Sipil dan Struktur" <?php echo ($jurnal['sub_subject_arjuna'] == 'Teknik Sipil dan Struktur') ? 'selected' : ''; ?>>Teknik Sipil dan Struktur</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Subject Area Garuda (max. 5): *</label>
+                                <div class="checkbox-grid" id="garuda-subjects">
+                                    <?php 
+                                        $subject_garuda_array = explode(',', $jurnal['subject_garuda']);
+                                        $garuda_subjects = [
+                                            'Religion' => 'Religion', 'Aerospace Engineering' => 'Engineering', 'Agriculture, Biological Sciences & Forestry' => 'Agriculture', 'Arts' => 'Art',
+                                            'Humanities' => 'Humanities', 'Astronomy' => 'Science', 'Automotive Engineering' => 'Engineering', 'Biochemistry, Genetics & Molecular Biology' => 'Science',
+                                            'Chemical Engineering, Chemistry & Bioengineering' => 'Engineering', 'Chemistry' => 'Science', 'Civil Engineering, Building, Construction & Architecture' => 'Engineering', 'Computer Science & IT' => 'Science',
+                                            'Control & Systems Engineering' => 'Engineering', 'Decision Sciences, Operations Research & Management' => 'Science', 'Dentistry' => 'Health', 'Earth & Planetary Sciences' => 'Science',
+                                            'Economics, Econometrics & Finance' => 'Economy', 'Education' => 'Education', 'Electrical & Electronics Engineering' => 'Engineering', 'Energy' => 'Science',
+                                            'Engineering' => 'Engineering', 'Environmental Science' => 'Social', 'Health Professions' => 'Health', 'Immunology & microbiology' => 'Science',
+                                            'Industrial & Manufacturing Engineering' => 'Engineering', 'Language, Linguistic, Communication & Media' => 'Education', 'Law, Crime, Criminology & Criminal Justice' => 'Social', 'Library & Information Science' => 'Science',
+                                            'Materials Science & Nanotechnology' => 'Science', 'Mathematics' => 'Education', 'Mechanical Engineering' => 'Engineering', 'Medicine & Pharmacology' => 'Health',
+                                            'Neuroscience' => 'Science', 'Nursing' => 'Health', 'Physics' => 'Science', 'Public Health' => 'Health', 'Social Sciences' => 'Social',
+                                            'Transportation' => 'Engineering', 'Veterinary' => 'Health', 'Other' => 'Education'
+                                        ]; 
+                                        foreach($garuda_subjects as $subject => $category): 
+                                            $id_safe_subject = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '_', $subject));
+                                    ?>
+                                        <div class="checkbox-item">
+                                            <input 
+                                                type="checkbox" 
+                                                id="garuda_<?php echo $id_safe_subject; ?>" 
+                                                name="subject_garuda[]" 
+                                                value="<?php echo htmlspecialchars($subject); ?>" 
+                                                class="garuda-checkbox"
+                                                <?php echo in_array($subject, $subject_garuda_array) ? 'checked' : ''; ?>>
+                                            <label 
+                                                for="garuda_<?php echo $id_safe_subject; ?>" 
+                                                class="form-checkbox-label">
+                                                <?php echo htmlspecialchars($subject); ?> (<?php echo htmlspecialchars($category); ?>)
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </fieldset>
+                    
+                        <fieldset class="admin-fieldset">
+                            <legend>📝 Tindakan Admin</legend>
                             <div class="form-group">
                                 <label for="status">Ubah Status Menjadi</label>
                                 <select id="status" name="status">
@@ -284,22 +547,67 @@ if (!$jurnal) {
                                     <option value="butuh_edit" <?php echo ($jurnal['status'] == 'butuh_edit') ? 'selected' : ''; ?>>Needs Edit</option>
                                 </select>
                             </div>
-
                             <div class="form-group">
                                 <label for="catatan_admin">Catatan untuk Pengelola (Opsional)</label>
                                 <textarea id="catatan_admin" name="catatan_admin" rows="4" placeholder="Contoh: Selamat, jurnal Anda telah disetujui."><?php echo htmlspecialchars($jurnal['catatan_admin']); ?></textarea>
                             </div>
-
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Simpan Perubahan Status</button>
+                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                             </div>
-                        </form>
-                    </fieldset>
-                    
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+<script src="script.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.main-content');
+            sidebar.classList.toggle('collapsed');
+            
+            // Script ini bisa ditambahkan jika ingin konten utama menyesuaikan margin-left
+            // Namun, flexbox di admin_style.css sudah menanganinya secara otomatis
+        }
+
+        // Menunggu hingga seluruh konten halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Mengambil semua elemen checkbox untuk Subject Area Garuda
+        const garudaCheckboxes = document.querySelectorAll('.garuda-checkbox');
+        
+        // Array untuk melacak urutan checkbox yang dicentang
+        let selectedGaruda = [];
+        const maxSelection = 5;
+
+        // Menambahkan event listener ke setiap checkbox
+        garudaCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                
+                // Jika checkbox dicentang
+                if (this.checked) {
+                    // Tambahkan ID checkbox ke dalam array pelacak
+                    selectedGaruda.push(this.id);
+                    
+                    // Jika jumlah yang dicentang melebihi batas maksimal
+                    if (selectedGaruda.length > maxSelection) {
+                        // Ambil ID checkbox pertama yang dicentang
+                        const firstSelectedId = selectedGaruda.shift(); // Ambil dan hapus elemen pertama
+                        
+                        // Dapatkan elemen checkbox tersebut dan hapus centangnya
+                        document.getElementById(firstSelectedId).checked = false;
+                    }
+                } else {
+                    // Jika centang dihilangkan, hapus ID checkbox dari array pelacak
+                    selectedGaruda = selectedGaruda.filter(id => id !== this.id);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>
-<?php mysqli_close($conn); ?>
+<?php
+$conn->close();
+?>

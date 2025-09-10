@@ -32,13 +32,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <li class="<?php if ($current_page == 'statistik.php') { echo 'active'; } ?>"><a href="statistik.php">Statistik</a></li>
                     </ul>
                 </nav>
-<<<<<<< HEAD
-            </div>
-            
-=======
             <button id="mobile-menu-toggle" class="mobile-menu-button">
                 <i class="fas fa-bars"></i>
             </button>
->>>>>>> 45bf2530d2a044317161da647d0673ef01ce26cf
         </div>
     </header>
