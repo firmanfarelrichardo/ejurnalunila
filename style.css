@@ -50,11 +50,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   2. HEADER & NAVIGATION
+   2. HEADER & NAVIGATION (RESPONSIVE FINAL)
    ========================================================================== */
 .site-header {
     background-color: var(--header-blue);
-    padding: 20px 0;
+    padding: 15px 0;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -66,53 +66,55 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--white);
-    font-size: 1.2rem;
-    font-weight: 600;
-    text-decoration: none;
-}
-
 .logo img {
     height: 40px;
+    display: block;
 }
 
-.main-nav {
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
-    padding-left: 30px;
+.nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Biarkan nav wrapper mengisi ruang tengah */
 }
 
 .main-nav ul {
     list-style: none;
     display: flex;
-    gap: 25px;
+    gap: 15px;
 }
 
 .main-nav a {
     color: var(--white);
     font-weight: 500;
     opacity: 0.8;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: 5px;
+    white-space: nowrap;
 }
 
 .main-nav a:hover {
     opacity: 1;
-    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.main-nav li.active a {
+    background-color: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .user-actions a {
     color: var(--white);
     font-weight: 500;
     font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 .user-actions a i {
@@ -120,8 +122,68 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .user-actions .logout-link {
-    margin-left: 20px;
     opacity: 0.8;
+}
+
+/* Tombol Hamburger (disembunyikan di desktop) */
+.mobile-menu-button {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+
+/* Tampilan Mobile - breakpoint 992px */
+@media (max-width: 992px) {
+    .mobile-menu-button {
+        display: block; /* Tampilkan tombol hamburger */
+    }
+
+    .nav-wrapper {
+        display: none; /* Sembunyikan navigasi desktop */
+        position: absolute;
+        top: 70px; /* Sesuaikan dengan tinggi header */
+        left: 0;
+        width: 100%;
+        background-color: var(--header-blue);
+        flex-direction: column; /* Ubah jadi vertikal */
+        align-items: flex-start; /* Rata kiri */
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    .nav-wrapper.open {
+        display: flex; /* Tampilkan saat di-klik */
+    }
+    
+    .main-nav {
+        width: 100%;
+    }
+
+    .main-nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+    
+    .main-nav li a {
+        display: block;
+        width: 100%;
+        padding: 12px 15px;
+    }
+
+    .user-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
 }
 
 /* ==========================================================================
@@ -130,7 +192,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Beri sedikit padding pada semua item menu agar background terlihat bagus */
 .main-nav a {
-    padding: 30px 16px;
+    padding: 25px 16px;
     border-radius: 0px;
 }
 
@@ -985,6 +1047,47 @@ main {
 }
 
 /* ==========================================================================
+   6.4. INFO PAGE STYLES
+   ========================================================================== */
+.info-content-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.info-card {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.info-card i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.info-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--heading-color);
+}
+
+.info-card p, .info-card ul {
+    text-align: left;
+    line-height: 1.7;
+    color: var(--text-color);
+}
+
+.info-card ul {
+    padding-left: 20px;
+}
+
+/* ==========================================================================
    7. ADMIN DASHBOARD
    ========================================================================== */
 .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 20px; background-color: var(--white);}
@@ -1007,3 +1110,55 @@ main {
 .submit-btn2 { background-color: #27ae60; color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease;}
 
 
+/* ==========================================================================
+   8. MODAL STYLES
+   ========================================================================== */
+.info-modal {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 600px;
+    padding: 0;
+    /* Tambahan untuk memposisikan di tengah */
+    margin: auto; 
+}
+
+/* Style untuk backdrop gelap di belakang modal */
+.info-modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.info-modal .modal-content {
+    padding: 30px;
+    position: relative;
+}
+
+.info-modal .modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: var(--heading-color);
+}
+
+.info-modal .modal-content p {
+    line-height: 1.7;
+    color: var(--text-color);
+}
+
+.info-modal .close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.info-modal .close-button:hover {
+    color: #333;
+}
