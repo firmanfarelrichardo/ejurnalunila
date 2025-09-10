@@ -553,12 +553,92 @@ main {
     font-size: 2.8rem;
 }
 
-/* --- Halaman Fakultas --- */
-.fakultas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-.fakultas-card { display: block; background-color: var(--white); padding: 30px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.fakultas-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.07); }
-.fakultas-card h3 { margin-top: 0; color: var(--primary-color); }
-.fakultas-card p { margin: 0; }
+/* =================================
+   STYLING HALAMAN FAKULTAS
+   ================================= */
+
+/* Container Judul Halaman */
+.page-title-container {
+    background-color: #f8f9fa;
+    padding: 3rem 0;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.page-title-container h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.page-title-container p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    max-width: 600px;
+    margin: 0.5rem auto 0 auto;
+}
+
+.page-content {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+/* Grid untuk Kartu Fakultas */
+.fakultas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Kartu Fakultas */
+.fakultas-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e5ec;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    text-decoration: none;
+    color: #343a40;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fakultas-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+    color: #0d6efd; /* Warna biru saat di-hover */
+}
+
+/* Ikon Fakultas */
+.fakultas-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #0d6efd; /* Warna biru */
+}
+
+/* Judul Fakultas di dalam Kartu */
+.fakultas-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Link "Lihat Artikel" */
+.fakultas-link {
+    font-weight: 500;
+    color: #0d6efd; /* Warna biru */
+    text-decoration: none;
+}
+
+/* Menambahkan panah setelah link */
+.fakultas-link::after {
+    content: ' →';
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+
+.fakultas-card:hover .fakultas-link::after {
+    transform: translateX(4px);
+}
 
 /* --- Halaman Jurnal per Fakultas --- */
 .publisher-header {

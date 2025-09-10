@@ -24,7 +24,7 @@ $param_types = "s";
 $param_values = [$fakultas];
 
 if (!empty($search_query)) {
-    $where_clauses[] = "(journal_title LIKE ? OR issn LIKE ? OR eissn LIKE ?)";
+    $where_clauses[] = "(judul_jurnal_asli LIKE ? OR p_issn LIKE ? OR e_issn LIKE ?)";
     $param_types .= "sss";
     $search_term = "%" . $search_query . "%";
     array_push($param_values, $search_term, $search_term, $search_term);
@@ -39,7 +39,7 @@ $total_results = $count_stmt->get_result()->fetch_row()[0];
 $total_pages = ceil($total_results / $results_per_page);
 $count_stmt->close();
 
-$data_sql = "SELECT id, journal_title, publisher_name, issn, eissn, cover_url " . $base_sql . $where_sql . " ORDER BY journal_title ASC LIMIT ? OFFSET ?";
+$data_sql = "SELECT id, judul_jurnal_asli, penerbit, p_issn, e_issn, url_cover " . $base_sql . $where_sql . " ORDER BY judul_jurnal_asli ASC LIMIT ? OFFSET ?";
 $param_types .= "ii";
 array_push($param_values, $results_per_page, $offset);
 
@@ -62,7 +62,7 @@ $result = $data_stmt->get_result();
             <form action="jurnal_fak.php" method="GET" class="mini-search-form">
                 <input type="hidden" name="fakultas" value="<?php echo htmlspecialchars($fakultas); ?>">
                 <div class="input-group">
-                    <input type="search" name="q" class="form-control" placeholder="Cari Jurnal, ISSN, EISSN..." value="<?php echo htmlspecialchars($search_query); ?>">
+                    <input type="search" name="q" class="form-control" placeholder="Cari Jurnal, P_ISSN, E_ISSN..." value="<?php echo htmlspecialchars($search_query); ?>">
                     <button class="btn btn-danger" type="submit"><i class="fas fa-search"></i></button>
                 </div>
             </form>
@@ -85,13 +85,13 @@ $result = $data_stmt->get_result();
                 <div class="journal-list-item">
                     <div class="journal-item-content">
                         <a href="detail_jurnal.php?id=<?php echo $row['id']; ?>" class="journal-title-link">
-                           <?php echo htmlspecialchars($row['journal_title']); ?>
+                           <?php echo htmlspecialchars($row['judul_jurnal_asli']); ?>
                         </a>
                         <div class="journal-meta">
                             <span>Universitas Lampung</span>
                             <span>JOURNAL</span>
-                            <span>ISSN : <?php echo htmlspecialchars($row['issn'] ?? '-'); ?></span>
-                            <span>EISSN : <?php echo htmlspecialchars($row['eissn'] ?? '-'); ?></span>
+                            <span>ISSN : <?php echo htmlspecialchars($row['p_issn'] ?? '-'); ?></span>
+                            <span>EISSN : <?php echo htmlspecialchars($row['e_issn'] ?? '-'); ?></span>
                         </div>
                         <div class="journal-tags">
                             <span class="tag"><?php echo htmlspecialchars($fakultas); ?></span>
