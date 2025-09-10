@@ -92,7 +92,7 @@ $total_pages = ceil($total_results / $results_per_page);
             <ul>
                 <?php
                 if ($total_pages > 1) {
-                    for ($i = 1; i <= $total_pages; $i++) {
+                    for ($i = 1; $i <= $total_pages; $i++) {
                         $active_class = ($i == $page) ? 'active' : '';
                         echo '<li><a href="penerbit.php?page=' . $i . '" class="' . $active_class . '">' . $i . '</a></li>';
                     }
