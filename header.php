@@ -35,16 +35,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <li class="<?php if ($current_page == 'statistik.php') { echo 'active'; } ?>"><a href="statistik.php">Statistik</a></li>
                     </ul>
                 </nav>
-                <div class="user-actions">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                        <a href="api/logout.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    <?php else: ?>
-                        <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
-                    <?php endif; ?>
-                </div>
-            </div>
-
             <button id="mobile-menu-toggle" class="mobile-menu-button">
                 <i class="fas fa-bars"></i>
             </button>

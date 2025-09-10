@@ -57,7 +57,7 @@ $count_stmt->close();
                     if (!empty($creators)) {
                         echo '<p class="article-creator">Oleh: ' . htmlspecialchars(implode(', ', $creators)) . '</p>';
                     }
-                    $description_snippet = substr(strip_tags($row['description']), 0, 300);
+                    $description_snippet = substr(strip_tags($row['description'] ?? ''), 0, 300);
                     echo '<p class="article-description">' . htmlspecialchars($description_snippet) . '...</p>';
                     echo '<p class="article-source">Sumber: ' . htmlspecialchars($row['source1']) . '</p>';
                     echo '</div>';
@@ -69,13 +69,29 @@ $count_stmt->close();
             ?>
         </div>
 
-        <nav class="pagination">
+        <nav class="pagination modern">
             <ul>
                 <?php
                 if ($total_pages > 1) {
-                    for ($i = 1; i <= $total_pages; $i++) {
-                        $active_class = ($i == $page) ? 'active' : '';
-                        echo '<li><a href="jurnal_penerbit.php?penerbit=' . urlencode($penerbit) . '&page=' . $i . '" class="' . $active_class . '">' . $i . '</a></li>';
+                    // Tombol "Previous"
+                    if ($page > 1) {
+                        echo '<li><a href="jurnal_penerbit.php?penerbit=' . urlencode($penerbit) . '&page=' . ($page - 1) . '">&laquo; Previous</a></li>';
+                    }
+                    
+                    // Logika untuk menampilkan nomor halaman (misal: 1 ... 4 5 6 ... 10)
+                    $window = 2; // Jumlah nomor di sekitar halaman aktif
+                    for ($i = 1; $i <= $total_pages; $i++) {
+                        if ($i == 1 || $i == $total_pages || ($i >= $page - $window && $i <= $page + $window)) {
+                            $active_class = ($i == $page) ? 'active' : '';
+                            echo '<li><a href="jurnal_penerbit.php?penerbit=' . urlencode($penerbit) . '&page=' . $i . '" class="' . $active_class . '">' . $i . '</a></li>';
+                        } elseif ($i == $page - $window - 1 || $i == $page + $window + 1) {
+                            echo '<li><span class="ellipsis">...</span></li>';
+                        }
+                    }
+
+                    // Tombol "Next"
+                    if ($page < $total_pages) {
+                        echo '<li><a href="jurnal_penerbit.php?penerbit=' . urlencode($penerbit) . '&page=' . ($page + 1) . '">Next &raquo;</a></li>';
                     }
                 }
                 ?>
