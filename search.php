@@ -41,8 +41,8 @@ if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
                 $search_term = "%" . $keyword . "%";
 
                 // Query untuk menghitung total hasil (untuk pagination)
-                $count_stmt = $conn->prepare("SELECT COUNT(*) FROM artikel_oai WHERE title LIKE ? OR description LIKE ? OR creator1 LIKE ? OR subject1 LIKE ?");
-                $count_stmt->bind_param("ssss", $search_term, $search_term, $search_term, $search_term);
+                $count_stmt = $conn->prepare("SELECT COUNT(*) FROM artikel_oai WHERE journal_title_clean LIKE ? OR title LIKE ? OR description LIKE ? OR creator1 LIKE ? OR subject1 LIKE ?");
+                $count_stmt->bind_param("sssss", $search_term, $search_term, $search_term, $search_term, $search_term);
                 $count_stmt->execute();
                 $count_result = $count_stmt->get_result()->fetch_row();
                 $total_results = $count_result[0];
@@ -53,12 +53,12 @@ if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
 
                 // Query utama untuk mengambil data dengan limit dan offset
                 $stmt = $conn->prepare(
-                    "SELECT title, description, creator1, creator2, creator3, source1, identifier1 
+                    "SELECT title, journal_title_clean, description, creator1, creator2, creator3, source1, identifier1 
                      FROM artikel_oai
-                     WHERE title LIKE ? OR description LIKE ? OR creator1 LIKE ? OR subject1 LIKE ?
+                     WHERE journal_title_clean LIKE ? OR title LIKE ? OR description LIKE ? OR creator1 LIKE ? OR subject1 LIKE ?
                      LIMIT ? OFFSET ?"
                 );
-                $stmt->bind_param("ssssii", $search_term, $search_term, $search_term, $search_term, $results_per_page, $offset);
+                $stmt->bind_param("sssssii", $search_term, $search_term, $search_term, $search_term, $search_term, $results_per_page, $offset);
                 $stmt->execute();
                 $result = $stmt->get_result();
 
