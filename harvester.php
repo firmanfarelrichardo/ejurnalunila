@@ -36,8 +36,8 @@ echo "Ditemukan " . count($jurnal_list_from_db) . " jurnal untuk dipanen.<hr>";
 
 // 2. LAKUKAN PROSES PANEN UNTUK SETIAP JURNAL DARI DATABASE
 foreach ($jurnal_list_from_db as $jurnal) {
-    $jurnal_id = $jurnal['id'];
-    $nama_jurnal = $jurnal['journal_title'];
+    $jurnal_id = $jurnal['id']; // Ambil ID jurnal
+    $nama_jurnal = $jurnal['judul_jurnal_asli'];
     $base_oai_url = $jurnal['oai_url'];
     
     echo "<h2>Memproses Jurnal: " . htmlspecialchars($nama_jurnal) . "</h2>";

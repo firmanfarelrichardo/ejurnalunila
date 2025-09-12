@@ -110,21 +110,21 @@ if ($conn->connect_error) {
                         <legend>Contact Detail</legend>
                         <div class="form-group-row">
                             <div class="form-group">
-                                <label for="nama_kontak">Your Name</label>
+                                <label for="nama_kontak">Your Name*</label>
                                 <input type="text" id="nama_kontak" name="nama_kontak" required>
                             </div>
                             <div class="form-group">
-                                <label for="email_kontak">Your email (PIC of Journal)</label>
+                                <label for="email_kontak">Your email (PIC of Journal)*</label>
                                 <input type="email" id="email_kontak" name="email_kontak" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="institusi">Institution/Company</label>
+                            <label for="institusi">Institution/Company*</label>
                             <input type="text" id="institusi" name="institusi" required>
                         </div>
 
                          <div class="form-group">
-                            <label for="fakultas">Faculty</label>
+                            <label for="fakultas">Faculty*</label>
                             <select id="fakultas" name="fakultas" required>
                                 <option value="">Select Faculty</option>
                                 <option value="Fakultas Ekonomi dan Bisnis">Fakultas Ekonomi dan Bisnis</option>
@@ -143,11 +143,11 @@ if ($conn->connect_error) {
                         <legend>Journal Information</legend>
                         <div class="form-group">
                             <label for="judul_jurnal_asli">The Original Title of The journal</label>
-                            <input type="text" id="judul_jurnal_asli" name="judul_jurnal_asli" required>
+                            <input type="text" id="judul_jurnal_asli" name="judul_jurnal_asli" >
                         </div>
                         <div class="form-group">
                             <label for="judul_jurnal">Title of The journal</label>
-                            <input type="text" id="judul_jurnal" name="judul_jurnal" required>
+                            <input type="text" id="judul_jurnal" name="judul_jurnal" >
                         </div>
                         <div class="form-group">
                             <label for="doi">DOI</label>
@@ -173,7 +173,7 @@ if ($conn->connect_error) {
                          
                         <div class="form-group">
                         <label for="akreditasi_sinta">Akreditasi SINTA</label>
-                        <select id="akreditasi_sinta" name="akreditasi_sinta" required>
+                        <select id="akreditasi_sinta" name="akreditasi_sinta" >
                             <option value="Belum Terakreditasi">Belum Terakreditasi</option>
                             <option value="Sinta 1">Sinta 1</option>
                             <option value="Sinta 2">Sinta 2</option>
@@ -199,7 +199,7 @@ if ($conn->connect_error) {
                         <legend>Publisher & Journal Contact</legend>
                         <div class="form-group">
                             <label for="penerbit">Publisher</label>
-                            <input type="text" id="penerbit" name="penerbit" placeholder="*type and choose your publisher. if not found, type your publisher" required>
+                            <input type="text" id="penerbit" name="penerbit" placeholder="*type and choose your publisher. if not found, type your publisher" >
                         </div>
                          <div class="form-group">
                             <label for="country_of_publisher">Country of Publisher</label>
@@ -207,16 +207,16 @@ if ($conn->connect_error) {
                         </div>
                          <div class="form-group">
                             <label for="website_url">Journal Website</label>
-                            <input type="url" id="website_url" name="website_url" placeholder="*start with 'http://' OR 'https://'" required>
+                            <input type="url" id="website_url" name="website_url" placeholder="*start with 'http://' OR 'https://'" >
                         </div>
                         <div class="form-group-row">
                             <div class="form-group">
                                 <label for="journal_contact_name">Journal Contact name</label>
-                                <input type="text" id="journal_contact_name" name="journal_contact_name" required>
+                                <input type="text" id="journal_contact_name" name="journal_contact_name" >
                             </div>
                             <div class="form-group">
                                 <label for="journal_official_email">Journal Official Email</label>
-                                <input type="email" id="journal_official_email" name="journal_official_email" required>
+                                <input type="email" id="journal_official_email" name="journal_official_email" >
                             </div>
                             <div class="form-group">
                                 <label for="journal_contact_phone">Journal Contact Phone</label>
@@ -225,7 +225,7 @@ if ($conn->connect_error) {
                         </div>
                         <div class="form-group">
                             <label for="start_year">Start year since online full text content is available</label>
-                            <input type="number" id="start_year" name="start_year" min="1900" max="2099" step="1" placeholder="YYYY" required>
+                            <input type="number" id="start_year" name="start_year" min="1900" max="2099" step="1" placeholder="YYYY" >
                         </div>
                         <div class="form-group">
                             <label for="issue_period">Period Of Issue Per Year</label>
@@ -241,15 +241,15 @@ if ($conn->connect_error) {
                         </div>
                         <div class="form-group">
                             <label for="editorial_team">Journal editorial Team</label>
-                            <textarea id="editorial_team" name="editorial_team" rows="4" required></textarea>
+                            <textarea id="editorial_team" name="editorial_team" rows="4" ></textarea>
                         </div>
                         <div class="form-group">
                             <label for="editorial_address">Journal editorial address</label>
-                            <textarea id="editorial_address" name="editorial_address" rows="4" required></textarea>
+                            <textarea id="editorial_address" name="editorial_address" rows="4" ></textarea>
                         </div>
                         <div class="form-group">
                             <label for="aim_and_scope">Description of the aim and scope of the journal</label>
-                            <textarea id="aim_and_scope" name="aim_and_scope" rows="6" required></textarea>
+                            <textarea id="aim_and_scope" name="aim_and_scope" rows="6" ></textarea>
                         </div>
                     </fieldset>
 
@@ -279,11 +279,11 @@ if ($conn->connect_error) {
                         </div>
                         <div class="form-group">
                             <label for="url_editorial_board">URL of the editorial board:</label>
-                            <input type="url" id="url_editorial_board" name="url_editorial_board" required>
+                            <input type="url" id="url_editorial_board" name="url_editorial_board" >
                         </div>
                         <div class="form-group">
                             <label for="url_contact">URL of the Contact:</label>
-                            <input type="url" id="url_contact" name="url_contact" required>
+                            <input type="url" id="url_contact" name="url_contact" >
                         </div>
                         <div class="form-group">
                             <label for="url_reviewer">URL of reviewer:</label>

@@ -62,6 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $link_sinta = trim($_POST['link_sinta']);
     $link_garuda = trim($_POST['link_garuda']);
     $url_cover = trim($_POST['url_cover']);
+    $link_oai = trim($_POST['link_oai']);
     $subject_arjuna = $_POST['subject_arjuna'];
     $sub_subject_arjuna = $_POST['sub_subject_arjuna'];
     $subject_garuda = isset($_POST['subject_garuda']) ? implode(',', $_POST['subject_garuda']) : '';
@@ -112,6 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         link_sinta = ?,
         link_garuda = ?,
         url_cover = ?,
+        link_oai = ?,
         subject_arjuna = ?,
         sub_subject_arjuna = ?,
         subject_garuda = ?
@@ -121,14 +123,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if ($stmt_update) {
         // Perbaikan: String tipe data disesuaikan menjadi 40 karakter
-        mysqli_stmt_bind_param($stmt_update, "ssssssssssssssssssssissssiissssssssssssi",
+        mysqli_stmt_bind_param($stmt_update, "ssssssssssssssssssssissssiisssssssssssssi",
             $new_status, $catatan, $nama_kontak, $email_kontak, $institusi, $fakultas, $judul_jurnal_asli,
             $judul_jurnal, $doi, $journal_type, $p_issn, $e_issn, $akreditasi_sinta, $index_scopus,
             $penerbit, $country_of_publisher, $website_url, $journal_contact_name, $journal_official_email,
             $journal_contact_phone, $start_year, $issue_period, $editorial_team, $editorial_address,
             $aim_and_scope, $has_homepage, $is_using_ojs, $ojs_link, $open_access_link,
             $url_editorial_board, $url_contact, $url_reviewer, $url_google_scholar, $link_sinta,
-            $link_garuda, $url_cover, $subject_arjuna, $sub_subject_arjuna, $subject_garuda, $jurnal_id
+            $link_garuda, $url_cover, $link_oai, $subject_arjuna, $sub_subject_arjuna, $subject_garuda, $jurnal_id
         );
         
         if (mysqli_stmt_execute($stmt_update)) {
@@ -275,21 +277,21 @@ if (!$jurnal) {
                             <legend>Contact Detail</legend>
                             <div class="form-group-row">
                                 <div class="form-group">
-                                    <label for="nama_kontak">Nama Kontak</label>
+                                    <label for="nama_kontak">Nama Kontak*</label>
                                     <input type="text" id="nama_kontak" name="nama_kontak" value="<?php echo htmlspecialchars($jurnal['nama_kontak']); ?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="email_kontak">Email Kontak</label>
+                                    <label for="email_kontak">Email Kontak*</label>
                                     <input type="email" id="email_kontak" name="email_kontak" value="<?php echo htmlspecialchars($jurnal['email_kontak']); ?>" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="institusi">Institusi</label>
+                                <label for="institusi">Institusi*</label>
                                 <input type="text" id="institusi" name="institusi" value="<?php echo htmlspecialchars($jurnal['institusi']); ?>" required>
                             </div>
                             <div class="form-group">
-                                <label for="fakultas">Fakultas</label>
-                                <select id="fakultas" name="fakultas" required>
+                                <label for="fakultas" required>Fakultas*</label>
+                                <select id="fakultas" name="fakultas" >
                                     <option value="Fakultas Ekonomi dan Bisnis" <?php echo ($jurnal['fakultas'] == 'Fakultas Ekonomi dan Bisnis') ? 'selected' : ''; ?>>Fakultas Ekonomi dan Bisnis</option>
                                     <option value="Fakultas Hukum" <?php echo ($jurnal['fakultas'] == 'Fakultas Hukum') ? 'selected' : ''; ?>>Fakultas Hukum</option>
                                     <option value="Fakultas Ilmu Sosial dan Ilmu Politik" <?php echo ($jurnal['fakultas'] == 'Fakultas Ilmu Sosial dan Ilmu Politik') ? 'selected' : ''; ?>>Fakultas Ilmu Sosial dan Ilmu Politik</option>
@@ -306,11 +308,11 @@ if (!$jurnal) {
                             <legend>Journal Information</legend>
                             <div class="form-group">
                                 <label for="judul_jurnal_asli">Judul Asli</label>
-                                <input type="text" id="judul_jurnal_asli" name="judul_jurnal_asli" value="<?php echo htmlspecialchars($jurnal['judul_jurnal_asli']); ?>" required>
+                                <input type="text" id="judul_jurnal_asli" name="judul_jurnal_asli" value="<?php echo htmlspecialchars($jurnal['judul_jurnal_asli']); ?>" >
                             </div>
                             <div class="form-group">
                                 <label for="judul_jurnal">Judul</label>
-                                <input type="text" id="judul_jurnal" name="judul_jurnal" value="<?php echo htmlspecialchars($jurnal['judul_jurnal']); ?>" required>
+                                <input type="text" id="judul_jurnal" name="judul_jurnal" value="<?php echo htmlspecialchars($jurnal['judul_jurnal']); ?>" >
                             </div>
                             <div class="form-group">
                                 <label for="doi">DOI</label>
@@ -335,7 +337,7 @@ if (!$jurnal) {
                             </div>
                             <div class="form-group">
                                 <label for="akreditasi_sinta">Akreditasi SINTA</label>
-                                <select id="akreditasi_sinta" name="akreditasi_sinta" required>
+                                <select id="akreditasi_sinta" name="akreditasi_sinta" >
                                     <option value="Belum Terakreditasi" <?php echo ($jurnal['akreditasi_sinta'] == 'Belum Terakreditasi') ? 'selected' : ''; ?>>Belum Terakreditasi</option>
                                     <option value="Sinta 1" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 1') ? 'selected' : ''; ?>>Sinta 1</option>
                                     <option value="Sinta 2" <?php echo ($jurnal['akreditasi_sinta'] == 'Sinta 2') ? 'selected' : ''; ?>>Sinta 2</option>
@@ -361,7 +363,7 @@ if (!$jurnal) {
                             <legend>Publisher & Journal Contact</legend>
                             <div class="form-group">
                                 <label for="penerbit">Penerbit</label>
-                                <input type="text" id="penerbit" name="penerbit" value="<?php echo htmlspecialchars($jurnal['penerbit']); ?>" required>
+                                <input type="text" id="penerbit" name="penerbit" value="<?php echo htmlspecialchars($jurnal['penerbit']); ?>" >
                             </div>
                             <div class="form-group">
                                 <label for="country_of_publisher">Negara Penerbit</label>
@@ -369,16 +371,16 @@ if (!$jurnal) {
                             </div>
                             <div class="form-group">
                                 <label for="website_url">Website Jurnal</label>
-                                <input type="url" id="website_url" name="website_url" value="<?php echo htmlspecialchars($jurnal['website_url']); ?>" required>
+                                <input type="url" id="website_url" name="website_url" value="<?php echo htmlspecialchars($jurnal['website_url']); ?>" >
                             </div>
                             <div class="form-group-row">
                                 <div class="form-group">
                                     <label for="journal_contact_name">Nama Kontak Jurnal</label>
-                                    <input type="text" id="journal_contact_name" name="journal_contact_name" value="<?php echo htmlspecialchars($jurnal['journal_contact_name']); ?>" required>
+                                    <input type="text" id="journal_contact_name" name="journal_contact_name" value="<?php echo htmlspecialchars($jurnal['journal_contact_name']); ?>" >
                                 </div>
                                 <div class="form-group">
                                     <label for="journal_official_email">Email Resmi Jurnal</label>
-                                    <input type="email" id="journal_official_email" name="journal_official_email" value="<?php echo htmlspecialchars($jurnal['journal_official_email']); ?>" required>
+                                    <input type="email" id="journal_official_email" name="journal_official_email" value="<?php echo htmlspecialchars($jurnal['journal_official_email']); ?>" >
                                 </div>
                                 <div class="form-group">
                                     <label for="journal_contact_phone">Telepon Kontak Jurnal</label>
@@ -387,7 +389,7 @@ if (!$jurnal) {
                             </div>
                             <div class="form-group">
                                 <label for="start_year">Tahun Mulai Online</label>
-                                <input type="number" id="start_year" name="start_year" min="1900" max="2099" step="1" placeholder="YYYY" value="<?php echo htmlspecialchars($jurnal['start_year']); ?>" required>
+                                <input type="number" id="start_year" name="start_year" min="1900" max="2099" step="1" placeholder="YYYY" value="<?php echo htmlspecialchars($jurnal['start_year']); ?>" >
                             </div>
                             <div class="form-group">
                                 <label for="issue_period">Periode Terbit</label>
@@ -405,15 +407,15 @@ if (!$jurnal) {
                             </div>
                             <div class="form-group">
                                 <label for="editorial_team">Tim Editor</label>
-                                <textarea id="editorial_team" name="editorial_team" rows="4" required><?php echo htmlspecialchars($jurnal['editorial_team']); ?></textarea>
+                                <textarea id="editorial_team" name="editorial_team" rows="4" ><?php echo htmlspecialchars($jurnal['editorial_team']); ?></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="editorial_address">Alamat Editorial</label>
-                                <textarea id="editorial_address" name="editorial_address" rows="4" required><?php echo htmlspecialchars($jurnal['editorial_address']); ?></textarea>
+                                <textarea id="editorial_address" name="editorial_address" rows="4" ><?php echo htmlspecialchars($jurnal['editorial_address']); ?></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="aim_and_scope">Aim dan Scope</label>
-                                <textarea id="aim_and_scope" name="aim_and_scope" rows="6" required><?php echo htmlspecialchars($jurnal['aim_and_scope']); ?></textarea>
+                                <textarea id="aim_and_scope" name="aim_and_scope" rows="6" ><?php echo htmlspecialchars($jurnal['aim_and_scope']); ?></textarea>
                             </div>
                         </fieldset>
 
@@ -443,11 +445,11 @@ if (!$jurnal) {
                             </div>
                             <div class="form-group">
                                 <label for="url_editorial_board">URL Editorial Board</label>
-                                <input type="url" id="url_editorial_board" name="url_editorial_board" value="<?php echo htmlspecialchars($jurnal['url_editorial_board']); ?>" required>
+                                <input type="url" id="url_editorial_board" name="url_editorial_board" value="<?php echo htmlspecialchars($jurnal['url_editorial_board']); ?>" >
                             </div>
                             <div class="form-group">
                                 <label for="url_contact">URL Kontak</label>
-                                <input type="url" id="url_contact" name="url_contact" value="<?php echo htmlspecialchars($jurnal['url_contact']); ?>" required>
+                                <input type="url" id="url_contact" name="url_contact" value="<?php echo htmlspecialchars($jurnal['url_contact']); ?>" >
                             </div>
                             <div class="form-group">
                                 <label for="url_reviewer">URL Reviewer</label>
@@ -468,6 +470,10 @@ if (!$jurnal) {
                             <div class="form-group">
                                 <label for="url_cover">URL Cover</label>
                                 <input type="url" id="url_cover" name="url_cover" value="<?php echo htmlspecialchars($jurnal['url_cover']); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="link_oai">URL OAI</label>
+                                <input type="url" id="link_oai" name="link_oai" value="<?php echo htmlspecialchars($jurnal['link_oai']); ?>">
                             </div>
                         </fieldset>
 
