@@ -20,7 +20,7 @@ if ($conn->connect_error) {
 echo "Koneksi database berhasil.<br>";
 
 $jurnal_list_from_db = [];
-$sql = "SELECT id, journal_title, oai_url FROM jurnal_sumber WHERE oai_url IS NOT NULL AND oai_url != ''";
+$sql = "SELECT id, judul_jurnal, link_oai FROM jurnal_sumber WHERE link_oai IS NOT NULL AND link_oai != ''";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -38,7 +38,7 @@ echo "Ditemukan " . count($jurnal_list_from_db) . " jurnal untuk dipanen.<hr>";
 foreach ($jurnal_list_from_db as $jurnal) {
     $jurnal_id = $jurnal['id']; // Ambil ID jurnal
     $nama_jurnal = $jurnal['judul_jurnal_asli'];
-    $base_oai_url = $jurnal['oai_url'];
+    $base_oai_url = $jurnal['link_oai'];
     
     echo "<h2>Memproses Jurnal: " . htmlspecialchars($nama_jurnal) . "</h2>";
     echo "<p><strong>Target OAI URL:</strong> " . htmlspecialchars($base_oai_url) . "</p>";
