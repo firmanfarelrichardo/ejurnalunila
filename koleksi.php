@@ -30,14 +30,14 @@ switch ($koleksi) {
     case 'inggris':
         $judul = 'Artikel Berbahasa Inggris';
         $deskripsi = 'Koleksi semua artikel yang dipublikasikan dalam Bahasa Inggris.';
-        $where_clause = "WHERE language LIKE '%en%'"; // Mencari 'en' atau 'english'
+        $where_clause = "WHERE language LIKE '%eng%'"; // Mencari 'en' atau 'english'
         $order_by_clause = 'ORDER BY date DESC';
         break;
         
     case 'indonesia':
         $judul = 'Artikel Berbahasa Indonesia';
         $deskripsi = 'Koleksi semua artikel yang dipublikasikan dalam Bahasa Indonesia.';
-        $where_clause = "WHERE language LIKE '%id%' OR language LIKE '%indonesian%'";
+        $where_clause = "WHERE language LIKE '%ind%'";
         $order_by_clause = 'ORDER BY date DESC';
         break;
         
