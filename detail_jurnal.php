@@ -32,6 +32,19 @@ if (!$journal) {
     include 'footer.php'; exit();
 }
 
+// --- AMBIL DATA UNTUK CHART ARTIKEL PER TAHUN ---
+$article_chart_sql = "SELECT YEAR(date) as year, COUNT(*) as count FROM artikel_oai WHERE journal_source_id = ? AND date IS NOT NULL GROUP BY YEAR(date) ORDER BY year ASC";
+$article_chart_stmt = $conn->prepare($article_chart_sql);
+$article_chart_stmt->bind_param("i", $journal_id);
+$article_chart_stmt->execute();
+$article_chart_result = $article_chart_stmt->get_result();
+
+$article_chart_data = [];
+while ($row = $article_chart_result->fetch_assoc()) {
+    $article_chart_data[] = ['year' => $row['year'], 'count' => $row['count']];
+}
+$article_chart_stmt->close();
+
 // --- LOGIKA PENCARIAN & PAGINATION ARTIKEL ---
 $article_base_sql = "FROM artikel_oai WHERE journal_source_id = ?";
 $param_types = "i";
@@ -88,12 +101,46 @@ $issue_stmt->bind_param("i", $journal_id);
 $issue_stmt->execute();
 $issues_result = $issue_stmt->get_result();
 
-// Generate dummy data untuk chart (dalam implementasi nyata, ambil dari database)
+// Generate dummy data untuk chart kunjungan (dalam implementasi nyata, ambil dari database)
 $current_year = date('Y');
 $start_year = 2010; // Ganti dengan tahun mulai dari database
-$chart_data = [];
+$visit_chart_data = [];
 for ($y = $start_year; $y <= $current_year; $y++) {
-    $chart_data[] = ['year' => $y, 'visits' => rand(20, 100)];
+    $visit_chart_data[] = ['year' => $y, 'visits' => rand(20, 100)];
+}
+
+// Function untuk mendapatkan gambar SINTA
+function getSintaImage($akreditasi_sinta) {
+    if (empty($akreditasi_sinta) || $akreditasi_sinta === 'Belum Terakreditasi') {
+        return null;
+    }
+    
+    $sinta_images = [
+        'Sinta 1' => './Images/s1.webp', 
+        'Sinta 2' => './Images/s2.webp', 
+        'Sinta 3' => './Images/s3.webp', 
+        'Sinta 4' => './Images/s4.webp', 
+        'Sinta 5' => './Images/s5.webp',
+        'Sinta 6' => './Images/s6.webp', 
+    ];
+    
+    return isset($sinta_images[$akreditasi_sinta]) ? $sinta_images[$akreditasi_sinta] : null;
+}
+
+// Function untuk mendapatkan gambar SCOPUS
+function getScopusImage($index_scopus) {
+    if (empty($index_scopus) || $index_scopus === 'Belum Terindeks') {
+        return null;
+    }
+    
+    $scopus_images = [
+        'Q1' => './Images/q2.webp', // Ganti dengan URL gambar SCOPUS Q1 yang sebenarnya
+        'Q2' => 'https://i.imgur.com/scopusq2.png', // Ganti dengan URL gambar SCOPUS Q2 yang sebenarnya
+        'Q3' => 'https://i.imgur.com/scopusq3.png', // Ganti dengan URL gambar SCOPUS Q3 yang sebenarnya
+        'Q4' => 'https://i.imgur.com/scopusq4.png', // Ganti dengan URL gambar SCOPUS Q4 yang sebenarnya
+    ];
+    
+    return isset($scopus_images[$index_scopus]) ? $scopus_images[$index_scopus] : null;
 }
 ?>
 
@@ -116,6 +163,30 @@ for ($y = $start_year; $y <= $current_year; $y++) {
     
     /* Chart Container */
     .chart-container { height: 200px; }
+    
+    /* Badge Container */
+    .badge-container { text-align: center; }
+    .badge-image { 
+        width: 100%; 
+        max-width: 250px; 
+        height: auto; 
+        border-radius: 8px; 
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2); 
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+    .badge-image:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
+    }
+    .badge-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-top: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
     
     /* External Links */
     .external-links { list-style: none; padding: 0; margin: 0; }
@@ -209,13 +280,49 @@ for ($y = $start_year; $y <= $current_year; $y++) {
                          class="cover-image" alt="Journal Cover">
                 </div>
                 
-                <!-- Visit Statistics Chart -->
+                <!-- Chart Total Artikel per Tahun -->
+                <div class="sidebar-card">
+                    <h6><i class="fas fa-chart-bar"></i> Total Artikel per Tahun</h6>
+                    <div class="chart-container">
+                        <canvas id="articleChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Chart Statistik Kunjungan -->
                 <div class="sidebar-card">
                     <h6><i class="fas fa-chart-line"></i> Statistik Kunjungan</h6>
                     <div class="chart-container">
                         <canvas id="visitChart"></canvas>
                     </div>
                 </div>
+                
+                <?php 
+                // Cek apakah ada SINTA dan SCOPUS yang perlu ditampilkan
+                $sinta_image = getSintaImage($journal['akreditasi_sinta'] ?? '');
+                $scopus_image = getScopusImage($journal['index_scopus'] ?? '');
+                ?>
+                
+                <?php if ($sinta_image): ?>
+                <!-- SINTA Badge -->
+                <div class="sidebar-card badge-container">
+                    <h6><i class="fas fa-award"></i> Akreditasi SINTA</h6>
+                    <a href="<?php echo htmlspecialchars($journal['link_sinta'] ?? 'https://sinta.kemdikbud.go.id/'); ?>" target="_blank">
+                        <img src="<?php echo $sinta_image; ?>" class="badge-image" alt="<?php echo htmlspecialchars($journal['akreditasi_sinta']); ?>">
+                        <div class="badge-title"><?php echo htmlspecialchars($journal['akreditasi_sinta']); ?></div>
+                    </a>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($scopus_image): ?>
+                <!-- SCOPUS Badge -->
+                <div class="sidebar-card badge-container">
+                    <h6><i class="fas fa-globe"></i> Indeks SCOPUS</h6>
+                    <a href="https://www.scopus.com/" target="_blank">
+                        <img src="<?php echo $scopus_image; ?>" class="badge-image" alt="SCOPUS <?php echo htmlspecialchars($journal['index_scopus']); ?>">
+                        <div class="badge-title">SCOPUS <?php echo htmlspecialchars($journal['index_scopus']); ?></div>
+                    </a>
+                </div>
+                <?php endif; ?>
                 
                 <!-- External Links -->
                 <div class="sidebar-card">
@@ -396,22 +503,77 @@ for ($y = $start_year; $y <= $current_year; $y++) {
 <!-- Chart.js untuk statistik -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Chart untuk statistik kunjungan
+// Chart untuk statistik artikel per tahun
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('visitChart');
-    if (ctx) {
-        const chartData = <?php echo json_encode($chart_data); ?>;
+    // Chart Artikel per Tahun
+    const articleCtx = document.getElementById('articleChart');
+    if (articleCtx) {
+        const articleData = <?php echo json_encode($article_chart_data); ?>;
         
-        new Chart(ctx, {
+        new Chart(articleCtx, {
             type: 'bar',
             data: {
-                labels: chartData.map(d => d.year),
+                labels: articleData.map(d => d.year),
+                datasets: [{
+                    label: 'Jumlah Artikel',
+                    data: articleData.map(d => d.count),
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Artikel: ' + context.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Chart Kunjungan
+    const visitCtx = document.getElementById('visitChart');
+    if (visitCtx) {
+        const visitData = <?php echo json_encode($visit_chart_data); ?>;
+        
+        new Chart(visitCtx, {
+            type: 'line',
+            data: {
+                labels: visitData.map(d => d.year),
                 datasets: [{
                     label: 'Kunjungan',
-                    data: chartData.map(d => d.visits),
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    data: visitData.map(d => d.visits),
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
                     borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
                 }]
             },
             options: {
@@ -449,5 +611,4 @@ $data_stmt->close();
 $year_stmt->close();
 $issue_stmt->close();
 $conn->close();
-include 'footer.php'; 
-?>
+include 'footer.php';
