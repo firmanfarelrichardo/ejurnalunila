@@ -135,17 +135,22 @@ if ($result) {
 
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Admin</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="manage_pengelola.php" class="active"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
+                <li><a href="dashboard_admin.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="manage_pengelola.php" class="active"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
                 <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
+                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -153,9 +158,6 @@ if ($result) {
 
         <!-- Main Content -->
         <div class="main-content">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
             <div class="header">
                 <h1>Kelola Akun Pengelola</h1>
                 <div class="user-profile">
@@ -205,10 +207,19 @@ if ($result) {
         <!-- End Main Content -->
     </div>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
+       // Script untuk sidebar toggle
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        if (document.getElementById('sidebar').classList.contains('collapsed')) {
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+            localStorage.setItem('sidebarState', 'expanded');
         }
+    });
+
+    if (localStorage.getItem('sidebarState') === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
     </script>
 </body>
 </html>
