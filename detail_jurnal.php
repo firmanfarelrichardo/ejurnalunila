@@ -134,10 +134,10 @@ function getScopusImage($index_scopus) {
     }
     
     $scopus_images = [
-        'Q1' => './Images/q2.webp', // Ganti dengan URL gambar SCOPUS Q1 yang sebenarnya
-        'Q2' => 'https://i.imgur.com/scopusq2.png', // Ganti dengan URL gambar SCOPUS Q2 yang sebenarnya
-        'Q3' => 'https://i.imgur.com/scopusq3.png', // Ganti dengan URL gambar SCOPUS Q3 yang sebenarnya
-        'Q4' => 'https://i.imgur.com/scopusq4.png', // Ganti dengan URL gambar SCOPUS Q4 yang sebenarnya
+        'Q1' => './Images/Q1.png', // Ganti dengan URL gambar SCOPUS Q1 yang sebenarnya
+        'Q2' => './Images/Q2.png', // Ganti dengan URL gambar SCOPUS Q2 yang sebenarnya
+        'Q3' => './Images/Q3.png', // Ganti dengan URL gambar SCOPUS Q3 yang sebenarnya
+        'Q4' => './Images/Q4.png', // Ganti dengan URL gambar SCOPUS Q4 yang sebenarnya
     ];
     
     return isset($scopus_images[$index_scopus]) ? $scopus_images[$index_scopus] : null;
