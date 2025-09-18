@@ -1,13 +1,13 @@
 <?php
 // admin/detail_permintaan.php
 session_start();
-// Cek apakah pengguna sudah login dan memiliki peran yang sesuai
+// Cek sesi admin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 
-// Pengaturan Database
+// Koneksi database
 $host = "localhost";
 $user = "root";
 $pass = "";
@@ -18,12 +18,34 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+// (DIPERBARUI) Logika untuk menangani aksi approve/reject
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    $request_id = (int)$_POST['request_id'];
+    $action = $_POST['action']; // 'approve' atau 'reject'
+    $new_status = ($action === 'approve') ? 'approved' : 'rejected';
+
+    $stmt_update = $conn->prepare("UPDATE submission_requests SET status = ? WHERE id = ?");
+    $stmt_update->bind_param("si", $new_status, $request_id);
+    if ($stmt_update->execute()) {
+        $_SESSION['success_message'] = "Permintaan telah berhasil direspons.";
+    } else {
+        $_SESSION['error_message'] = "Gagal memperbarui status permintaan.";
+    }
+    $stmt_update->close();
+
+    // Redirect kembali ke halaman yang sama untuk me-refresh data
+    header("Location: detail_permintaan.php?id=" . $request_id);
+    exit();
+}
+
+
 $request_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $request = null;
 
 if ($request_id > 0) {
-    // Ambil detail permintaan dan data jurnal terkait
-    $sql = "SELECT sr.*, j.*, u.nama AS pengelola_nama
+    // Query yang disederhanakan
+    $sql = "SELECT sr.id, sr.jurnal_id, sr.request_type, sr.status, sr.alasan, sr.created_at, 
+                   j.judul_jurnal, u.nama AS pengelola_nama
             FROM submission_requests sr
             LEFT JOIN jurnal_sumber j ON sr.jurnal_id = j.id
             LEFT JOIN users u ON sr.pengelola_id = u.id
@@ -48,133 +70,122 @@ if ($request_id > 0) {
     <title>Detail Permintaan - Admin</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Gaya dari detail_jurnal.php */
-        .journal-title {
-            margin-top: 0;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 15px;
-            color: #34495e;
-            font-size: 20px;
+        /* (DIPERBARUI) CSS Tambahan untuk Halaman Detail Permintaan */
+        .detail-card {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
         }
-        .content-panel fieldset {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        .content-panel legend {
-            font-weight: 600;
-            color: #34495e;
-            padding: 0 10px;
-            font-size: 16px;
-        }
-        .detail-group {
+        .detail-header {
             display: flex;
-            flex-wrap: wrap;
-            padding: 12px 0;
-            border-bottom: 1px solid #f1f1f1;
-            font-size: 14px;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .detail-group:last-child {
-            border-bottom: none;
+        .detail-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
         }
-        .detail-label {
-            flex-basis: 30%;
-            font-weight: 500;
-            color: #555;
-            padding-right: 15px;
-        }
-        .detail-value {
-            flex-basis: 70%;
-            color: #333;
-            word-break: break-word;
-        }
-        .detail-value a {
-            color: #3498db;
-            text-decoration: none;
-        }
-        .detail-value a:hover {
-            text-decoration: underline;
-        }
-        .btn-secondary {
+        .btn-back {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
             background-color: #ecf0f1;
-            color: #000;
+            color: #2c3e50;
+            padding: 10px 18px;
+            border-radius: 5px;
             text-decoration: none;
             font-weight: 500;
-            font-size: 16px;
-            cursor: pointer;
+            border: 1px solid #bdc3c7;
+            transition: all 0.3s;
         }
-        .btn-secondary:hover {
-            background-color: #95a5a6;
+        .btn-back:hover {
+            background-color: #dcdde1;
         }
-        @media (max-width: 768px) {
-            .detail-label, .detail-value {
-                flex-basis: 100%;
-            }
-            .detail-label {
-                margin-bottom: 5px;
-                font-weight: 600;
-            }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 15px 20px;
+            align-items: center;
         }
-        /* Gaya tambahan */
-        .status-badge {
+        .detail-grid .label {
+            font-weight: 600;
+            color: #555;
+        }
+        .detail-grid .value {
+            word-break: break-word;
+        }
+        .value.status-badge {
             display: inline-block;
-            padding: 5px 10px;
-            border-radius: 12px;
+            padding: 5px 12px;
+            border-radius: 15px;
             font-weight: bold;
             color: white;
             text-transform: uppercase;
+            font-size: 12px;
         }
-        .status-pending { background-color: #f39c12; }
-        .status-approved { background-color: #2ecc71; }
-        .status-rejected { background-color: #e74c3c; }
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
+        .reason-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-top: 5px;
         }
-        .btn {
+        .actions-card {
+            margin-top: 25px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+        .actions-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .btn-action {
             padding: 12px 25px;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
             text-decoration: none;
+            transition: all 0.3s;
+            margin-right: 10px;
+            color: white;
         }
-        .btn-success { background-color: #2ecc71; color: white; }
-        .btn-danger { background-color: #e74c3c; color: white; }
-        .btn-success:hover { background-color: #27ae60; }
-        .btn-danger:hover { background-color: #c0392b; }
-        .btn:hover { transform: translateY(-2px); }
+        .btn-approve { background-color: #2ecc71; }
+        .btn-approve:hover { background-color: #27ae60; transform: translateY(-2px); }
+        .btn-reject { background-color: #e74c3c; }
+        .btn-reject:hover { background-color: #c0392b; transform: translateY(-2px); }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <div class="sidebar">
-            <div class="logo"><h2>Admin</h2></div>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../assets/unila_logo.png" alt="Logo Universitas Lampung">
+                </div>
+            </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
+                <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
                 <li><a href="tinjau_permintaan.php" class="active"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
+                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
+
         <div class="main-content">
             <div class="header">
                 <h1>Detail Permintaan</h1>
@@ -185,126 +196,81 @@ if ($request_id > 0) {
             </div>
 
             <div class="content-area">
-                <div class="content-panel">
-                    <div class="panel-header">
-                        <a href="tinjau_permintaan.php" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i><span>Kembali ke Daftar</span>
+                <?php
+                // Notifikasi untuk update status
+                if (isset($_SESSION['success_message'])) {
+                    echo '<div class="success-message">' . htmlspecialchars($_SESSION['success_message']) . '</div>';
+                    unset($_SESSION['success_message']);
+                }
+                if (isset($_SESSION['error_message'])) {
+                    echo '<div class="error-message">' . htmlspecialchars($_SESSION['error_message']) . '</div>';
+                    unset($_SESSION['error_message']);
+                }
+                ?>
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Informasi Permintaan</h2>
+                        <a href="tinjau_permintaan.php" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Kembali
                         </a>
-                        <h1>Detail Permintaan</h1>
                     </div>
                     
                     <?php if ($request): ?>
-                        <h2 class="journal-title">Jurnal: <?php echo htmlspecialchars($request['judul_jurnal'] ?: '-'); ?></h2>
+                        <div class="detail-grid">
+                            <div class="label">Jurnal Terkait:</div>
+                            <div class="value"><?php echo htmlspecialchars($request['judul_jurnal'] ?: '-'); ?></div>
 
-                        <fieldset>
-                            <legend>Informasi Permintaan</legend>
-                            <div class="detail-group">
-                                <span class="detail-label">Jenis Permintaan:</span>
-                                <span class="detail-value">
-                                    <?php echo htmlspecialchars(ucfirst($request['request_type'])); ?>
-                                </span>
-                            </div>
-                            <div class="detail-group">
-                                <span class="detail-label">Alasan / Keterangan:</span>
-                                <span class="detail-value" style="white-space: pre-wrap;"><?php echo nl2br(htmlspecialchars($request['alasan'])); ?></span>
-                            </div>
-                            <div class="detail-group">
-                                <span class="detail-label">Diajukan Oleh:</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($request['pengelola_nama']); ?></span>
-                            </div>
-                            <div class="detail-group">
-                                <span class="detail-label">Tanggal Diajukan:</span>
-                                <span class="detail-value"><?php echo date('d F Y, H:i', strtotime($request['created_at'])); ?></span>
-                            </div>
-                            <div class="detail-group">
-                                <span class="detail-label">Status Saat Ini:</span>
-                                <span class="detail-value">
-                                    <span class="status-badge status-<?php echo strtolower($request['status']); ?>"><?php echo htmlspecialchars(ucfirst($request['status'])); ?></span>
-                                </span>
-                            </div>
-                        </fieldset>
+                            <div class="label">Jenis Permintaan:</div>
+                            <div class="value"><?php echo htmlspecialchars(ucfirst($request['request_type'])); ?></div>
 
-                        <?php if ($request['request_type'] == 'edit'): ?>
-                            <fieldset>
-                                <legend>Contact Detail</legend>
-                                <div class="detail-group"><span class="detail-label">Nama Kontak:</span><span class="detail-value"><?php echo htmlspecialchars($request['nama_kontak'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Email Kontak:</span><span class="detail-value"><?php echo htmlspecialchars($request['email_kontak'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Institusi:</span><span class="detail-value"><?php echo htmlspecialchars($request['institusi'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Fakultas:</span><span class="detail-value"><?php echo htmlspecialchars($request['fakultas'] ?: '-'); ?></span></div>
-                            </fieldset>
+                            <div class="label">Diajukan Oleh:</div>
+                            <div class="value"><?php echo htmlspecialchars($request['pengelola_nama']); ?></div>
 
-                            <fieldset>
-                                <legend>Journal Information</legend>
-                                <div class="detail-group"><span class="detail-label">Judul Asli:</span><span class="detail-value"><?php echo htmlspecialchars($request['judul_jurnal_asli'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Judul:</span><span class="detail-value"><?php echo htmlspecialchars($request['judul_jurnal'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">DOI:</span><span class="detail-value"><?php echo htmlspecialchars($request['doi'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Tipe:</span><span class="detail-value"><?php echo htmlspecialchars($request['journal_type'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">ISSN (Cetak):</span><span class="detail-value"><?php echo htmlspecialchars($request['p_issn'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">e-ISSN (Online):</span><span class="detail-value"><?php echo htmlspecialchars($request['e_issn'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Akreditasi SINTA:</span><span class="detail-value"><?php echo htmlspecialchars($request['akreditasi_sinta'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Indeks Scopus:</span><span class="detail-value"><?php echo htmlspecialchars($request['index_scopus'] ?: '-'); ?></span></div>
-                            </fieldset>
+                            <div class="label">Tanggal Diajukan:</div>
+                            <div class="value"><?php echo date('d F Y, H:i:s', strtotime($request['created_at'])); ?></div>
 
-                            <fieldset>
-                                <legend>Publisher & Journal Contact</legend>
-                                <div class="detail-group"><span class="detail-label">Penerbit:</span><span class="detail-value"><?php echo htmlspecialchars($request['penerbit'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Negara Penerbit:</span><span class="detail-value"><?php echo htmlspecialchars($request['country_of_publisher'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Website Jurnal:</span><span class="detail-value"><a href="<?php echo htmlspecialchars($request['website_url']); ?>" target="_blank" rel="noopener noreferrer"><?php echo htmlspecialchars($request['website_url'] ?: '-'); ?></a></span></div>
-                                <div class="detail-group"><span class="detail-label">Nama Kontak Jurnal:</span><span class="detail-value"><?php echo htmlspecialchars($request['journal_contact_name'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Email Resmi Jurnal:</span><span class="detail-value"><?php echo htmlspecialchars($request['journal_official_email'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Telepon Kontak Jurnal:</span><span class="detail-value"><?php echo htmlspecialchars($request['journal_contact_phone'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Tahun Mulai Online:</span><span class="detail-value"><?php echo htmlspecialchars($request['start_year'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Periode Terbit:</span><span class="detail-value"><?php echo htmlspecialchars(str_replace(',', ', ', $request['issue_period'] ?: '-')); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Tim Editor:</span><span class="detail-value"><?php echo nl2br(htmlspecialchars($request['editorial_team'] ?: '-')); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Alamat Editorial:</span><span class="detail-value"><?php echo nl2br(htmlspecialchars($request['editorial_address'] ?: '-')); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Aim dan Scope:</span><span class="detail-value"><?php echo nl2br(htmlspecialchars($request['aim_and_scope'] ?: '-')); ?></span></div>
-                            </fieldset>
+                            <div class="label">Status Saat Ini:</div>
+                            <div class="value">
+                                <span class="status-badge status-<?php echo strtolower($request['status']); ?>"><?php echo htmlspecialchars(ucfirst($request['status'])); ?></span>
+                            </div>
                             
-                            <fieldset>
-                                <legend>Additional Information & URLs</legend>
-                                <div class="detail-group"><span class="detail-label">Memiliki Homepage?:</span><span class="detail-value"><?php echo $request['has_homepage'] ? 'Ya' : 'Tidak'; ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Menggunakan OJS?:</span><span class="detail-value"><?php echo $request['is_using_ojs'] ? 'Ya' : 'Tidak'; ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Link OJS:</span><span class="detail-value"><?php echo htmlspecialchars($request['ojs_link'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Link Open Access:</span><span class="detail-value"><?php echo htmlspecialchars($request['open_access_link'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">URL Editorial Board:</span><span class="detail-value"><?php echo htmlspecialchars($request['url_editorial_board'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">URL Kontak:</span><span class="detail-value"><?php echo htmlspecialchars($request['url_contact'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">URL Reviewer:</span><span class="detail-value"><?php echo htmlspecialchars($request['url_reviewer'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">URL Google Scholar:</span><span class="detail-value"><?php echo htmlspecialchars($request['url_google_scholar'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">URL Sinta:</span><span class="detail-value"><?php echo htmlspecialchars($request['link_sinta'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">URL Garuda:</span><span class="detail-value"><?php echo htmlspecialchars($request['link_garuda'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">URL Cover:</span><span class="detail-value"><?php echo htmlspecialchars($request['url_cover'] ?: '-'); ?></span></div>
-                            </fieldset>
-
-                            <fieldset>
-                                <legend>Subject Area</legend>
-                                <div class="detail-group"><span class="detail-label">Subjek Arjuna:</span><span class="detail-value"><?php echo htmlspecialchars($request['subject_arjuna'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Sub-subjek Arjuna:</span><span class="detail-value"><?php echo htmlspecialchars($request['sub_subject_arjuna'] ?: '-'); ?></span></div>
-                                <div class="detail-group"><span class="detail-label">Subjek Garuda:</span><span class="detail-value"><?php echo htmlspecialchars(str_replace(',', ', ', $request['subject_garuda'] ?: '-')); ?></span></div>
-                            </fieldset>
-                        <?php endif; ?>
+                            <div class="label">Alasan / Keterangan:</div>
+                            <div class="value reason-box"><?php echo nl2br(htmlspecialchars($request['alasan'])); ?></div>
+                        </div>
 
                         <?php if ($request['status'] == 'pending'): ?>
-                            <fieldset>
-                                <legend>Ambil Tindakan</legend>
+                            <div class="actions-card">
+                                <h3>Ambil Tindakan</h3>
                                 <p>Silakan setujui atau tolak permintaan ini. Tindakan ini tidak dapat diurungkan.</p>
-                                <form action="tinjau_permintaan.php" method="POST" class="form-actions" style="justify-content: flex-start;">
+                                <form action="detail_permintaan.php?id=<?php echo $request_id; ?>" method="POST">
                                     <input type="hidden" name="request_id" value="<?php echo htmlspecialchars($request['id']); ?>">
-                                    <input type="hidden" name="jurnal_id" value="<?php echo htmlspecialchars($request['jurnal_id']); ?>">
-                                    <input type="hidden" name="request_type" value="<?php echo htmlspecialchars($request['request_type']); ?>">
-                                    <button type="submit" name="action" value="approve" class="btn btn-success">✅ Setujui Permintaan</button>
-                                    <button type="submit" name="action" value="reject" class="btn btn-danger">❌ Tolak Permintaan</button>
+                                    <button type="submit" name="action" value="approve" class="btn-action btn-approve"><i class="fas fa-check"></i> Setujui</button>
+                                    <button type="submit" name="action" value="reject" class="btn-action btn-reject"><i class="fas fa-times"></i> Tolak</button>
                                 </form>
-                            </fieldset>
+                            </div>
                         <?php endif; ?>
+
                     <?php else: ?>
-                        <div class="content-panel">
-                            <p>Permintaan tidak ditemukan atau ID tidak valid.</p>
-                        </div>
+                        <p>Permintaan tidak ditemukan atau ID tidak valid.</p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
+<script>
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        if (document.getElementById('sidebar').classList.contains('collapsed')) {
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+            localStorage.setItem('sidebarState', 'expanded');
+        }
+    });
+
+    if (localStorage.getItem('sidebarState') === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
+</script>
 </body>
 </html>
 <?php
