@@ -414,3 +414,90 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* --- Pembaruan untuk Fitur Cetak Editorial --- */
+
+/* Tombol Cetak (Umum) */
+.btn-print {
+    background-color: #3498db; color: white; padding: 10px 18px;
+    border: none; border-radius: 5px; cursor: pointer; font-size: 15px;
+    font-weight: 500; display: inline-flex; align-items: center;
+    gap: 8px; transition: background-color 0.3s;
+}
+.btn-print:hover { background-color: #2980b9; }
+
+/* Tombol Cetak per Jurnal */
+.btn-print-single {
+    background-color: #2ecc71; color: white; padding: 8px 15px;
+    border: none; border-radius: 5px; cursor: pointer; font-size: 13px;
+    font-weight: 500; display: inline-flex; align-items: center;
+    gap: 8px; transition: background-color 0.3s;
+}
+.btn-print-single:hover { background-color: #27ae60; }
+
+.card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;
+}
+.card-header h3 { margin: 0; }
+
+/* Tata letak header per item editorial */
+.editorial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+/* Konten Editorial yang Ditingkatkan */
+.editorial-item {
+    margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee;
+}
+.editorial-item:last-child { border-bottom: none; }
+
+.editorial-item .journal-title {
+    font-size: 1.5em; color: #2c3e50; margin: 0;
+}
+.journal-title-print { display: none; } /* Sembunyikan judul ini di tampilan web */
+
+.editorial-team-content {
+    border: 1px solid #e0e0e0; border-left: 4px solid #3498db;
+    background-color: #f8f9fa; border-radius: 5px;
+    margin-top: 15px;
+}
+.editorial-team-content pre {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #333;
+    white-space: pre-wrap; /* Jaga format teks asli */
+    word-wrap: break-word;
+}
+
+.print-header { display: none; }
+
+/* --- Aturan CSS Khusus untuk Mencetak --- */
+@media print {
+    .sidebar, .header, .no-print, .btn-print, .user-profile, .editorial-header { display: none !important; }
+    .print-header { display: block; text-align: center; margin-bottom: 40px; border-bottom: 2px solid #000; padding-bottom: 20px;}
+    body { background-color: #fff; }
+    .dashboard-container, .main-content, .card { all: unset; } /* Reset semua style container */
+
+    .journal-title { display: none; } /* Sembunyikan judul versi web */
+    .journal-title-print { display: block; color: #000; font-size: 1.5em; margin-bottom: 15px; } /* Tampilkan judul versi cetak */
+    
+    .editorial-item { border: none; page-break-inside: avoid; }
+    .editorial-team-content { border: 1px solid #ccc !important; background-color: #fff !important; }
+    .editorial-team-content pre { color: #000 !important; }
+
+    /* Logika untuk mencetak item spesifik */
+    body.printing-active .editorial-item {
+        display: none;
+    }
+    body.printing-active .editorial-item.is-printing {
+        display: block;
+    }
+}
