@@ -22,7 +22,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <header class="site-header">
         <div class="container">
             <a href="index.php" class="logo">
-                <img src="https://www.unila.ac.id/storage/2024/08/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                <img src="Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
             </a>
 
             <div class="nav-wrapper" id="nav-wrapper">

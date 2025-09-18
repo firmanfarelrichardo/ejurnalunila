@@ -31,7 +31,7 @@ switch ($koleksi) {
         $judul = 'Artikel Berbahasa Inggris';
         $deskripsi = 'Koleksi semua artikel yang dipublikasikan dalam Bahasa Inggris.';
         $where_clause = "WHERE language LIKE '%eng%'"; // Mencari 'en' atau 'english'
-        $order_by_clause = 'ORDER BY date DESC';
+        $order_by_clause = 'ORDER BY date ASC';
         break;
         
     case 'indonesia':
