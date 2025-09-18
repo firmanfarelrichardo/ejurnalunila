@@ -15,8 +15,8 @@ $pass = "";
 $db = "oai";
 $conn = new mysqli($host, $user, $pass, $db);
 
-if ($conn->connect_error) { 
-    die("Koneksi gagal: " . $conn->connect_error); 
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
 }
 
 // --- DATA UNTUK KARTU STATISTIK UTAMA ---
@@ -28,18 +28,28 @@ $pendingRequests = $conn->query("SELECT COUNT(*) FROM submission_requests WHERE 
 
 // --- DATA UNTUK GRAFIK ---
 
-// 1. DATA HARVESTING (LINE CHART)
-$harvest_data_query = $conn->query("SELECT DATE(created_at) as harvest_date, COUNT(*) as article_count FROM artikel_oai WHERE created_at >= CURDATE() - INTERVAL 30 DAY GROUP BY DATE(created_at) ORDER BY harvest_date ASC");
-$harvest_labels = [];
-$harvest_counts = [];
-while($row = $harvest_data_query->fetch_assoc()) {
-    $harvest_labels[] = date("d M", strtotime($row['harvest_date']));
-    $harvest_counts[] = $row['article_count'];
+// 1. DATA AKTIVITAS HARVESTING (LINE CHART)
+$harvest_activity_query = $conn->query(
+    "SELECT 
+        DATE(created_at) as activity_day, 
+        COUNT(*) as new_article_count 
+    FROM artikel_oai 
+    WHERE created_at >= CURDATE() - INTERVAL 30 DAY 
+    GROUP BY DATE(created_at) 
+    ORDER BY activity_day ASC"
+);
+$harvest_activity_labels = [];
+$harvest_activity_counts = [];
+if ($harvest_activity_query) {
+    while($row = $harvest_activity_query->fetch_assoc()) {
+        $harvest_activity_labels[] = date("d M", strtotime($row['activity_day']));
+        $harvest_activity_counts[] = $row['new_article_count'];
+    }
 }
-$harvest_chart_data = json_encode(['labels' => $harvest_labels, 'data' => $harvest_counts]);
+$harvest_activity_chart_data = json_encode(['labels' => $harvest_activity_labels, 'data' => $harvest_activity_counts]);
 
 // 2. JURNAL PER PENGELOLA (BAR CHART)
-$pengelola_data_query = $conn->query("SELECT u.nama, COUNT(js.id) as total_jurnal FROM users u LEFT JOIN jurnal_sumber js ON u.id = js.pengelola_id WHERE u.role = 'pengelola' GROUP BY u.id, u.nama ORDER BY total_jurnal DESC");
+$pengelola_data_query = $conn->query("SELECT u.nama, COUNT(js.id) as total_jurnal FROM users u LEFT JOIN jurnal_sumber js ON u.id = js.pengelola_id WHERE u.role = 'pengelola' GROUP BY u.id, u.nama HAVING total_jurnal > 0 ORDER BY total_jurnal DESC");
 $pengelola_labels = [];
 $pengelola_counts = [];
 while($row = $pengelola_data_query->fetch_assoc()) {
@@ -49,32 +59,39 @@ while($row = $pengelola_data_query->fetch_assoc()) {
 $pengelola_chart_data = json_encode(['labels' => $pengelola_labels, 'data' => $pengelola_counts]);
 
 // 3. STATUS JURNAL (DOUGHNUT CHART)
+$jurnal_status_data = ['selesai' => 0, 'ditolak' => 0, 'butuh_edit' => 0, 'pending' => 0];
 $jurnal_status_query = $conn->query("SELECT status, COUNT(*) as count FROM jurnal_sumber GROUP BY status");
-$jurnal_status_data = [];
-while($row = $jurnal_status_query->fetch_assoc()) {
-    $jurnal_status_data[$row['status']] = $row['count'];
+if ($jurnal_status_query) {
+    while($row = $jurnal_status_query->fetch_assoc()) {
+        if (array_key_exists($row['status'], $jurnal_status_data)) {
+            $jurnal_status_data[$row['status']] = (int)$row['count'];
+        }
+    }
 }
-$jurnal_status_labels = ['Selesai', 'Ditolak', 'Butuh Edit', 'Pending'];
-$jurnal_status_counts = [
-    $jurnal_status_data['selesai'] ?? 0,
-    $jurnal_status_data['ditolak'] ?? 0,
-    $jurnal_status_data['butuh_edit'] ?? 0,
-    $jurnal_status_data['pending'] ?? 0
-];
+$jurnal_status_labels = ['Diterima', 'Ditolak', 'Butuh Edit', 'Pending'];
+$jurnal_status_counts = array_values($jurnal_status_data);
 $jurnal_status_colors = ['#2ecc71', '#e74c3c', '#3498db', '#f1c40f'];
 $jurnal_status_chart_data = json_encode(['labels' => $jurnal_status_labels, 'data' => $jurnal_status_counts, 'colors' => $jurnal_status_colors]);
 
-// 4. STATUS PERMINTAAN (DOUGHNUT CHART)
+// 4. (DIPERBARUI) STATUS PERMINTAAN (DOUGHNUT CHART) - Tampilkan semua kategori
+$request_status_data = [
+    'approved' => 0,
+    'rejected' => 0,
+    'pending' => 0
+];
 $request_status_query = $conn->query("SELECT status, COUNT(*) as count FROM submission_requests GROUP BY status");
-$request_status_data = [];
-while($row = $request_status_query->fetch_assoc()) {
-    $request_status_data[$row['status']] = $row['count'];
+if ($request_status_query) {
+    while($row = $request_status_query->fetch_assoc()) {
+        if (array_key_exists($row['status'], $request_status_data)) {
+            $request_status_data[$row['status']] = (int)$row['count'];
+        }
+    }
 }
 $request_status_labels = ['Approved', 'Rejected', 'Pending'];
 $request_status_counts = [
-    $request_status_data['approved'] ?? 0,
-    $request_status_data['rejected'] ?? 0,
-    $request_status_data['pending'] ?? 0
+    $request_status_data['approved'],
+    $request_status_data['rejected'],
+    $request_status_data['pending']
 ];
 $request_status_colors = ['#2ecc71', '#e74c3c', '#f1c40f'];
 $request_status_chart_data = json_encode(['labels' => $request_status_labels, 'data' => $request_status_counts, 'colors' => $request_status_colors]);
@@ -89,16 +106,22 @@ $request_status_chart_data = json_encode(['labels' => $request_status_labels, 'd
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="sidebar">
-            <div class="logo">
-                <h2>Admin</h2>
+   <div class="dashboard-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
+                <li><a href="dashboard_admin.php" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
                 <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
@@ -149,7 +172,7 @@ $request_status_chart_data = json_encode(['labels' => $request_status_labels, 'd
 
                 <div class="dashboard-grid">
                     <div class="card">
-                        <canvas id="harvestChart"></canvas>
+                        <canvas id="harvestActivityChart"></canvas>
                     </div>
                     <div class="card">
                         <canvas id="pengelolaChart"></canvas>
@@ -167,41 +190,64 @@ $request_status_chart_data = json_encode(['labels' => $request_status_labels, 'd
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const harvestData = <?php echo $harvest_chart_data; ?>;
+    Chart.register(ChartDataLabels);
+
+    const harvestActivityData = <?php echo $harvest_activity_chart_data; ?>;
     const pengelolaData = <?php echo $pengelola_chart_data; ?>;
     const jurnalStatusData = <?php echo $jurnal_status_chart_data; ?>;
     const requestStatusData = <?php echo $request_status_chart_data; ?>;
 
-    const chartOptions = (title) => ({
+    const defaultOptions = (title) => ({
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            title: {
-                display: true,
-                text: title,
-                font: { size: 16, weight: 'bold' },
-                padding: { top: 10, bottom: 20 }
-            },
-            legend: {
-                position: 'top',
+            title: { display: true, text: title, font: { size: 16, weight: 'bold', family: 'Segoe UI' }, padding: { top: 10, bottom: 20 }, color: '#333' },
+            legend: { position: 'bottom', labels: { font: { size: 12, family: 'Segoe UI' }, padding: 20 } }
+        }
+    });
+    
+    const doughnutOptions = (title) => ({
+        ...defaultOptions(title),
+        plugins: {
+            ...defaultOptions(title).plugins,
+            datalabels: {
+                formatter: (value, ctx) => {
+                    if (value === 0) return '';
+                    let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    if (sum === 0) return '0\n(0%)';
+                    let percentage = (value * 100 / sum).toFixed(1) + "%";
+                    return `${value}\n(${percentage})`;
+                },
+                color: '#fff',
+                font: { weight: 'bold', size: 14 },
+                textStrokeColor: 'black',
+                textStrokeWidth: 1,
             }
         }
     });
 
-    new Chart(document.getElementById('harvestChart'), {
+    // Inisialisasi Chart
+    new Chart(document.getElementById('harvestActivityChart'), {
         type: 'line',
         data: {
-            labels: harvestData.labels,
+            labels: harvestActivityData.labels,
             datasets: [{
-                label: 'Artikel Di-harvest',
-                data: harvestData.data,
+                label: 'Jumlah Artikel Baru',
+                data: harvestActivityData.data,
                 borderColor: '#3498db',
                 backgroundColor: 'rgba(52, 152, 219, 0.1)',
                 fill: true,
-                tension: 0.3
+                tension: 0.4
             }]
         },
-        options: chartOptions('Update Harvesting (30 Hari Terakhir)')
+        options: {
+            ...defaultOptions('Aktivitas Harvesting (Artikel Baru per Hari)'),
+            layout: {
+                padding: {
+                    right: 20
+                }
+            }
+        }
     });
 
     new Chart(document.getElementById('pengelolaChart'), {
@@ -214,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 backgroundColor: '#2ecc71'
             }]
         },
-        options: { ...chartOptions('Kontribusi Jurnal per Pengelola'), indexAxis: 'y' }
+        options: { ...defaultOptions('Kontribusi Jurnal per Pengelola'), indexAxis: 'y' }
     });
 
     new Chart(document.getElementById('jurnalStatusChart'), {
@@ -227,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 hoverOffset: 4
             }]
         },
-        options: chartOptions('Distribusi Status Jurnal')
+        options: doughnutOptions('Distribusi Status Jurnal')
     });
 
     new Chart(document.getElementById('requestStatusChart'), {
@@ -240,9 +286,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 hoverOffset: 4
             }]
         },
-        options: chartOptions('Distribusi Status Permintaan')
+        options: doughnutOptions('Distribusi Status Permintaan')
     });
 });
+
+// Script untuk sidebar toggle
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        if (document.getElementById('sidebar').classList.contains('collapsed')) {
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+            localStorage.setItem('sidebarState', 'expanded');
+        }
+    });
+
+    if (localStorage.getItem('sidebarState') === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
 </script>
 </body>
 </html>
