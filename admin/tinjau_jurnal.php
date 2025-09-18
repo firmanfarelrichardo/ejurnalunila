@@ -548,9 +548,9 @@ if (!$jurnal) {
                                 <label for="status">Ubah Status Menjadi</label>
                                 <select id="status" name="status">
                                     <option value="pending" <?php echo ($jurnal['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
-                                    <option value="selesai" <?php echo ($jurnal['status'] == 'selesai') ? 'selected' : ''; ?>>Approved</option>
-                                    <option value="ditolak" <?php echo ($jurnal['status'] == 'ditolak') ? 'selected' : ''; ?>>Rejected</option>
-                                    <option value="butuh_edit" <?php echo ($jurnal['status'] == 'butuh_edit') ? 'selected' : ''; ?>>Needs Edit</option>
+                                    <option value="selesai" <?php echo ($jurnal['status'] == 'selesai') ? 'selected' : ''; ?>>Disetujui</option>
+                                    <option value="ditolak" <?php echo ($jurnal['status'] == 'ditolak') ? 'selected' : ''; ?>>Ditolak</option>
+                                    <option value="butuh_edit" <?php echo ($jurnal['status'] == 'butuh_edit') ? 'selected' : ''; ?>>Butuh Edit</option>
                                 </select>
                             </div>
                             <div class="form-group">
