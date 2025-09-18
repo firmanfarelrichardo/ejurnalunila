@@ -75,7 +75,7 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-grow: 1; /* Biarkan nav wrapper mengisi ruang tengah */
+    flex-grow: 1;
 }
 
 .main-nav ul {
@@ -87,21 +87,23 @@ h1, h2, h3, h4, h5, h6 {
 .main-nav a {
     color: var(--white);
     font-weight: 500;
-    opacity: 0.8;
-    transition: all 0.2s ease;
-    padding: 8px 12px;
+    transition: all 0.2s ease; /* Transisi dibuat lebih cepat */
+    padding: 10px 15px; /* Padding disesuaikan */
     border-radius: 5px;
     white-space: nowrap;
+    border-bottom: 3px solid transparent; /* Garis bawah transparan sebagai dasar */
 }
 
 .main-nav a:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.05); /* Latar hover abu-abu tipis */
 }
 
 .main-nav li.active a {
-    background-color: rgba(255, 255, 255, 0.15);
-    opacity: 1;
+    color: var(--primary-color);
+    font-weight: 600; /* Ditebalkan saat aktif */
+    border-bottom-color: var(--primary-color); /* Garis bawah solid saat aktif */
+    background-color: transparent; /* Pastikan tidak ada background */
 }
 
 .user-actions {

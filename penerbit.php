@@ -29,16 +29,13 @@ $total_pages = ceil($total_results / $results_per_page);
             <h1>Penerbit</h1>
             <p>Telusuri artikel berdasarkan lembaga penerbit yang terdaftar.</p>
         </div>
+
         <div class="publisher-page-controls">
             <div class="sort-by">
                 <label for="sort-select">Sort By:</label>
                 <select id="sort-select">
                     <option value="number-of-journal">Number of Journal</option>
                 </select>
-            </div>
-            <div class="publisher-search">
-                <input type="text" placeholder="Publisher Name">
-                <button type="submit"><i class="fas fa-search"></i></button>
             </div>
             <div class="total-publishers-info">
                 <span class="number"><?php echo number_format($total_results); ?></span>
@@ -66,7 +63,8 @@ $total_pages = ceil($total_results / $results_per_page);
                     while ($row = $result->fetch_assoc()) {
                         $publisher_name = htmlspecialchars($row['publisher']);
                         $article_count = htmlspecialchars($row['article_count']);
-                        $logo_url = 'Images/logo unila.png';
+                        $logo_url = 'Images/logo unila.png'; 
+                        
                         echo '<a href="jurnal_penerbit.php?penerbit=' . urlencode($row['publisher']) . '" class="publisher-entry-card">';
                         echo '<div class="card-left">';
                         echo '<img src="' . $logo_url . '" alt="' . $publisher_name . ' Logo" class="publisher-card-logo">';
@@ -88,18 +86,36 @@ $total_pages = ceil($total_results / $results_per_page);
             ?>
         </div>
 
-        <nav class="pagination">
+        <!-- ===== PAGINASI MODERN DITERAPKAN DI SINI ===== -->
+        <nav class="pagination modern">
             <ul>
                 <?php
                 if ($total_pages > 1) {
+                    // Tombol "Previous"
+                    if ($page > 1) {
+                        echo '<li><a href="penerbit.php?page=' . ($page - 1) . '">&laquo; Previous</a></li>';
+                    }
+
+                    // Logika untuk menampilkan nomor halaman (misal: 1 ... 4 5 6 ... 10)
+                    $window = 2; // Jumlah nomor di sekitar halaman aktif
                     for ($i = 1; $i <= $total_pages; $i++) {
-                        $active_class = ($i == $page) ? 'active' : '';
-                        echo '<li><a href="penerbit.php?page=' . $i . '" class="' . $active_class . '">' . $i . '</a></li>';
+                        if ($i == 1 || $i == $total_pages || ($i >= $page - $window && $i <= $page + $window)) {
+                            $active_class = ($i == $page) ? 'active' : '';
+                            echo '<li><a href="penerbit.php?page=' . $i . '" class="' . $active_class . '">' . $i . '</a></li>';
+                        } elseif ($i == $page - $window - 1 || $i == $page + $window + 1) {
+                            echo '<li><span class="ellipsis">...</span></li>';
+                        }
+                    }
+
+                    // Tombol "Next"
+                    if ($page < $total_pages) {
+                        echo '<li><a href="penerbit.php?page=' . ($page + 1) . '">Next &raquo;</a></li>';
                     }
                 }
                 ?>
             </ul>
         </nav>
+
     </div>
 </main>
 
