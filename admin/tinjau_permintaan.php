@@ -2,223 +2,203 @@
 // admin/tinjau_permintaan.php
 session_start();
 
-// Cek apakah pengguna sudah login dan memiliki peran yang sesuai
+// Cek sesi admin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 
-// Pengaturan Database MySQL
+// Koneksi database
 $host = "localhost";
 $user = "root";
 $pass = "";
 $db = "oai";
 $conn = new mysqli($host, $user, $pass, $db);
-
 if ($conn->connect_error) { 
     die("Koneksi gagal: " . $conn->connect_error); 
 }
 
-// Logika untuk menghapus request
-$message = "";
+// (DIPERBARUI) Logika untuk merespons permintaan
+// Logika penghapusan jurnal dihilangkan untuk menjaga riwayat
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $request_id = (int)$_POST['request_id'];
-    $jurnal_id = (int)$_POST['jurnal_id'];
-    $request_type = $_POST['request_type'];
-    $action = $_POST['action']; // 'approve' atau 'reject'
-
-    $new_status = ($action == 'approve') ? 'approved' : 'rejected';
-
-    // Langkah 1: Update status di tabel submission_requests
-    $sql_update_request = "UPDATE submission_requests SET status = ? WHERE id = ?";
-    $stmt_update = mysqli_prepare($conn, $sql_update_request);
-    mysqli_stmt_bind_param($stmt_update, "si", $new_status, $request_id);
+    $new_status = $_POST['status'];
     
-    if (mysqli_stmt_execute($stmt_update)) {
-        // Langkah 2: Jika permintaan HAPUS disetujui, hapus juga data jurnalnya.
-        if ($action == 'approve' && $request_type == 'delete') {
-            $sql_delete_jurnal = "DELETE FROM jurnal_sumber WHERE id = ?";
-            $stmt_delete = mysqli_prepare($conn, $sql_delete_jurnal);
-            mysqli_stmt_bind_param($stmt_delete, "i", $jurnal_id);
-            if(mysqli_stmt_execute($stmt_delete)) {
-                 $_SESSION['success_message'] = "Permintaan penghapusan disetujui dan jurnal telah dihapus.";
-            } else {
-                 $_SESSION['error_message'] = "Gagal menghapus jurnal, namun status permintaan sudah diupdate.";
-            }
-            mysqli_stmt_close($stmt_delete);
+    $allowed_statuses = ['approved', 'rejected', 'pending'];
+    if (in_array($new_status, $allowed_statuses)) {
+        $stmt_update = $conn->prepare("UPDATE submission_requests SET status = ? WHERE id = ?");
+        $stmt_update->bind_param("si", $new_status, $request_id);
+        if ($stmt_update->execute()) {
+            $_SESSION['success_message'] = "Status permintaan telah berhasil diperbarui.";
         } else {
-            $_SESSION['success_message'] = "Permintaan telah berhasil direspons.";
+            $_SESSION['error_message'] = "Gagal memperbarui status permintaan.";
         }
+        $stmt_update->close();
     } else {
-        $_SESSION['error_message'] = "Gagal merespons permintaan.";
+        $_SESSION['error_message'] = "Status tidak valid.";
     }
-    mysqli_stmt_close($stmt_update);
     
-    header("Location: tinjau_permintaan.php");
+    // Kembali ke halaman dengan filter yang sedang aktif
+    header("Location: " . $_SERVER['PHP_SELF'] . "?" . http_build_query($_GET));
     exit();
 }
 
-// Ambil daftar semua permintaan
-$requests = [];
-$sql_select = "SELECT sr.id, sr.request_type, sr.status, sr.created_at, j.judul_jurnal, u.nama AS nama_pengelola
+// (BARU) Logika untuk filter status
+$filter_status = $_GET['status'] ?? 'pending'; // Default filter adalah 'pending'
+$allowed_filters = ['pending', 'approved', 'rejected', 'semua'];
+if (!in_array($filter_status, $allowed_filters)) {
+    $filter_status = 'pending'; // Kembali ke default jika filter tidak valid
+}
+
+// Menyesuaikan query SQL dengan filter yang dipilih
+$sql_select = "SELECT sr.id, sr.jurnal_id, sr.request_type, sr.status, sr.created_at, j.judul_jurnal, u.nama AS nama_pengelola
                FROM submission_requests sr
                LEFT JOIN jurnal_sumber j ON sr.jurnal_id = j.id
-               LEFT JOIN users u ON sr.pengelola_id = u.id
-               ORDER BY sr.created_at DESC";
-$result = $conn->query($sql_select);
+               LEFT JOIN users u ON sr.pengelola_id = u.id";
 
+if ($filter_status != 'semua') {
+    $sql_select .= " WHERE sr.status = ?";
+}
+$sql_select .= " ORDER BY sr.created_at DESC";
+
+$stmt = $conn->prepare($sql_select);
+
+if ($filter_status != 'semua') {
+    $stmt->bind_param("s", $filter_status);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+$requests = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $requests[] = $row;
     }
 }
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Permintaan - Admin</title>
+    <title>Tinjau Permintaan - Admin</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<style>
-    .content-panel {
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .panel-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #e0e0e0;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-    .panel-header h1 {
-        margin: 0;
-        font-size: 22px;
-    }
-    .table-wrapper {
-        overflow-x: auto;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-    th, td {
-        padding: 15px;
-        text-align: left;
-        border-bottom: 1px solid #e0e0e0;
-        vertical-align: middle;
-    }
-    thead th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-        color: #34495e;
-    }
-    tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-    .status-badge {
-        display: inline-block;
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-weight: bold;
-        color: white;
-        text-transform: uppercase;
-    }
-    .status-pending { background-color: #f39c12; }
-    .status-approved { background-color: #2ecc71; }
-    .status-rejected { background-color: #e74c3c; }
-    .action-links a {
-        color: #3498db;
-        text-decoration: none;
-        margin-right: 15px;
-        font-weight: 500;
-        white-space: nowrap;
-    }
-    .action-links a:hover {
-        text-decoration: underline;
-        color: #2980b9;
-    }
-</style>
 <body>
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Admin</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> Kelola Pengelola</a></li>
+                <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
                 <li><a href="tinjau_permintaan.php" class="active"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
+                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
+
         <div class="main-content">
             <div class="header">
-                <h1>Tinjau Permintaan Perubahan & Penghapusan</h1>
+                <h1>Tinjau Permintaan</h1>
                 <div class="user-profile">
                     <span>Role: Admin</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>
+
             <div class="content-area">
                 <?php
                 if (isset($_SESSION['success_message'])) {
-                    echo '<div class="notification success">' . htmlspecialchars($_SESSION['success_message']) . '</div>';
+                    echo '<div class="success-message">' . htmlspecialchars($_SESSION['success_message']) . '</div>';
                     unset($_SESSION['success_message']);
                 }
                 if (isset($_SESSION['error_message'])) {
-                    echo '<div class="notification error">' . htmlspecialchars($_SESSION['error_message']) . '</div>';
+                    echo '<div class="error-message">' . htmlspecialchars($_SESSION['error_message']) . '</div>';
                     unset($_SESSION['error_message']);
                 }
                 ?>
-                <div class="content-panel">
-                    <div class="panel-header">
-                        <h1>Daftar Permintaan Masuk</h1>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Daftar Permintaan Masuk</h3>
+                        <div class="filter-container">
+                            <form method="GET" id="filterForm">
+                                <select name="status" onchange="this.form.submit()">
+                                    <option value="pending" <?php echo ($filter_status == 'pending') ? 'selected' : ''; ?>>Tampilkan Pending</option>
+                                    <option value="approved" <?php echo ($filter_status == 'approved') ? 'selected' : ''; ?>>Tampilkan Approved</option>
+                                    <option value="rejected" <?php echo ($filter_status == 'rejected') ? 'selected' : ''; ?>>Tampilkan Rejected</option>
+                                    <option value="semua" <?php echo ($filter_status == 'semua') ? 'selected' : ''; ?>>Tampilkan Semua</option>
+                                </select>
+                            </form>
+                        </div>
                     </div>
                     <div class="table-wrapper">
-                        <table>
+                        <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No.</th>
                                     <th>Judul Jurnal</th>
-                                    <th>Jenis Permintaan</th>
+                                    <th>Jenis</th>
                                     <th>Pengelola</th>
-                                    <th>Tanggal Pengajuan</th>
+                                    <th>Tanggal</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (!empty($requests)): ?>
-                                    <?php foreach ($requests as $request): ?>
+                                    <?php 
+                                        $nomor = 1; 
+                                        foreach ($requests as $request): 
+                                    ?>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($request['id']); ?></td>
+                                        <td><?php echo $nomor; ?></td>
                                         <td><?php echo htmlspecialchars($request['judul_jurnal'] ?: '-'); ?></td>
                                         <td><?php echo htmlspecialchars(ucfirst($request['request_type'])); ?></td>
                                         <td><?php echo htmlspecialchars($request['nama_pengelola'] ?: '-'); ?></td>
-                                        <td><?php echo htmlspecialchars($request['created_at']); ?></td>
+                                        <td><?php echo date('d M Y, H:i:s', strtotime($request['created_at'])); ?></td>
                                         <td>
-                                            <span class="status-badge status-<?php echo strtolower($request['status']); ?>"><?php echo htmlspecialchars(ucfirst($request['status'])); ?></span>
+                                            <form method="POST" class="status-update-form">
+                                                <input type="hidden" name="request_id" value="<?php echo $request['id']; ?>">
+                                                <input type="hidden" name="jurnal_id" value="<?php echo $request['jurnal_id']; ?>">
+                                                <input type="hidden" name="request_type" value="<?php echo $request['request_type']; ?>">
+                                                <select name="status" class="status-select <?php echo 'status-'.strtolower($request['status']); ?>" onchange="this.className='status-select status-' + this.value">
+                                                    <option value="pending" <?php echo $request['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                                    <option value="approved" <?php echo $request['status'] == 'approved' ? 'selected' : ''; ?>>Approved</option>
+                                                    <option value="rejected" <?php echo $request['status'] == 'rejected' ? 'selected' : ''; ?>>Rejected</option>
+                                                </select>
+                                                <button type="submit" name="action" value="update_status" class="action-btn-save" title="Simpan Status">
+                                                    <i class="fas fa-save"></i>
+                                                </button>
+                                            </form>
                                         </td>
-                                        <td class="action-links">
-                                            <a href="detail_permintaan.php?id=<?php echo htmlspecialchars($request['id']); ?>">Tinjau Detail</a>
+                                        <td class="action-buttons-group">
+                                            <a href="detail_permintaan.php?id=<?php echo htmlspecialchars($request['id']); ?>" class="action-btn-view" title="Lihat Informasi Permintaan">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="tinjau_jurnal.php?id=<?php echo htmlspecialchars($request['jurnal_id']); ?>" class="action-btn-edit" title="Edit Jurnal Terkait">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
                                         </td>
                                     </tr>
-                                    <?php endforeach; ?>
+                                    <?php 
+                                        $nomor++; 
+                                        endforeach; 
+                                    ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="7" style="text-align: center;">Tidak ada permintaan yang masuk.</td>
+                                        <td colspan="7" style="text-align: center;">Tidak ada permintaan dengan status "<?php echo ucfirst($filter_status); ?>".</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -228,6 +208,20 @@ if ($result) {
             </div>
         </div>
     </div>
+<script>
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        if (document.getElementById('sidebar').classList.contains('collapsed')) {
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+            localStorage.setItem('sidebarState', 'expanded');
+        }
+    });
+
+    if (localStorage.getItem('sidebarState') === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
+</script>
 </body>
 </html>
 <?php mysqli_close($conn); ?>
