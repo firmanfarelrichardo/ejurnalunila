@@ -66,7 +66,7 @@ $total_pages = ceil($total_results / $results_per_page);
                     while ($row = $result->fetch_assoc()) {
                         $publisher_name = htmlspecialchars($row['publisher']);
                         $article_count = htmlspecialchars($row['article_count']);
-                        $logo_url = 'https://unila.ac.id/storage/2024/09/logo-unila-min.png' . urlencode(strtoupper(substr($publisher_name, 0, 1)));
+                        $logo_url = 'Images/logo unila.png';
                         echo '<a href="jurnal_penerbit.php?penerbit=' . urlencode($row['publisher']) . '" class="publisher-entry-card">';
                         echo '<div class="card-left">';
                         echo '<img src="' . $logo_url . '" alt="' . $publisher_name . ' Logo" class="publisher-card-logo">';

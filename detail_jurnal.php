@@ -11,7 +11,7 @@ $results_per_page = 10;
 $offset = ($page - 1) * $results_per_page;
 
 if ($journal_id === 0) {
-    echo "<main><div class='container my-5'><h1>Jurnal tidak ditemukan.</h1></div></main>";
+    echo "<main class='page-container'><div class='container my-5'><h1>Jurnal tidak ditemukan.</h1></div></main>";
     include 'footer.php'; exit();
 }
 
@@ -28,7 +28,7 @@ $journal = $stmt_journal->get_result()->fetch_assoc();
 $stmt_journal->close();
 
 if (!$journal) {
-    echo "<main><div class='container my-5'><h1>Jurnal tidak ditemukan.</h1></div></main>";
+    echo "<main class='page-container'><div class='container my-5'><h1>Jurnal tidak ditemukan.</h1></div></main>";
     include 'footer.php'; exit();
 }
 
@@ -235,7 +235,7 @@ function getScopusImage($index_scopus) {
     /* Article List */
     .articles-card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .articles-header { 
-        display: flex; justify-content: between; align-items: center; 
+        display: flex; justify-content: space-between; align-items: center; 
         padding-bottom: 15px; border-bottom: 2px solid #f0f0f0; margin-bottom: 20px;
     }
     .article-item { padding: 20px 10px; border-bottom: 1px solid #f0f0f0; }
@@ -430,23 +430,43 @@ function getScopusImage($index_scopus) {
                         <?php endwhile; ?>
                         
                         <?php if ($total_pages > 1): ?>
-                        <nav class="pagination justify-content-center">
-                            <ul class="pagination">
-                                <?php for ($i = 1; $i <= min($total_pages, 10); $i++): ?>
-                                    <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
-                                        <a class="page-link" href="?id=<?php echo $journal_id; ?>&q_article=<?php echo urlencode($article_search); ?>&year=<?php echo $year_filter; ?>&issue=<?php echo urlencode($issue_filter); ?>&page=<?php echo $i; ?>">
-                                            <?php echo $i; ?>
-                                        </a>
-                                    </li>
-                                <?php endfor; ?>
-                                <?php if ($total_pages > 10): ?>
-                                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?id=<?php echo $journal_id; ?>&q_article=<?php echo urlencode($article_search); ?>&year=<?php echo $year_filter; ?>&issue=<?php echo urlencode($issue_filter); ?>&page=<?php echo $total_pages; ?>">
-                                            <?php echo $total_pages; ?>
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
+                        <nav class="pagination modern">
+                            <ul>
+                                <?php
+                                if ($total_pages > 1) {
+                                    // Membuat base query string untuk semua link paginasi
+                                    $query_params = [
+                                        'id' => $journal_id,
+                                        'q_article' => $article_search,
+                                        'year' => $year_filter,
+                                        'issue' => $issue_filter
+                                    ];
+
+                                    // Tombol "Previous"
+                                    if ($page > 1) {
+                                        $prev_page_params = $query_params + ['page' => ($page - 1)];
+                                        echo '<li><a href="detail_jurnal.php?' . http_build_query($prev_page_params) . '">&laquo; Previous</a></li>';
+                                    }
+
+                                    // Logika untuk menampilkan nomor halaman
+                                    $window = 2;
+                                    for ($i = 1; $i <= $total_pages; $i++) {
+                                        if ($i == 1 || $i == $total_pages || ($i >= $page - $window && $i <= $page + $window)) {
+                                            $active_class = ($i == $page) ? 'active' : '';
+                                            $current_page_params = $query_params + ['page' => $i];
+                                            echo '<li><a href="detail_jurnal.php?' . http_build_query($current_page_params) . '" class="' . $active_class . '">' . $i . '</a></li>';
+                                        } elseif ($i == $page - $window - 1 || $i == $page + $window + 1) {
+                                            echo '<li><span class="ellipsis">...</span></li>';
+                                        }
+                                    }
+
+                                    // Tombol "Next"
+                                    if ($page < $total_pages) {
+                                        $next_page_params = $query_params + ['page' => ($page + 1)];
+                                        echo '<li><a href="detail_jurnal.php?' . http_build_query($next_page_params) . '">Next &raquo;</a></li>';
+                                    }
+                                }
+                                ?>
                             </ul>
                         </nav>
                         <?php endif; ?>
@@ -612,3 +632,4 @@ $year_stmt->close();
 $issue_stmt->close();
 $conn->close();
 include 'footer.php';
+?>
