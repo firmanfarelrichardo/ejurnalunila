@@ -68,7 +68,14 @@ if ($result) {
                 <div class="card">
                     <div class="card-header no-print">
                         <h3>Daftar Tim Editorial</h3>
-                        <button onclick="window.print()" class="btn-print"><i class="fas fa-print"></i> Cetak Semua</button>
+                        <div class="action-wrapper">
+                            <a href="export_editorial.php" class="btn-export">
+                                <i class="fas fa-file-csv"></i> Ekspor ke CSV
+                            </a>
+                            <button onclick="window.print()" class="btn-print">
+                                <i class="fas fa-print"></i> Cetak Semua
+                            </button>
+                        </div>
                     </div>
                     
                     <div id="printable-area">

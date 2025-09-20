@@ -1,29 +1,23 @@
 <?php
-// Memulai session, penting jika nanti kita ingin menambahkan pesan notifikasi di sini.
 session_start();
 
-// Periksa apakah pengguna sudah login dan memiliki peran pengelola
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
     header("Location: login.php");
     exit();
 }
 
-// Konfigurasi database MySQL
 $host = "localhost";
 $user = "root";
 $pass = "";
 $db = "oai";
 $conn = new mysqli($host, $user, $pass, $db);
 
-// Periksa koneksi
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil ID pengelola dari session
 $pengelola_id = $_SESSION['user_id'];
 
-// Menyiapkan query untuk mengambil data jurnal milik pengelola yang sedang login.
 $sql = "SELECT id, judul_jurnal, created_at, status FROM jurnal_sumber WHERE pengelola_id = ? ORDER BY created_at DESC";
 $stmt = mysqli_prepare($conn, $sql);
 
@@ -41,157 +35,20 @@ if ($stmt) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Jurnal Saya</title>
-    
-    <link rel="stylesheet" href="admin_style.css">
-    
+    <title>Daftar & Status Jurnal</title>
+    <link rel="stylesheet" href="style.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-
-<style>
-
-    /* =============================================== */
-/* === Gaya untuk Panel Konten dan Tabel Data === */
-/* =============================================== */
-
-/* Panel putih untuk membungkus konten seperti tabel */
-.content-panel {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.panel-header h1 {
-    margin: 0;
-    font-size: 22px;
-}
-
-/* Tombol Aksi Utama */
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn-primary {
-    background-color: #3498db;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #2980b9;
-}
-
-/* Wrapper untuk tabel agar responsif */
-.table-wrapper {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-th, td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-    vertical-align: middle;
-}
-
-thead th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    color: #34495e;
-}
-
-tbody tr:hover {
-    background-color: #f1f1f1;
-}
-
-/* Badge Status */
-.status {
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 12px;
-    font-weight: 500;
-    color: white;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.status-pending { background-color: #f39c12; }
-.status-approved { background-color: #2ecc71; }
-.status-rejected { background-color: #e74c3c; }
-.status-needs-edit { background-color: #3498db; }
-
-/* Link Aksi dalam Tabel */
-.action-links a {
-    color: #3498db;
-    text-decoration: none;
-    margin-right: 15px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.action-links a:hover {
-    text-decoration: underline;
-    color: #2980b9;
-}
-
-/* Notifikasi */
-.notification { 
-    padding: 15px; 
-    margin-bottom: 20px; 
-    border-radius: 5px; 
-    color: white; 
-    font-size: 14px; 
-    text-align: center; 
-}
-.success { background-color: #2ecc71; }
-.error { background-color: #e74c3c; }
-
-</style>
-
-
 <body>
-
     <div class="dashboard-container">
-
         <div class="sidebar" id="sidebar">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="logo">
-                <h2>Pengelola</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../assets/unila_logo.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_pengelola.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
@@ -202,9 +59,8 @@ tbody tr:hover {
         </div>
         
         <div class="main-content">
-            
             <div class="header">
-                <h1>Selamat Datang, <?php echo htmlspecialchars($_SESSION['user_name']); ?></h1>
+                <h1>Daftar & Status Jurnal</h1>
                 <div class="user-profile">
                     <span>Role: Pengelola</span>
                     <a href="../api/logout.php">Logout</a>
@@ -223,14 +79,14 @@ tbody tr:hover {
                 }
                 ?>
                 
-                <div class="content-panel">
-                    <div class="panel-header">
-                        <h1>Daftar Jurnal Saya</h1>
-                        <a href="tambah_jurnal.php" class="btn btn-primary">Tambah Jurnal Baru</a>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Jurnal yang Anda Kelola</h3>
+                        <a href="tambah_jurnal.php" class="btn-primary"><i class="fas fa-plus"></i> Tambah Jurnal</a>
                     </div>
 
                     <div class="table-wrapper">
-                        <table>
+                        <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -251,17 +107,17 @@ tbody tr:hover {
                                         <td>
                                             <?php
                                             $status = $row['status'];
-                                            $status_class = 'status-pending'; // Default
-                                            if ($status == 'approved') $status_class = 'status-approved';
-                                            if ($status == 'rejected') $status_class = 'status-rejected';
-                                            if ($status == 'needs_edit') $status_class = 'status-needs-edit';
-                                            $status_text = ucwords(str_replace('_', ' ', $status));
-                                            echo '<span class="status ' . $status_class . '">' . htmlspecialchars($status_text) . '</span>';
+                                            // Menggunakan kelas status badge yang sudah ada di style.css
+                                            echo '<span class="status-badge status-' . str_replace('_', '-', $status) . '">' . htmlspecialchars(ucwords(str_replace('_', ' ', $status))) . '</span>';
                                             ?>
                                         </td>
-                                        <td class="action-links">
-                                            <a href="detail_jurnal.php?id=<?php echo $row['id']; ?>">Detail</a>
-                                            <a href="ajukan_perubahan.php?id=<?php echo $row['id']; ?>">Ajukan Perubahan</a>
+                                        <td class="action-buttons-group">
+                                            <a href="detail_jurnal.php?id=<?php echo $row['id']; ?>" class="action-btn-view" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="ajukan_perubahan.php?id=<?php echo $row['id']; ?>" class="action-btn-edit" title="Ajukan Perubahan">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     <?php endwhile;
@@ -278,15 +134,10 @@ tbody tr:hover {
         </div>
     </div>
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
 <?php
-// Menutup statement dan koneksi
 if ($stmt) {
     mysqli_stmt_close($stmt);
 }
