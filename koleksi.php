@@ -7,11 +7,8 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] :
 $offset = ($page - 1) * $results_per_page;
 
 // --- KONEKSI DATABASE ---
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("<main class='page-container'><div class='container'><h1>Koneksi Database Gagal</h1><p>" . $conn->connect_error . "</p></div></main>");
-}
+require_once './database/config.php';
+$conn = connect_to_database();
 
 // --- LOGIKA DINAMIS BERDASARKAN PARAMETER 'koleksi' ---
 $koleksi = isset($_GET['koleksi']) ? $_GET['koleksi'] : 'terbaru';

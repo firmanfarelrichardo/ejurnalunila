@@ -7,16 +7,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
     exit();
 }
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Periksa koneksi
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
+require_once '../database/config.php';
+$conn = connect_to_database();
 
 // Cek apakah ada ID jurnal di URL
 if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {

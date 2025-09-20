@@ -8,16 +8,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 }
 
 // Konfigurasi database MySQL
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Periksa koneksi
-if ($conn->connect_error) { 
-    die("Koneksi gagal: " . $conn->connect_error); 
-}
+require_once '../database/config.php';
+$conn = connect_to_database();
 
 // Logika untuk menghapus pengelola
 $message = "";

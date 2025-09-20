@@ -2,16 +2,8 @@
 // pengelola/proses_perubahan.php
 session_start();
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Periksa koneksi
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
+require_once '../database/config.php';
+$conn = connect_to_database();
 
 // Hanya proses jika permintaan adalah POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

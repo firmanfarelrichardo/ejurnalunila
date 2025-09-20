@@ -2,11 +2,8 @@
 include 'header.php';
 
 // --- KONEKSI DATABASE ---
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("<main class='page-container'><div class='container'><h1>Koneksi Database Gagal</h1><p>" . $conn->connect_error . "</p></div></main>");
-}
+require_once './database/config.php';
+$conn = connect_to_database();
 
 // Mendapatkan huruf yang dipilih dari URL, defaultnya 'A'
 $selected_char = isset($_GET['char']) ? strtoupper(substr($_GET['char'], 0, 1)) : 'A';

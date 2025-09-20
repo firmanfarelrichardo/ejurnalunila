@@ -4,19 +4,11 @@ echo "<h1>Memulai Proses Panen Menyeluruh</h1>";
 echo "<a href='dashboard_admin.php'>&laquo; Kembali ke Dashboard</a><hr>";
 
 // --- PENGATURAN DATABASE ---
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "oai";
+require_once './database/config.php';
+$conn = connect_to_database();
 
 // Tingkatkan batas waktu eksekusi
 set_time_limit(0); 
-
-// 1. KONEKSI KE DATABASE UNTUK MENGAMBIL DAFTAR JURNAL
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("KONEKSI GAGAL: " . $conn->connect_error);
-}
 echo "Koneksi database berhasil.<br>";
 
 $jurnal_list_from_db = [];

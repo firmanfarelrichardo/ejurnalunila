@@ -10,9 +10,8 @@ $offset = ($page - 1) * $results_per_page;
 $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
 
 // Koneksi ke Database
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
+require_once './database/config.php';
+$conn = connect_to_database();
 ?>
 
 <title>Hasil Pencarian untuk "<?php echo htmlspecialchars($keyword); ?>"</title>

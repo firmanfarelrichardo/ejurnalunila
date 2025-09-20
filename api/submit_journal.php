@@ -12,11 +12,8 @@ if (empty($_POST['journal_title']) || empty($_POST['oai_url']) || empty($_POST['
 }
 
 // Koneksi ke Database
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("Koneksi database gagal: " . $conn->connect_error);
-}
+require_once '../database/config.php';
+$conn = connect_to_database();
 
 // Menyiapkan semua variabel dari POST, gunakan null coalescing operator (??) untuk field opsional
 $contact_name = $_POST['contact_name'] ?? null;
