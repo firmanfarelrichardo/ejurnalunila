@@ -1186,6 +1186,133 @@ main {
 }
 
 /* ==========================================================================
+   6.5. FACULTY PAGE STYLES (Modern Redesign)
+   ========================================================================== */
+
+/* Mengganti gaya grid fakultas yang lama */
+.fakultas-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+    gap: 25px; 
+}
+
+/* Gaya baru untuk kartu fakultas */
+.fakultas-card { 
+    display: block; 
+    background-color: var(--white); 
+    padding: 25px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 8px; 
+    text-align: center; 
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fakultas-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+}
+
+/* Gaya untuk ikon */
+.fakultas-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.fakultas-card:hover .fakultas-icon {
+    transform: scale(1.1);
+    color: #0056b3;
+}
+
+/* Gaya untuk nama fakultas */
+.fakultas-card h3 { 
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: var(--heading-color); 
+}
+
+/* Gaya untuk jumlah jurnal */
+.fakultas-link {
+    display: inline-block;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.fakultas-card:hover .fakultas-link {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+/* Mengatur agar border menyatu */
+.stats-table {
+    border-collapse: collapse;
+}
+
+/* Memberikan garis pada semua sel tabel */
+.stats-table th,
+.stats-table td {
+    border: 1px solid var(--border-color);
+}
+
+/* Memberi penekanan pada kolom Total di tabel fakultas */
+.stats-table td:nth-child(2),
+.stats-table tfoot th:nth-child(2) {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Gaya dasar untuk semua header tabel statistik */
+.stats-table thead th {
+    background-color: var(--light-gray);
+    border-bottom: 2px solid var(--border-color);
+    color: var(--heading-color);
+    font-weight: 600;
+}
+
+/* Memberi warna pada header Sinta */
+/* Sinta 1 (Kolom ke-3) */
+.stats-table thead th:nth-child(3) {
+    background-color: rgba(217, 30, 24, 0.7); /* Merah */
+    color: white;
+}
+/* Sinta 2 (Kolom ke-4) */
+.stats-table thead th:nth-child(4) {
+    background-color: rgba(30, 139, 195, 0.7); /* Biru */
+    color: white;
+}
+/* Sinta 3 (Kolom ke-5) */
+.stats-table thead th:nth-child(5) {
+    background-color: rgba(241, 196, 15, 0.7); /* Kuning */
+    color: white
+}
+/* Sinta 4 (Kolom ke-6) */
+.stats-table thead th:nth-child(6) {
+    background-color: rgba(46, 204, 113, 0.7); /* Hijau */
+    color: white;
+}
+/* Sinta 5 (Kolom ke-7) */
+.stats-table thead th:nth-child(7) {
+    background-color: rgba(142, 68, 173, 0.7); /* Ungu */
+    color: white;
+}
+/* Sinta 6 (Kolom ke-8) */
+.stats-table thead th:nth-child(8) {
+    background-color: rgba(230, 126, 34, 0.7); /* Oranye */
+    color: white;
+}
+
+/* ==========================================================================
    7. ADMIN DASHBOARD
    ========================================================================== */
 .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 20px; background-color: var(--white);}
