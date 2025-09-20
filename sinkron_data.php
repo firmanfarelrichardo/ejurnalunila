@@ -2,9 +2,8 @@
 echo "<pre style='font-family: monospace; line-height: 1.5; color: #333; background-color: #f5f5f5; padding: 15px;'>";
 set_time_limit(0); // Izinkan skrip berjalan lama
 
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
+require_once './database/config.php';
+$conn = connect_to_database();
 
 echo "<strong>Memulai proses sinkronisasi data...</strong>\n";
 

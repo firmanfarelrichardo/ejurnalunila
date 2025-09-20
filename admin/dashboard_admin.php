@@ -9,15 +9,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 }
 
 // Pengaturan Database MySQL
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
+require_once '../database/config.php';
+$conn = connect_to_database();
 
 // --- DATA UNTUK KARTU STATISTIK UTAMA ---
 $totalPengelola = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'pengelola'")->fetch_row()[0];

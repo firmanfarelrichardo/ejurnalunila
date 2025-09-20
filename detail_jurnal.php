@@ -16,9 +16,8 @@ if ($journal_id === 0) {
 }
 
 // --- KONEKSI & AMBIL DATA JURNAL ---
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
+require_once './database/config.php';
+$conn = connect_to_database();
 
 // Menggunakan nama kolom dari database baru Anda
 $stmt_journal = $conn->prepare("SELECT * FROM jurnal_sumber WHERE id = ?");

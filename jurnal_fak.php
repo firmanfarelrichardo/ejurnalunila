@@ -14,9 +14,8 @@ if (empty($fakultas)) {
     exit();
 }
 
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
+require_once './database/config.php';
+$conn = connect_to_database();
 
 $base_sql = "FROM jurnal_sumber";
 $where_clauses = ["fakultas = ?"]; // Gunakan '=' untuk pencocokan persis

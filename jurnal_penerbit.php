@@ -13,9 +13,8 @@ if (empty($penerbit)) {
 }
 
 // --- KONEKSI DATABASE ---
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
+require_once './database/config.php';
+$conn = connect_to_database();
 
 // --- QUERY UNTUK MENGHITUNG TOTAL HASIL (UNTUK PAGINASI) DARI `artikel_oai` ---
 $count_sql = "SELECT COUNT(*) FROM artikel_oai WHERE publisher = ?";

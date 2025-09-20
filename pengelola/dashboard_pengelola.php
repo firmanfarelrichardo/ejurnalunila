@@ -5,6 +5,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
     exit();
 }
 
+<<<<<<< HEAD
 $pengelola_id = $_SESSION['user_id'];
 
 // Koneksi database
@@ -16,6 +17,11 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
+=======
+// Konfigurasi database MySQL
+require_once '../database/config.php';
+$conn = connect_to_database();
+>>>>>>> 9352bd23106f96148cb84f4a625531b8660b0bc5
 
 // --- DATA UNTUK KARTU STATISTIK ---
 $totalJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_sumber WHERE pengelola_id = $pengelola_id")->fetch_row()[0];

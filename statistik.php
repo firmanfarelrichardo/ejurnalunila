@@ -2,11 +2,8 @@
 include 'header.php';
 
 // --- KONEKSI DATABASE ---
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("<main class='page-container'><div class='container'><h1>Koneksi Database Gagal</h1><p>" . $conn->connect_error . "</p></div></main>");
-}
+require_once './database/config.php';
+$conn = connect_to_database();
 
 // --- Query untuk mengambil data statistik artikel per tahun ---
 $sql = "SELECT YEAR(date) as publication_year, COUNT(*) as article_count

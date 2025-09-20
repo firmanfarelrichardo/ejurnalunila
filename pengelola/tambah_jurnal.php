@@ -10,16 +10,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
 }
 
 // Konfigurasi database MySQL
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
+require_once '../database/config.php';
+$conn = connect_to_database();
 
-// Periksa koneksi
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
 ?>
 <!DOCTYPE html>
 <html lang="id">

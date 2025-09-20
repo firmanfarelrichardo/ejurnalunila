@@ -18,23 +18,22 @@
             </div>
 
             <?php
-            // Koneksi ke database untuk mengambil data statistik
-            $host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-            $conn_stats = new mysqli($host, $user, $pass, $db);
+            require_once './database/config.php';
+            $conn = connect_to_database();
 
             $total_articles = 0; $total_journals = 0; $total_publishers = 0; $total_subjects = 0;
 
-            if (!$conn_stats->connect_error) {
-                $result = $conn_stats->query("SELECT COUNT(*) as total FROM artikel_oai");
+            if (!$conn->connect_error) {
+                $result = $conn->query("SELECT COUNT(*) as total FROM artikel_oai");
                 $total_articles = $result->fetch_assoc()['total'];
-                $result = $conn_stats->query("SELECT COUNT(*) as total FROM jurnal_sumber");
+                $result = $conn->query("SELECT COUNT(*) as total FROM jurnal_sumber");
                 $total_journals = $result->fetch_assoc()['total'];
-                $result = $conn_stats->query("SELECT COUNT(DISTINCT publisher) as total FROM artikel_oai WHERE publisher IS NOT NULL AND publisher != ''");
+                $result = $conn->query("SELECT COUNT(DISTINCT publisher) as total FROM artikel_oai WHERE publisher IS NOT NULL AND publisher != ''");
                 $total_publishers = $result->fetch_assoc()['total'];
                 $sql_subjects = "SELECT COUNT(DISTINCT subject) as total FROM ( SELECT subject1 AS subject FROM artikel_oai WHERE subject1 IS NOT NULL AND subject1 != '' UNION SELECT subject2 AS subject FROM artikel_oai WHERE subject2 IS NOT NULL AND subject2 != '' UNION SELECT subject3 AS subject FROM artikel_oai WHERE subject3 IS NOT NULL AND subject3 != '' ) as all_subjects";
-                $result = $conn_stats->query($sql_subjects);
+                $result = $conn->query($sql_subjects);
                 $total_subjects = $result->fetch_assoc()['total'];
-                $conn_stats->close();
+                $conn->close();
             }
             ?> 
             

@@ -15,9 +15,8 @@ if (empty($fakultas)) {
 }
 
 // --- LOGIKA DATABASE ---
-$host = "localhost"; $user = "root"; $pass = ""; $db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) { die("Koneksi gagal: " . $conn->connect_error); }
+require_once './database/config.php';
+$conn = connect_to_database();
 
 $base_sql = "FROM artikel_oai a JOIN jurnal_sumber j ON a.source1 = j.journal_title COLLATE utf8mb4_unicode_ci";
 $where_clauses = ["j.fakultas = ?"];

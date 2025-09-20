@@ -7,14 +7,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     exit();
 }
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "oai";
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) { 
-    die("Koneksi gagal: " . $conn->connect_error); 
-}
+require_once '../database/config.php';
+$conn = connect_to_database();
 
 $editorials = [];
 $sql = "SELECT judul_jurnal, editorial_team FROM jurnal_sumber WHERE editorial_team IS NOT NULL AND editorial_team != '' ORDER BY judul_jurnal ASC";

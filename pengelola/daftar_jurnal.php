@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
     exit();
 }
 
+<<<<<<< HEAD
 $host = "localhost";
 $user = "root";
 $pass = "";
@@ -15,6 +16,11 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
+=======
+// Konfigurasi database MySQL
+require_once '../database/config.php';
+$conn = connect_to_database();
+>>>>>>> 9352bd23106f96148cb84f4a625531b8660b0bc5
 
 $pengelola_id = $_SESSION['user_id'];
 
