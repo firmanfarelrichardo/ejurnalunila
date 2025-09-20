@@ -42,7 +42,7 @@ if ($stmt) {
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="logo">
-                    <img src="../assets/unila_logo.png" alt="Logo Universitas Lampung">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
                 </div>
             </div>
             <ul class="sidebar-menu">
@@ -130,6 +130,19 @@ if ($stmt) {
     </div>
 
     <script src="script.js"></script>
+    <script>
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            if (document.getElementById('sidebar').classList.contains('collapsed')) {
+                localStorage.setItem('sidebarStatePengelola', 'collapsed');
+            } else {
+                localStorage.setItem('sidebarStatePengelola', 'expanded');
+            }
+        });
+        if (localStorage.getItem('sidebarStatePengelola') === 'collapsed') {
+            document.getElementById('sidebar').classList.add('collapsed');
+}
+</script>
 </body>
 </html>
 <?php

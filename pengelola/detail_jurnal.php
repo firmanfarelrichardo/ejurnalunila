@@ -41,107 +41,12 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Jurnal - <?php echo htmlspecialchars($jurnal['judul_jurnal']); ?></title>
-    
-    <link rel="stylesheet" href="admin_style.css">
-    
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-
-<style>
-
-    /* ========================================= */
-/* === Gaya untuk Halaman Detail Jurnal === */
-/* ========================================= */
-
-.journal-title {
-    margin-top: 0;
-    margin-bottom: 30px;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 15px;
-    color: #34495e;
-    font-size: 20px;
-}
-
-.content-panel fieldset {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 25px;
-}
-
-.content-panel legend {
-    font-weight: 600;
-    color: #34495e;
-    padding: 0 10px;
-    font-size: 16px;
-}
-
-.detail-group {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    border-bottom: 1px solid #f1f1f1;
-    font-size: 14px;
-}
-.detail-group:last-child {
-    border-bottom: none;
-}
-
-.detail-label {
-    flex-basis: 30%;
-    font-weight: 500;
-    color: #555;
-    padding-right: 15px;
-}
-
-.detail-value {
-    flex-basis: 70%;
-    color: #333;
-    word-break: break-word;
-}
-
-.detail-value a {
-    color: #3498db;
-    text-decoration: none;
-}
-.detail-value a:hover {
-    text-decoration: underline;
-}
-
-/* Tombol Sekunder */
-.btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px; /* Jarak antara ikon dan teks */
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px; /* Sudut membulat */
-    background-color: #ecf0f1;
-    color: #000;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 16px;
-    cursor: pointer;
-}
-.btn-secondary:hover {
-    background-color: #95a5a6;
-}
-
-/* Penyesuaian Responsif untuk Halaman Detail */
-@media (max-width: 768px) {
-    .detail-label, .detail-value {
-        flex-basis: 100%;
-    }
-    .detail-label {
-        margin-bottom: 5px;
-        font-weight: 600;
-    }
-}
-
-</style>
 
 <body>
 
@@ -156,8 +61,8 @@ mysqli_close($conn);
                 </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_pengelola.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="tambah_jurnal.php" ><i class="fas fa-plus-circle"></i> <span>Daftar Jurnal Baru</span></a></li>
+                <li><a href="dashboard_pengelola.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="tambah_jurnal.php"><i class="fas fa-plus-circle"></i> <span>Daftar Jurnal Baru</span></a></li>
                 <li><a href="daftar_jurnal.php" class="active"><i class="fas fa-list-alt"></i> <span>Daftar & Status Jurnal</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
@@ -189,7 +94,7 @@ mysqli_close($conn);
                         <legend>Status dan Catatan dari Admin</legend>
                         <div class="detail-group">
                             <span class="detail-label">Status Saat Ini:</span>
-                            <span class="detail-value">
+                            <span class="detail-value-status">
                                 <?php
                                 $status = $jurnal['status'];
                                 $status_class = 'status-' . str_replace('_', '-', $status);

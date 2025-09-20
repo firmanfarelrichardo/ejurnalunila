@@ -9,6 +9,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
 require_once '../database/config.php';
 $conn = connect_to_database();
 
+$pengelola_id = $_SESSION['user_id'];
+
 // --- DATA UNTUK KARTU STATISTIK ---
 $totalJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_sumber WHERE pengelola_id = $pengelola_id")->fetch_row()[0];
 $pendingJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_sumber WHERE pengelola_id = $pengelola_id AND status = 'pending'")->fetch_row()[0];

@@ -41,10 +41,7 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajukan Perubahan - <?php echo htmlspecialchars($judul_jurnal); ?></title>
-    
-    <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="style.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,19 +49,20 @@ mysqli_close($conn);
 </head>
 <body>
 
-    <div class="dashboard-container">
-
+     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="logo">
-                <h2>Pengelola</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_pengelola.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li><a href="tambah_jurnal.php"><i class="fas fa-plus-circle"></i> <span>Daftar Jurnal Baru</span></a></li>
-                <li class="active"><a href="daftar_jurnal.php" class="active"><i class="fas fa-list-alt"></i> <span>Daftar & Status Jurnal</span></a></li>
+                <li><a href="daftar_jurnal.php" class="active"><i class="fas fa-list-alt"></i> <span>Daftar & Status Jurnal</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -92,8 +90,8 @@ mysqli_close($conn);
                             <div class="form-group">
                                 <label>Jenis Permintaan</label>
                                 <div class="radio-group">
-                                    <label><input type="radio" name="request_type" value="edit" checked> Minta Edit Data</label>
-                                    <label><input type="radio" name="request_type" value="delete"> Minta Hapus Jurnal</label>
+                                    <label><input type="radio" name="request_type" value="edit" checked> Edit Data</label>
+                                    <label><input type="radio" name="request_type" value="delete"> Hapus Jurnal</label>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -103,7 +101,7 @@ mysqli_close($conn);
                                     name="alasan" 
                                     rows="6" 
                                     required 
-                                    placeholder="Contoh untuk Minta Edit: Mohon ubah nama penerbit dari 'Penerbit A' menjadi 'Penerbit B'.&#10;Contoh untuk Minta Hapus: Jurnal ini sudah tidak aktif lagi."></textarea>
+                                    placeholder=""></textarea>
                                 <small style="display: block; margin-top: 8px; color: #7f8c8d;">Jelaskan secara detail perubahan yang Anda inginkan atau alasan penghapusan.</small>
                             </div>
                         </fieldset>
@@ -115,9 +113,18 @@ mysqli_close($conn);
                     </form>
                 </div>
             </div> </div> </div> <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        }
+        
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    if (document.getElementById('sidebar').classList.contains('collapsed')) {
+        localStorage.setItem('sidebarStatePengelola', 'collapsed');
+    } else {
+        localStorage.setItem('sidebarStatePengelola', 'expanded');
+    }
+});
+if (localStorage.getItem('sidebarStatePengelola') === 'collapsed') {
+    document.getElementById('sidebar').classList.add('collapsed');
+}
     </script>
 </body>
 </html>

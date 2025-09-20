@@ -151,6 +151,7 @@ textarea {
 .btn-secondary {
     background-color: #bdc3c7;
     color: #2c3e50;
+    text-decoration: none;
 }
 .btn-secondary:hover {
     background-color: #95a5a6;
@@ -174,8 +175,8 @@ textarea {
 }
 
 .sidebar.collapsed {
-    width: 80px;
-    padding: 20px 10px;
+    width: 50px;
+    padding: 20px;
 }
 
 .sidebar-header {
@@ -192,7 +193,7 @@ textarea {
     color: #ecf0f1;
     border: 1px solid #4a667d;
     border-radius: 5px;
-    width: 40px;
+    width: 50px;
     height: 40px;
     cursor: pointer;
     display: flex;
@@ -407,3 +408,152 @@ textarea {
         grid-template-columns: 1fr;
     }
 }
+
+
+
+/* ================================================================== */
+/* ==   PERBAIKAN FINAL CSS - DETAIL JURNAL (RATA KIRI & RAPI)     == */
+/* ================================================================== */
+
+/* --- 1. Panel Konten Utama --- */
+.content-panel {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+}
+
+/* --- 2. Header Panel --- */
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.panel-header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.panel-header .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background-color: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease-in-out;
+}
+
+.panel-header .btn-secondary:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: #212529;
+}
+
+/* --- 3. Judul Utama Jurnal --- */
+.journal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 30px;
+}
+
+/* --- 4. Card Informasi (Fieldset) --- */
+fieldset {
+    border: 1px solid #e9ecef;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+legend {
+    font-size: 18px;
+    font-weight: 600;
+    color: #3498db;
+    padding: 0 5px;
+    margin: 0;
+    width: auto;
+    border: none;
+}
+
+/* --- 5. Tata Letak Rata Kiri yang Diperbaiki --- */
+.detail-group {
+    display: flex;
+    flex-direction: row;
+    /* PERBAIKAN 1: Mengatur agar item sejajar di atas */
+    align-items: flex-start; 
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f3f5;
+    font-size: 15px;
+}
+
+fieldset .detail-group:last-child {
+    border-bottom: none;
+}
+
+/* Label Informasi (Kolom Kiri) */
+.detail-label {
+    font-weight: 600;
+    color: #6c757d;
+    flex-basis: 15%;
+    min-width: 200px;
+    padding-right: 20px;
+    text-align: left;
+    /* Menambahkan padding atas agar sejajar sempurna dengan teks value */
+    padding-top: 1px;
+}
+
+/* Value Informasi (Kolom Kanan) */
+.detail-value {
+    color: #212529;
+    flex-grow: 1;
+    text-align: justify;
+    font-weight: 500;
+    /* PERBAIKAN 2: Menampilkan karakter enter (baris baru) */
+    white-space: pre-wrap; 
+}
+
+.detail-value a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.detail-value a:hover {
+    text-decoration: underline;
+    color: #2980b9;
+}
+
+/* --- 6. Badge Status Jurnal --- */
+.detail-value-status .status {
+    color: #212529;
+    flex-grow: 1;
+    text-align: justify;
+    font-weight: 500;
+    padding: 6px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.status-selesai { background-color: #27ae60; }
+.status-ditolak { background-color: #c03b2b; }
+.status-pending { background-color: #f39c12; }
+.status-butuh-edit { background-color: #2980b9; }
+.status-default, .status- { background-color: #7f8c8d; }

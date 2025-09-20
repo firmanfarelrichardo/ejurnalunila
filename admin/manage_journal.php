@@ -141,7 +141,7 @@ function getStatusClass($status) {
                                                     <option value="ditolak" data-class="status-rejected" <?php echo $jurnal['status'] == 'ditolak' ? 'selected' : ''; ?>>Ditolak</option>
                                                     <option value="butuh_edit" data-class="status-needs_edit" <?php echo $jurnal['status'] == 'butuh_edit' ? 'selected' : ''; ?>>Butuh Edit</option>
                                                 </select>
-                                                <button type="submit" name="update_status" class="btn btn-update">Update</button>
+                                                <button type="submit" name="update_status" class="btn btn-update"><i class="fas fa-save"></i></button>
                                             </form>
                                             <a href="tinjau_jurnal.php?id=<?php echo htmlspecialchars($jurnal['id']); ?>" class="btn btn-icon btn-edit" title="Lihat & Tinjau Detail">
                                                 <i class="fas fa-edit"></i>

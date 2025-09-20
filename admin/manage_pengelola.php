@@ -183,10 +183,14 @@ if ($result) {
                                     <td><?php echo htmlspecialchars($pengelola['nama']); ?></td>
                                     <td><?php echo htmlspecialchars($pengelola['email']); ?></td>
                                     <td class="action-buttons">
-                                        <a href="edit_pengelola.php?id=<?php echo htmlspecialchars($pengelola['id']); ?>" class="edit-btn">Edit</a>
+                                        <a href="edit_pengelola.php?id=<?php echo htmlspecialchars($pengelola['id']); ?>" class="edit-btn">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                         <form method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengelola ini?');">
                                             <input type="hidden" name="id" value="<?php echo htmlspecialchars($pengelola['id']); ?>">
-                                            <button type="submit" name="delete_pengelola">Hapus</button>
+                                            <button type="submit" name="delete_pengelola">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
