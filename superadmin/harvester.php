@@ -3,12 +3,12 @@
 session_start();
 
 // Cek apakah pengguna sudah login dan memiliki peran yang sesuai
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
     header("Location: login.php");
     exit();
 }
 
-// Pengaturan Database MySQL
+// Koneksi database
 require_once '../database/config.php';
 $conn = connect_to_database();
 
@@ -197,152 +197,7 @@ $conn->close();
     <title>Harvester - Kelola Panen Jurnal</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .harvester-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .journal-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-left: 4px solid #007bff;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .journal-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-        
-        .journal-card.harvested {
-            border-left-color: #28a745;
-        }
-        
-        .journal-card.not-harvested {
-            border-left-color: #ffc107;
-        }
-        
-        .journal-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        
-        .journal-info {
-            margin-bottom: 15px;
-        }
-        
-        .journal-info p {
-            margin: 5px 0;
-            font-size: 0.9em;
-            color: #666;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .status-harvested {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        
-        .status-not-harvested {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        
-        .harvest-btn {
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s ease;
-            width: 100%;
-        }
-        
-        .harvest-btn:hover {
-            background: linear-gradient(45deg, #0056b3, #004085);
-        }
-        
-        .harvest-btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 10px 0;
-        }
-        
-        .spinner {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #007bff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .result-message {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-        
-        .result-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .result-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .page-header h1 {
-            margin: 0;
-            font-size: 2em;
-        }
-        
-        .page-header p {
-            margin: 10px 0 0 0;
-            opacity: 0.9;
-        }
-    </style>
+    
 </head>
 <body>
    <div class="dashboard-container">
@@ -352,16 +207,18 @@ $conn->close();
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="logo">
-                    <img src="../assets/unila_logo.png" alt="Logo Universitas Lampung">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
                 </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="dashboard_superadmin.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
+                <li><a href="manage_admin.php" ><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
                 <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php" class="active"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
                 <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>

@@ -2,7 +2,7 @@
 session_start();
 
 // Cek apakah pengguna sudah login dan memiliki peran yang sesuai
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
     header("Location: login.php");
     exit();
 }
@@ -210,6 +210,12 @@ if (!$jurnal) {
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
+        #editorial_team, #aim_and_scope {
+            height: 300px;
+            resize: vertical;
+        }
+
         .form-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 15px; }
         .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background-color 0.3s, transform 0.2s; }
         .btn-primary { background-color: #3498db; color: white; }
@@ -245,10 +251,11 @@ if (!$jurnal) {
                 </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="dashboard_superadmin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
-                <li><a href="manage_journal.php" class="active"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
-                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
+                <li><a href="manage_admin.php" ><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
+                <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
+                <li><a href="tinjau_permintaan.php" class="active"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
                 <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
                 <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
@@ -259,7 +266,7 @@ if (!$jurnal) {
             <div class="header">
                 <h1>Detail Jurnal Submission</h1>
                 <div class="user-profile">
-                    <span>Role: Admin</span>
+                    <span>Role: Superadmin</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>

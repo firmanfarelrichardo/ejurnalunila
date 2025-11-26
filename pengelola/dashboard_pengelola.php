@@ -76,6 +76,7 @@ $conn->close();
                 <li><a href="dashboard_pengelola.php" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li><a href="tambah_jurnal.php" ><i class="fas fa-plus-circle"></i> <span>Daftar Jurnal Baru</span></a></li>
                 <li><a href="daftar_jurnal.php"><i class="fas fa-list-alt"></i> <span>Daftar & Status Jurnal</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>

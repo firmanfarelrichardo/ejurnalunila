@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_admin'])) {
 
 // Ambil daftar admin
 $admins = [];
-$result = $conn->query("SELECT id, nip, nama, email FROM users WHERE role = 'admin'");
+$result = $conn->query("SELECT id, nama, email FROM users WHERE role = 'admin'");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $admins[] = $row;
@@ -124,17 +124,24 @@ if ($result) {
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Superadmin</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_superadmin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="manage_admin.php" class="active"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
+                <li><a href="manage_admin.php" class="active"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
-                <li><a href="change_password.php"><i class="fas fa-key"></i> <span>Ganti Password</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
+                <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
+                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -142,9 +149,6 @@ if ($result) {
 
         <!-- Main Content -->
         <div class="main-content">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
             <div class="header">
                 <h1>Kelola Akun Admin</h1>
                 <div class="user-profile">
@@ -165,7 +169,6 @@ if ($result) {
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>NIP</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Aksi</th>
@@ -174,7 +177,6 @@ if ($result) {
                         <tbody>
                             <?php foreach ($admins as $admin): ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($admin['nip']); ?></td>
                                     <td><?php echo htmlspecialchars($admin['nama']); ?></td>
                                     <td><?php echo htmlspecialchars($admin['email']); ?></td>
                                     <td class="action-buttons">
@@ -194,10 +196,19 @@ if ($result) {
         <!-- End Main Content -->
     </div>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
+        // Script untuk sidebar toggle
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        if (document.getElementById('sidebar').classList.contains('collapsed')) {
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+            localStorage.setItem('sidebarState', 'expanded');
         }
+    });
+
+    if (localStorage.getItem('sidebarState') === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
     </script>
 </body>
 </html>

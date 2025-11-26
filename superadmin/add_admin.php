@@ -42,17 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_admin'])) {
 </head>
 
 <style>
-       /* ===== Reset dasar ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
 /* ===== Area utama ===== */
 .content-area {
-display: flex;
+  
+  display: flex;
   justify-content: center;   /* bikin ke tengah horizontal */
   align-items: flex-start; 
   background: #f7fafd; /* biar lembut dan konsisten */
@@ -60,6 +53,7 @@ display: flex;
 
 /* ===== Card form ===== */
 .form-container.card {
+    box-sizing: border-box;
   background: #fff;
   padding: 30px 25px;
   border-radius: 15px;
@@ -92,7 +86,7 @@ display: flex;
 /* ===== Input ===== */
 .form-container input {
   width: 100%;
-  padding: 12px 14px;
+  padding: 12px 0px 12px 12px;
   margin-bottom: 18px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -130,17 +124,24 @@ display: flex;
 
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Superadmin</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_superadmin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="manage_admin.php" class="active"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
+                <li><a href="manage_admin.php" class="active"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
-                <li><a href="change_password.php"><i class="fas fa-key"></i> <span>Ganti Password</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
+                <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
+                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -148,9 +149,7 @@ display: flex;
 
         <!-- Main Content -->
         <div class="main-content">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
+            
             <div class="header">
                 <h1>Tambah Admin Baru</h1>
                 <div class="user-profile">
@@ -187,10 +186,19 @@ display: flex;
         <!-- End Main Content -->
     </div>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
+        // Script untuk sidebar toggle
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        if (document.getElementById('sidebar').classList.contains('collapsed')) {
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+            localStorage.setItem('sidebarState', 'expanded');
         }
+    });
+
+    if (localStorage.getItem('sidebarState') === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
     </script>
 </body>
 </html>

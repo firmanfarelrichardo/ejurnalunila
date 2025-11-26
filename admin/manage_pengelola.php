@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_pengelola'])) 
 
 // Ambil daftar pengelola
 $pengelolas = [];
-$result = $conn->query("SELECT id, nip, nama, email FROM users WHERE role = 'pengelola'");
+$result = $conn->query("SELECT id, nama, email FROM users WHERE role = 'pengelola'");
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $pengelolas[] = $row;
@@ -133,7 +133,7 @@ if ($result) {
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="logo">
-                    <img src="../images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
                 </div>
             </div>
             <ul class="sidebar-menu">
@@ -143,6 +143,7 @@ if ($result) {
                 <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
                 <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -170,7 +171,6 @@ if ($result) {
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>NIP</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Aksi</th>
@@ -179,7 +179,6 @@ if ($result) {
                         <tbody>
                             <?php foreach ($pengelolas as $pengelola): ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($pengelola['nip']); ?></td>
                                     <td><?php echo htmlspecialchars($pengelola['nama']); ?></td>
                                     <td><?php echo htmlspecialchars($pengelola['email']); ?></td>
                                     <td class="action-buttons">

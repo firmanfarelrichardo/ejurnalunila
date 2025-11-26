@@ -2,7 +2,6 @@
 // Mulai atau lanjutkan sesi
 session_start();
 
-// Periksa apakah pengguna sudah login dan memiliki peran superadmin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
     header("Location: login.php");
     exit();
@@ -26,9 +25,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_pengelola'])) 
     $stmt->close();
 }
 
-// Ambil daftar pengelola
+// Logika untuk penyortiran (filtering)
+$sort_option = $_GET['sort'] ?? 'created_at_desc'; // Default: terbaru dulu
+
+$allowed_sorts = [
+    'created_at_desc' => 'created_at DESC',
+    'created_at_asc'  => 'created_at ASC',
+    'nama_asc'        => 'nama ASC',
+    'nama_desc'       => 'nama DESC',
+];
+
+if (!array_key_exists($sort_option, $allowed_sorts)) {
+    $sort_option = 'created_at_desc';
+}
+
+$order_by_clause = $allowed_sorts[$sort_option];
+
+// (DIPERBARUI) Ambil daftar pengelola, tambahkan kolom 'created_at'
 $pengelolas = [];
-$result = $conn->query("SELECT id, nip, nama, email FROM users WHERE role = 'pengelola'");
+$sql = "SELECT id, nama, email, created_at FROM users WHERE role = 'pengelola' ORDER BY {$order_by_clause}";
+$result = $conn->query($sql);
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $pengelolas[] = $row;
@@ -43,9 +59,7 @@ if ($result) {
     <title>Kelola Pengelola - Superadmin</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-
-<style>
+    <style>
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -55,6 +69,7 @@ if ($result) {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
+            vertical-align: middle; /* (BARU) Agar tombol sejajar rapi */
         }
         .data-table th {
             background-color: #34495e;
@@ -63,98 +78,94 @@ if ($result) {
         .data-table tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-
-         .action-buttons form {
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .action-buttons form {
             display: inline-block;
+            margin: 0;
         }
-        .action-buttons button {
-        background-color: #e74c3c;
-        display: inline-block;
-        padding: 8px 12px;
-        border-radius: 4px;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        }
-        .action-buttons button:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px); /* efek naik */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* shadow elegan */
-        }
-        .add-btn {
-            background-color: #2ecc71;
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
+        .action-buttons .btn, .edit-btn, .action-buttons button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
             border-radius: 4px;
-            transition: background-color 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
-        .add-btn:hover {
-            background-color: #27ae60;
-        }
+        .action-buttons button { background-color: #e74c3c; }
+        .action-buttons button:hover { background-color: #c0392b; transform: translateY(-2px); }
+        .edit-btn { background-color: #3498db; }
+        .edit-btn:hover { background-color: #2980b9; transform: translateY(-2px); }
+        
         .card .header-with-btn {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .edit-btn {
-        display: inline-block;
-        padding: 8px 12px;
-        border-radius: 4px;
-        background-color: #4CAF50; /* hijau elegan */
-        color: #fff;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.3s ease;
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
-
-        .edit-btn:hover {
-        background-color: #45a049; /* warna lebih gelap saat hover */
-        transform: translateY(-2px); /* efek naik */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* shadow elegan */
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
-        .edit-btn:active {
-        transform: translateY(0); /* kembali normal saat ditekan */
-        box-shadow: none;
+        .filter-container label {
+            font-weight: 500;
+            font-size: 14px;
         }
-</style>
-
+        .filter-container select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .header-action-buttons { display: flex; gap: 10px; }
+        .header-action-buttons .btn {
+            padding: 10px 15px; text-decoration: none; border-radius: 5px; color: white;
+            display: inline-flex; align-items: center; gap: 8px; font-weight: 500;
+        }
+        .btn-add { background-color: #2ecc71; }
+        .btn-add:hover { background-color: #27ae60; }
+        .btn-import { background-color: #3498db; }
+        .btn-import:hover { background-color: #2980b9; }
+    </style>
+</head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Superadmin</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+                <div class="logo"><img src="../Images/logo-header-2024-normal.png" alt="Logo"></div>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard_superadmin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="manage_admin.php"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_pengelola.php" class="active"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
+                <li><a href="manage_admin.php"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
-                <li><a href="change_password.php"><i class="fas fa-key"></i> <span>Ganti Password</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
+                <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
+                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
-        <!-- End Sidebar -->
 
-        <!-- Main Content -->
         <div class="main-content">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
             <div class="header">
                 <h1>Kelola Akun Pengelola</h1>
-                <div class="user-profile">
-                    <span>Role: Superadmin</span>
-                    <a href="../api/logout.php">Logout</a>
-                </div>
+                <div class="user-profile"><span>Role: Superadmin</span><a href="../api/logout.php">Logout</a></div>
             </div>
 
             <div class="content-area">
@@ -162,45 +173,75 @@ if ($result) {
                 <div class="card">
                     <div class="header-with-btn">
                         <h3>Daftar Pengelola</h3>
-                        <a href="add_pengelola.php" class="add-btn">
-                            <i class="fas fa-plus"></i> Tambah Pengelola Baru
-                        </a>
+                        <div class="header-controls">
+                            <div class="filter-container">
+                                <form method="GET" id="filterForm">
+                                    <label for="sort">Urutkan:</label>
+                                    <select name="sort" id="sort" onchange="this.form.submit()">
+                                        <option value="created_at_desc" <?php echo ($sort_option == 'created_at_desc') ? 'selected' : ''; ?>>Terbaru</option>
+                                        <option value="created_at_asc" <?php echo ($sort_option == 'created_at_asc') ? 'selected' : ''; ?>>Terlama</option>
+                                        <option value="nama_asc" <?php echo ($sort_option == 'nama_asc') ? 'selected' : ''; ?>>Nama (A-Z)</option>
+                                        <option value="nama_desc" <?php echo ($sort_option == 'nama_desc') ? 'selected' : ''; ?>>Nama (Z-A)</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="header-action-buttons">
+                                <a href="import_pengelola.php" class="btn btn-import"><i class="fas fa-file-csv"></i> Impor</a>
+                                <a href="add_pengelola.php" class="btn btn-add"><i class="fas fa-plus"></i> Tambah</a>
+                            </div>
+                        </div>
                     </div>
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>NIP</th>
                                 <th>Nama</th>
                                 <th>Email</th>
+                                <th>Waktu Ditambahkan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($pengelolas as $pengelola): ?>
+                            <?php if (!empty($pengelolas)): ?>
+                                <?php foreach ($pengelolas as $pengelola): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($pengelola['nama']); ?></td>
+                                        <td><?php echo htmlspecialchars($pengelola['email']); ?></td>
+                                        <td><?php echo date('d M Y, H:i', strtotime($pengelola['created_at'])); ?></td>
+                                        <td class="action-buttons">
+                                            <a href="edit_pengelola.php?id=<?php echo htmlspecialchars($pengelola['id']); ?>" class="edit-btn">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengelola ini?');">
+                                                <input type="hidden" name="id" value="<?php echo htmlspecialchars($pengelola['id']); ?>">
+                                                <button type="submit" name="delete_pengelola">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($pengelola['nip']); ?></td>
-                                    <td><?php echo htmlspecialchars($pengelola['nama']); ?></td>
-                                    <td><?php echo htmlspecialchars($pengelola['email']); ?></td>
-                                    <td class="action-buttons">
-                                        <a href="edit_pengelola.php?id=<?php echo htmlspecialchars($pengelola['id']); ?>" class="edit-btn">Edit</a>
-                                        <form method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengelola ini?');">
-                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($pengelola['id']); ?>">
-                                            <button type="submit" name="delete_pengelola">Hapus</button>
-                                        </form>
-                                    </td>
+                                    <td colspan="4" style="text-align: center;">Tidak ada data pengelola yang ditemukan.</td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- End Main Content -->
     </div>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
+       document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            if (document.getElementById('sidebar').classList.contains('collapsed')) {
+                localStorage.setItem('sidebarState', 'collapsed');
+            } else {
+                localStorage.setItem('sidebarState', 'expanded');
+            }
+        });
+        if (localStorage.getItem('sidebarState') === 'collapsed') {
+            document.getElementById('sidebar').classList.add('collapsed');
         }
     </script>
 </body>

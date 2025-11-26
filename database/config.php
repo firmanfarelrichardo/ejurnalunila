@@ -3,7 +3,7 @@ function connect_to_database() {
     $host = "localhost";
     $user = "root";
     $pass = "";
-    $db = "oai";
+    $db = "adminejurnal_oai";
 
     $conn = new mysqli($host, $user, $pass, $db);
 

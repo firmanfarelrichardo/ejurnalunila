@@ -2,7 +2,7 @@
 // admin/cetak_editorial.php
 session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
     header("Location: login.php");
     exit();
 }
@@ -36,12 +36,13 @@ if ($result) {
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="logo">
-                     <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
                 </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="dashboard_superadmin.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
+                <li><a href="manage_admin.php"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
                 <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
@@ -54,7 +55,7 @@ if ($result) {
             <div class="header no-print">
                 <h1>Laporan Tim Editorial Jurnal</h1>
                 <div class="user-profile">
-                    <span>Role: Admin</span>
+                    <span>Role: Superadmin</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>

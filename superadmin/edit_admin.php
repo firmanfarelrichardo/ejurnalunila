@@ -18,7 +18,7 @@ $adminData = null;
 // Ambil data admin berdasarkan ID dari URL
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $stmt = $conn->prepare("SELECT id, nip, nama, email FROM users WHERE id = ? AND role = 'admin'");
+    $stmt = $conn->prepare("SELECT id, nama, email FROM users WHERE id = ? AND role = 'admin'");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -33,26 +33,24 @@ if (isset($_GET['id'])) {
 // Logika untuk mengupdate data admin
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_admin'])) {
     $id = $_POST['id'];
-    $nip = $_POST['nip'];
     $nama = $_POST['nama'];
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     // Update data tanpa password jika password kosong
     if (empty($password)) {
-        $stmt = $conn->prepare("UPDATE users SET nip = ?, nama = ?, email = ? WHERE id = ?");
-        $stmt->bind_param("sssi", $nip, $nama, $email, $id);
+        $stmt = $conn->prepare("UPDATE users SET nama = ?, email = ? WHERE id = ?");
+        $stmt->bind_param("ssi", $nama, $email, $id);
     } else {
         // Update data dengan password baru yang di-hash
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE users SET nip = ?, nama = ?, email = ?, password = ? WHERE id = ?");
-        $stmt->bind_param("ssssi", $nip, $nama, $email, $hashedPassword, $id);
+        $stmt = $conn->prepare("UPDATE users SET nama = ?, email = ?, password = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $nama, $email, $hashedPassword, $id);
     }
     
     if ($stmt->execute()) {
         $message = "<div class='success-message'>Admin berhasil diperbarui! <a href='manage_admin.php'>Kembali ke daftar admin</a></div>";
         // Perbarui data admin yang ditampilkan di formulir
-        $adminData['nip'] = $nip;
         $adminData['nama'] = $nama;
         $adminData['email'] = $email;
     } else {
@@ -137,22 +135,28 @@ width: 100%;
 <body>
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Superadmin</h2>
+            <div class="sidebar-header">
+                <button class="sidebar-toggle-btn" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_superadmin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="manage_admin.php" class="active"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
+                <li><a href="dashboard_superadmin.php" class=><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
+                <li><a href="manage_admin.php" class="active"><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
-                <li><a href="change_password.php"><i class="fas fa-key"></i> <span>Ganti Password</span></a></li>
+                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
+                <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
+                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
         <div class="main-content">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
+            
             <div class="header">
                 <h1>Edit Akun Admin</h1>
                 <div class="user-profile">
@@ -167,10 +171,7 @@ width: 100%;
                     <?php if ($adminData): ?>
                         <form method="POST" class="form-edit-user">
                             <input type="hidden" name="id" value="<?php echo htmlspecialchars($adminData['id']); ?>">
-                            <div class="form-group">
-                                <label for="nip">NIP</label>
-                                <input type="text" id="nip" name="nip" value="<?php echo htmlspecialchars($adminData['nip']); ?>" required>
-                            </div>
+                            
                             <div class="form-group">
                                 <label for="nama">Nama Lengkap</label>
                                 <input type="text" id="nama" name="nama" value="<?php echo htmlspecialchars($adminData['nama']); ?>" required>
@@ -193,10 +194,19 @@ width: 100%;
         </div>
         </div>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
+        // Script untuk sidebar toggle
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        if (document.getElementById('sidebar').classList.contains('collapsed')) {
+            localStorage.setItem('sidebarState', 'collapsed');
+        } else {
+            localStorage.setItem('sidebarState', 'expanded');
         }
+    });
+
+    if (localStorage.getItem('sidebarState') === 'collapsed') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
     </script>
 </body>
 </html>

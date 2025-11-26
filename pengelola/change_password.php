@@ -3,7 +3,7 @@
 session_start();
 
 // Periksa apakah pengguna sudah login dan memiliki peran superadmin
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
     header("Location: login.php");
     exit();
 }
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ganti Password - Superadmin</title>
+    <title>Ganti Password - Pengelola</title>
     <link rel="stylesheet" href="admin_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -113,13 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_superadmin.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-                <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
-                <li><a href="manage_admin.php" ><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
-                <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
-                <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
-                <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
-                <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="dashboard_pengelola.php" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="tambah_jurnal.php" ><i class="fas fa-plus-circle"></i> <span>Daftar Jurnal Baru</span></a></li>
+                <li><a href="daftar_jurnal.php"><i class="fas fa-list-alt"></i> <span>Daftar & Status Jurnal</span></a></li>
                 <li><a href="change_password.php" class="active"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
@@ -131,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="header">
                 <h1>Ganti Password</h1>
                 <div class="user-profile">
-                    <span>Role: Superadmin</span>
+                    <span>Role: Pengelola</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>
@@ -156,23 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <!-- End Main Content -->
     </div>
-    
-    <script>
-        document.getElementById('sidebar-toggle').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-        if (document.getElementById('sidebar').classList.contains('collapsed')) {
-            localStorage.setItem('sidebarState', 'collapsed');
-        } else {
-            localStorage.setItem('sidebarState', 'expanded');
-        }
-    });
-
-    if (localStorage.getItem('sidebarState') === 'collapsed') {
-        document.getElementById('sidebar').classList.add('collapsed');
-    }
-    </script>
-    
-    
 </body>
 </html>
 <?php

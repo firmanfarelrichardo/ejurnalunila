@@ -3,7 +3,7 @@
 session_start();
 
 // Cek sesi admin
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'superadmin') {
     header("Location: login.php");
     exit();
 }
@@ -93,10 +93,11 @@ $stmt->close();
                 </div>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="dashboard_admin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="dashboard_superadmin.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
                 <li><a href="manage_pengelola.php"><i class="fas fa-user-cog"></i> <span>Kelola Pengelola</span></a></li>
+                <li><a href="manage_admin.php" ><i class="fas fa-user-shield"></i> <span>Kelola Admin</span></a></li>
                 <li><a href="manage_journal.php"><i class="fas fa-book"></i> <span>Kelola Jurnal</span></a></li>
-                <li><a href="tinjau_permintaan.php" class="active"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
+                <li><a href="tinjau_permintaan.php"  class="active"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
                 <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
                 <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
@@ -108,7 +109,7 @@ $stmt->close();
             <div class="header">
                 <h1>Tinjau Permintaan</h1>
                 <div class="user-profile">
-                    <span>Role: Admin</span>
+                    <span>Role: Superadmin</span>
                     <a href="../api/logout.php">Logout</a>
                 </div>
             </div>

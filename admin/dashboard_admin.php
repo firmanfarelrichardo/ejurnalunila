@@ -1,27 +1,20 @@
 <?php
-// Mulai atau lanjutkan sesi
 session_start();
 
-// Cek apakah pengguna sudah login dan memiliki peran yang sesuai
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 
-// Pengaturan Database MySQL
 require_once '../database/config.php';
 $conn = connect_to_database();
 
-// --- DATA UNTUK KARTU STATISTIK UTAMA ---
 $totalPengelola = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'pengelola'")->fetch_row()[0];
 $totalJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_sumber")->fetch_row()[0];
 $pendingJurnals = $conn->query("SELECT COUNT(*) FROM jurnal_sumber WHERE status = 'pending'")->fetch_row()[0];
 $pendingRequests = $conn->query("SELECT COUNT(*) FROM submission_requests WHERE status = 'pending'")->fetch_row()[0];
 
 
-// --- DATA UNTUK GRAFIK ---
-
-// 1. DATA AKTIVITAS HARVESTING (LINE CHART)
 $harvest_activity_query = $conn->query(
     "SELECT 
         DATE(created_at) as activity_day, 
@@ -41,7 +34,6 @@ if ($harvest_activity_query) {
 }
 $harvest_activity_chart_data = json_encode(['labels' => $harvest_activity_labels, 'data' => $harvest_activity_counts]);
 
-// 2. JURNAL PER PENGELOLA (BAR CHART)
 $pengelola_data_query = $conn->query("SELECT u.nama, COUNT(js.id) as total_jurnal FROM users u LEFT JOIN jurnal_sumber js ON u.id = js.pengelola_id WHERE u.role = 'pengelola' GROUP BY u.id, u.nama HAVING total_jurnal > 0 ORDER BY total_jurnal DESC");
 $pengelola_labels = [];
 $pengelola_counts = [];
@@ -51,7 +43,7 @@ while($row = $pengelola_data_query->fetch_assoc()) {
 }
 $pengelola_chart_data = json_encode(['labels' => $pengelola_labels, 'data' => $pengelola_counts]);
 
-// 3. STATUS JURNAL (DOUGHNUT CHART)
+
 $jurnal_status_data = ['selesai' => 0, 'ditolak' => 0, 'butuh_edit' => 0, 'pending' => 0];
 $jurnal_status_query = $conn->query("SELECT status, COUNT(*) as count FROM jurnal_sumber GROUP BY status");
 if ($jurnal_status_query) {
@@ -66,7 +58,6 @@ $jurnal_status_counts = array_values($jurnal_status_data);
 $jurnal_status_colors = ['#2ecc71', '#e74c3c', '#3498db', '#f1c40f'];
 $jurnal_status_chart_data = json_encode(['labels' => $jurnal_status_labels, 'data' => $jurnal_status_counts, 'colors' => $jurnal_status_colors]);
 
-// 4. (DIPERBARUI) STATUS PERMINTAAN (DOUGHNUT CHART) - Tampilkan semua kategori
 $request_status_data = [
     'approved' => 0,
     'rejected' => 0,
@@ -109,7 +100,7 @@ $request_status_chart_data = json_encode(['labels' => $request_status_labels, 'd
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="logo">
-                    <img src="../images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
+                    <img src="../Images/logo-header-2024-normal.png" alt="Logo Universitas Lampung">
                 </div>
             </div>
             <ul class="sidebar-menu">
@@ -119,6 +110,7 @@ $request_status_chart_data = json_encode(['labels' => $request_status_labels, 'd
                 <li><a href="tinjau_permintaan.php"><i class="fas fa-envelope-open-text"></i> <span>Tinjau Permintaan</span></a></li>
                 <li><a href="harvester.php"><i class="fas fa-seedling"></i> <span>Jalankan Harvester</span></a></li>
                 <li><a href="cetak_editorial.php"><i class="fas fa-print"></i> <span>Cetak Editorial</span></a></li>
+                <li><a href="change_password.php"><i class="fas fa-lock"></i> <span>Ganti Password</span></a></li>
                 <li><a href="../api/logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
             </ul>
         </div>
@@ -219,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Inisialisasi Chart
     new Chart(document.getElementById('harvestActivityChart'), {
         type: 'line',
         data: {
@@ -283,7 +274,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Script untuk sidebar toggle
 document.getElementById('sidebar-toggle').addEventListener('click', function() {
         document.getElementById('sidebar').classList.toggle('collapsed');
         if (document.getElementById('sidebar').classList.contains('collapsed')) {
