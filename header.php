@@ -33,6 +33,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <li class="<?php if ($current_page == 'penerbit.php' || $current_page == 'jurnal_penerbit.php') { echo 'active'; } ?>"><a href="penerbit.php">Penerbit</a></li>
                         <li class="<?php if ($current_page == 'subjek.php' || $current_page == 'jurnal_subjek.php') { echo 'active'; } ?>"><a href="subjek.php">Subjek</a></li>
                         <li class="<?php if ($current_page == 'statistik.php') { echo 'active'; } ?>"><a href="statistik.php">Statistik</a></li>
+                        <li class="<?php if ($current_page == 'tentang.php') { echo 'active'; } ?>"><a href="tentang.php">Tentang</a></li>
                     </ul>
                 </nav>
             <button id="mobile-menu-toggle" class="mobile-menu-button">
