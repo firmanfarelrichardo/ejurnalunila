@@ -301,6 +301,7 @@ $conn = connect_to_database();
                          <div class="form-group">
                             <label for="subject_arjuna">Subject Area Arjuna</label>
                             <select id="subject_arjuna" name="subject_arjuna">
+                                <option value="">Pilih Subject Area...</option>
                                 <option value="Biokimia, Genetika dan Biologi Molekuler">Biokimia, Genetika dan Biologi Molekuler</option>
                                 <option value="Bisnis, Menejemen, dan Akutansi (semua kategori)">Bisnis, Menejemen, dan Akutansi (semua kategori)</option>
                                 <option value="Energi (semua kategori)">Energi (semua kategori)</option>
@@ -308,18 +309,32 @@ $conn = connect_to_database();
                                 <option value="Ilmu Bumi dan Planet (semua kategori)">Ilmu Bumi dan Planet (semua kategori)</option>
                                 <option value="Ilmu Ekonomi, Ekonometrika dan Keuangan (semua kategori)">Ilmu Ekonomi, Ekonometrika dan Keuangan (semua kategori)</option>
                                 <option value="Ilmu Komputer (semua kategori)">Ilmu Komputer (semua kategori)</option>
+                                <option value="Ilmu Lingkungan (semua ketegori)">Ilmu Lingkungan (semua ketegori)</option>
                                 <option value="Ilmu Material (semua kategori)">Ilmu Material (semua kategori)</option>
+                                <option value="Ilmu Pengambilan Keputusan (semua kategori)">Ilmu Pengambilan Keputusan (semua kategori)</option>
+                                <option value="Ilmu Pertanian dan Biologi (Semua)">Ilmu Pertanian dan Biologi (Semua)</option>
+                                <option value="Ilmu Sosial">Ilmu Sosial</option>
+                                <option value="Ilmu Syaraf">Ilmu Syaraf</option>
+                                <option value="Imunologi dan Mikrobiologi (semua kategori)">Imunologi dan Mikrobiologi (semua kategori)</option>
+                                <option value="Kedokteran">Kedokteran</option>
+                                <option value="Kedokteran Gigi">Kedokteran Gigi</option>
+                                <option value="Kedokteran Hewan">Kedokteran Hewan</option>
+                                <option value="Keperawatan">Keperawatan</option>
+                                <option value="Kimia(semua kategori)">Kimia(semua kategori)</option>
+                                <option value="Matematika">Matematika</option>
+                                <option value="Pharmacology, Toxicology and Pharmaceutics">Pharmacology, Toxicology and Pharmaceutics</option>
+                                <option value="Profesi Kesehatan">Profesi Kesehatan</option>
+                                <option value="Psikologi">Psikologi</option>
+                                <option value="Seni dan Humaniora">Seni dan Humaniora</option>
                                 <option value="Teknik (semua kategori)">Teknik (semua kategori)</option>
+                                <option value="Teknik Kimia (semua kategori)">Teknik Kimia (semua kategori)</option>
                                 <option value="Umum">Umum</option>
                                 </select>
                         </div>
                         <div class="form-group">
                             <label for="sub_subject_arjuna">Sub Subject Area Arjuna</label>
                             <select id="sub_subject_arjuna" name="sub_subject_arjuna">
-                                <option value="Arsitektur">Arsitektur</option>                                
-                                <option value="Komputasi Mekanik">Komputasi Mekanik</option>
-                                <option value="Teknik Listrik dan Elektro">Teknik Listrik dan Elektro</option>
-                                <option value="Teknik Sipil dan Struktur">Teknik Sipil dan Struktur</option>
+                                <option value="">Pilih Sub Subject...</option>
                                 </select>
                         </div>
 
@@ -374,25 +389,33 @@ $conn = connect_to_database();
         const subjectSelect = document.getElementById('subject_arjuna');
         const subSubjectSelect = document.getElementById('sub_subject_arjuna');
         const subSubjectMap = {
-            'Biokimia, Genetika dan Biologi Molekuler': ['Biofisika', 'Biokimia', 'Biokimia Klinis', 'Biokimia, Genetiika dan Biologi Molekuler (Lain-lain)', 'Biologi Molekuler', 'Biologi Perkembangan', 'Biologi Sel', 'Biologi Struktur', 'Bioteknologi', 'Endokrinologi', 'Fisiologi', 'Genetika', 'Kedokteran Molekuler', 'Penelitian Kanker', 'Penuaan'],
-            'Bisnis, Menejemen, dan Akutansi (semua kategori)': ['Pemasaran', 'Akuntansi', 'Manajemen SDM', 'Bisnis dan Manajemen Internasional', 'Bisnis, Manajemen, dan Akuntansi (Lain-lain)', 'Manajemen Teknologi dan Inovasi', 'Relasi Industri', 'Sistem Informasi Manajemen', 'Strategi dan Manajemen', 'Tourism, Leisure and Hospitality Management'],
-            'Energi (semua kategori)': ['Energi Terbarukan', 'Teknologi Bahan Bakar', 'Teknik dan Energi Nuklir', 'Teknik Energi dan Teknologi Daya'],
-            'Fisika dan Astronomi': ['Akustik dan Ultrasonik',
-'Astronomi dan Astrofisika',
-'Condensed Matter Physics',
-'Fisika Nonlinear dan Statistk',
-'Fisika Nuklir dan Energi Tinggi',
-'Fisika Nuklir dan Molekuler, dan Ooptik',
-'Fisika dan Astronomi (Lain-Lain)',
-'Instrumentasi',
-'Permukaan dan Interface',
-'Radiasi'],
-            'Ilmu Bumi dan Planet (semua kategori)': ['Geologi', 'Oseanografi', 'Ilmu Atmosfer'],
-            'Ilmu Ekonomi, Ekonometrika dan Keuangan (semua kategori)': ['Ekonomi Pembangunan', 'Keuangan Perbankan', 'Ekonometrika Terapan'],
-            'Ilmu Komputer (semua kategori)': ['Kecerdasan Buatan', 'Jaringan Komputer', 'Rekayasa Perangkat Lunak', 'Sistem Informasi'],
-            'Ilmu Material (semua kategori)': ['Keramik', 'Polimer', 'Material Komposit'],
-            'Teknik (semua kategori)': ['Teknik Sipil', 'Teknik Mesin', 'Teknik Elektro', 'Teknik Kimia', 'Arsitektur'],
-            'Umum': ['Lain-lain']
+            'Biokimia, Genetika dan Biologi Molekuler': ['Biofisika', 'Biokimia', 'Biokimia Klinis', 'Biokimia, Genetika dan Biologi Molekuler (Lain-Lain)', 'Biologi Molekuler', 'Biologi Perkembangan', 'Biologi Sel', 'Biologi Struktur', 'Bioteknologi', 'Endokrinologi', 'Fisiologi', 'Genetika', 'Kedokteran Molekuler', 'Penelitian Kanker', 'Penuaan'],
+            'Bisnis, Menejemen, dan Akutansi (semua kategori)': ['Akuntansi', 'Bisnis dan Menejemen Intetrnasional', 'Bisnis, Menejemen, dan Akutansi (Lain-Lain)', 'Menejemen Teknologi dan Inovasi', 'Pemasaran', 'Perilaku Organisasi dan Menejemen Sumber Daya Manusia', 'Relasi Industri', 'Sistem Informasi Menejemen', 'Strategi dan Menejemen', 'Tourism, Leisure and Hospitality Management'],
+            'Energi (semua kategori)': ['Energi (Lain-Lain)', 'Energi Terbarukan, Keberlanjutan dan Lingkungan', 'Teknik Energi dan Teknologi Daya', 'Teknik dan Energi Nuklir', 'Teknologi Bahan Bakar'],
+            'Fisika dan Astronomi': ['Akustik dan Ultrasonik', 'Astronomi dan Astrofisika', 'Condensed Matter Physics', 'Fisika Nonlinear dan Statistk', 'Fisika Nuklir dan Energi Tinggi', 'Fisika Nuklir dan Molekuler, dan Ooptik', 'Fisika dan Astronomi (Lain-Lain)', 'Instrumentasi', 'Permukaan dan Interface', 'Radiasi'],
+            'Ilmu Bumi dan Planet (semua kategori)': ['Geofisika', 'Geokimia danPetrologi', 'Geologi', 'Geologi Ekonomi', 'Ilmu Atmosfir', 'Ilmu Bumi dan Planet (Lain-Lain)', 'Komputer pada Ilmu Bumi', 'Oseanografi', 'Paleontologi', 'Proses Permukaan Bumi', 'Ruang Angkasa dan Ilmu Planet', 'Styraytigrafi', 'Teknik Geologi dan Geologi Teknik'],
+            'Ilmu Ekonomi, Ekonometrika dan Keuangan (semua kategori)': ['Ilmu Ekomomi dan Ekonometrika', 'Ilmu Ekonomi, Ekonometrika dan Keuangan (Lain-Lain)', 'Keuangan'],
+            'Ilmu Komputer (semua kategori)': ['Aplikasi Ilmu Komputer', 'Grafik Komputer dan Desain Berbantu Komputer', 'Ilmu Komputer (Lain-Lain)', 'Interaksi Komputer-Manusia', 'Jaringan Komputer dan Komunikasi', 'Kecerdasan Buatan', 'Pemrosesan Sinyal', 'Perangkat Keras dan Arsitektur', 'Perangkat Lunak', 'Sistem Informasi', 'Teori Komputasi dan Matematika', 'Visi Komputer dan Pengenalan Pola'],
+            'Ilmu Lingkungan (semua ketegori)': ['Ekologi', 'Ekologi Modeling', 'Global dan Perubahan Planet', 'Ilmu Lingkungan (Lain-Lain)', 'Kesehatan, Toksikologi dan Mutasi Gen', 'Kimia Lingkungan', 'Konservasi Alam dan Lahan', 'Manajemen Limbah dan Disposal', 'Manajemen, Monitoring, Kebijakan dan Hukum', 'Polusi', 'Sain dan Teknologi Air', 'Teknik Lingkungan'],
+            'Ilmu Material (semua kategori)': ['Biomaterial', 'Elektronik, Optik dan Materi Magnetik', 'Ilmu Material (Lain-Lain)', 'Keramik dan Komposit', 'Kimia Material', 'Logam dan Paduan Logam', 'Permukaan, Pelapisan dan Film', 'Polimer dan Plastik'],
+            'Ilmu Pengambilan Keputusan (semua kategori)': ['Ilmu Manajemen dan Riset Operasi', 'Ilmu Pengambilan Keputusan (Lain-Lain)', 'Sistem Informasi dan Manajemen', 'Statistik, Kemungkinan dan Ketidak Pastian'],
+            'Ilmu Pertanian dan Biologi (Semua)': ['Agronomi dan Ilmu Tanaman', 'Ecology, Evolution, Behavior and Systematics', 'Holtikkultura', 'Ilmu Hewan dan Zoologi', 'Ilmu Makanan', 'Ilmu Perairan', 'Ilmu Pertanian dan Biologi (Lain-Lain)', 'Ilmu Serangga', 'Ilmu Tanah', 'Ilmu Tumbuhan', 'Kehutanan'],
+            'Ilmu Sosial': ['Administrasi Publik', 'Antropologi', 'Arkeologi', 'Demografi', 'Geografi, Perencanaan dan Pengembangan', 'GFaktor Manusia dan Ergonomi', 'Hukum', 'Ilmu Politik dan Hubungan Internasional', 'Ilmu Sosial (Lain-Lain)', 'Kajian Budaya', 'Kesehatan (Ilmu Sosial)', 'Komunikasi', 'Life-span and Life-course Studies', 'Linguistik dan Bahasa', 'Pendidikan', 'Perkembangan', 'Perpustakan dan Informasi', 'Riset Keselamatan', 'Sosiologi dan Ilmu Politik', 'Studi Urban', 'Stugi Gender', 'Transportasi'],
+            'Ilmu Syaraf': ['Ilmu Syaraf (Lain-Lain)', 'Ilmu Syaraf Kognitif', 'Ilmu Syaraf Perilaku', 'Ilmu Syaraf Perkembangan', 'Ilmu Syaraf Seluler dan Molekuler', 'Neurologi', 'Psikiatri Biologi', 'Sistem Endokrin dan Automatis', 'Sistem Sensori'],
+            'Imunologi dan Mikrobiologi (semua kategori)': ['Imunologi', 'Imunologi dan Mikrobiologi (Lain-Lain)', 'Mikrobiologi', 'Mikrobiologi dan Bioteknologi Terapan', 'Parasitologi', 'Virologi'],
+            'Kedokteran': ['Anatomi', 'Anesthesiology and Pain Medicine', 'Biokimia, Kedokteran', 'Cardiology and Cardiovascular Medicine', 'Critical Care and Intensive Care Medicine', 'Dermatologi', 'Embriologi', 'Endokrinologi, Diabetes dan Metabolisme', 'Epidemiologi', 'Family (Medis)', 'Fisiologi (Medis)', 'Genetika (Klinis)', 'Geriatrics and Gerontology', 'Hematologi', 'Hepatologi', 'Histologi', 'Ilmu Pencernaan', 'Imunologi dan Alergi', 'Informatika Kesehatan', 'Kebijakan Kesehatan', 'Kedokteran (Lain-Lain)', 'Kedokteran Emergensi', 'Kedokteran Internal', 'Kedokteran Keluarga', 'Kedokteran Reproduksi dan Alternatif', 'Kedokteran Paru dan Pernafasan', 'Kedokteran Radiologi Nuklir dan Imaging', 'Kedokteran Reproduksi', 'Kesehatan Masyarakat, Kesehatan Lingkungan dan Pekerjaan', 'Mikrobiologi (Medis)', 'NTT Nephrology', 'Neurologi Klinis', 'Obstetrics and gynaecology', 'Onkologi', 'Opthalmology', 'Ortopedi dan Kedokteran Kesehatan', 'Otorhinolaryngology', 'Patologi dan Kedokteran Kesehatan', 'Pediatrics, Perinatology, and Child Health', 'Pembedahan', 'Penyakit Menular', 'Petunjuk Obat-obatan', 'Psikiatri dan Kesehatan Mental', 'Rehabilitasi', 'Review dan Referensi, Kedokteran', 'Rheumatology', 'Transplantasi', 'Urologi'],
+            'Kedokteran Gigi': ['Bedah Mulut', 'Kebersihan Gigi', 'Kedokteran Gigi (Lain-Lain)', 'Ortodonti', 'Perawatan Gigi', 'Periodontik'],
+            'Kedokteran Hewan': ['Equine', 'Food Animals', 'Hewan Kecil', 'Kedokteran Hewan (Lain-Lain)', 'Zoologi'],
+            'Keperawatan': ['Advanced and Specialised Nursing', 'Asemen dan Diagnosis', 'Bedah Keperawatan', 'Care Planning', 'Community and Home Care', 'Critical Care', 'Farmakologi (Keperawatan)', 'Fundamental dan Ketrampilan', 'Gerontologi', 'Isu, Etik dan Aspek', 'Kedaruratan', 'Kepemimpinan dan Menejemen', 'Keperawatan (Lain-Lain)', 'Kesehatan Mental Psikitri', 'LPN dan LVN', 'Maternity and Midwifery', 'Nurse Assisting', 'Nutrition and Dietetics', 'Oncology (Keperawatan)', 'Patofisiologi', 'Pediatrik', 'Review dan Persiapan', 'Teori dan Teori'],
+            'Kimia(semua kategori)': ['Inorganic Chemistry', 'Kimia (Lain-Lain)', 'Kimia Analitik', 'Kimia Fisik', 'Kimia Organik', 'Kimia Teori dan Fisik', 'Spektroskopi'],
+            'Matematika': ['Aljabar dan Teori Bilangan', 'Analisis', 'Analisis Numerikal', 'Fisika Matematik', 'Geometri dan Topologi', 'Ilmu Komputer Teoritis', 'Kontrol dan Optimasi', 'Logika', 'Matematika (Lain-Lain)', 'Matematika Diskrit dan Kombinatori', 'Matematika Komputer', 'Matematika Terapan', 'Pemodelan dan Simulasi', 'Statistik dan Probabilitas'],
+            'Pharmacology, Toxicology and Pharmaceutics': ['Farmakologi', 'Ilmu Farmasi', 'Penemuan Obat', 'Pharmacology, Toxicology and Pharmaceutics (Lain-Lain)', 'Toksikologi'],
+            'Profesi Kesehatan': ['Bimbingan Kesehatan dan Transkripsi', 'Chiropractics', 'Farmasi', 'Menejemen Informasi Kesehatan', 'Occupational Therapy', 'Optometri', 'Pelayanan Medis Emergensi', 'Perawatan Pernafasan', 'Podiatri', 'Profesi Kesehatan (Lain-Lain)', 'Speech and Hearing', 'Teknologi Laboratorium Medis', 'Teknologi Ultrasound dan Radiologi', 'Terapi Fisik, Olah Raga dan Rehabilitasi', 'Terapi Manual dan Pelengkap', 'Terminologi Medis'],
+            'Psikologi': ['Neuropsychology and Physiological Psychology', 'Psikologi (Lain-Lain)', 'Psikologi Klinis', 'Psikologi Kognitif dan Experimental', 'Psikologi Pendidikan dan perkembangan', 'Psikologi Sosial', 'Psikologi Terapan'],
+            'Seni dan Humaniora': ['Arkeologi', 'Bahasa dan Linguistik', 'Filsafat', 'Klasik', 'Konservasi', 'Museology', 'Musik', 'Sastra dan Teori Sastra', 'Sejarah', 'Sejarah dan Filsafat Ilmu', 'Seni Visual dan Seni Pertunjukan', 'Seni dan Humaniora (Lain-Lain)', 'Studi Agama'],
+            'Teknik (semua kategori)': ['Arsitektur', 'Bangunan dan Konstruksi', 'Keselamatan, Resiko, Reabilitas dan Kualitas', 'Komputasi Mekanik', 'Mekanik Material', 'Teknik (Lain-Lain)', 'Teknik Biomedis', 'Teknik Kelautan', 'Teknik Kontrol dan Sistem', 'Teknik Listrik dan Elektro', 'Teknik Mesin', 'Teknik Otomottif', 'Teknik Ruang Angkasa', 'Teknik Sipil dan Struktur', 'Teknologi Media', 'Ternik Industri dan Manufaktur'],
+            'Teknik Kimia (semua kategori)': ['Bioengineering', 'Filtrasi dan Seperasi', 'Fluid Flow and Transfer Processes', 'Katalisis', 'Kesehatan dan Keamanan Kimia', 'Kimia Proses dan Teknologi', 'Koloid dan Kimia Permukaan', 'Teknik Kimia (Lain-Lain)'],
+            'Umum': ['Umum']
         };
 
         // Fungsi untuk memperbarui dropdown sub-subjek
