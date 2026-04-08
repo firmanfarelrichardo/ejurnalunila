@@ -1,4 +1,8 @@
 <?php
+/**
+ * Halaman Koleksi Jurnal
+ * Menampilkan daftar artikel berdasarkan kategori koleksi (terbaru, bahasa, acak).
+ */
 include 'header.php';
 
 // --- PENGATUAN PAGINASI ---
@@ -53,18 +57,20 @@ $total_results = $count_result ? $count_result->fetch_row()[0] : 0;
 $total_pages = ceil($total_results / $results_per_page);
 ?>
 
-<title><?php echo $judul; ?> - Portal Jurnal</title>
+<title><?php echo htmlspecialchars($judul, ENT_QUOTES, 'UTF-8'); ?> - Portal Jurnal</title>
 
+<!-- Kontainer Utama Halaman -->
 <main class="page-container">
     <div class="container">
         <div class="page-header">
-            <h1><?php echo htmlspecialchars($judul); ?></h1>
-            <p><?php echo htmlspecialchars($deskripsi); ?></p>
+            <h1><?php echo htmlspecialchars($judul, ENT_QUOTES, 'UTF-8'); ?></h1>
+            <p><?php echo htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8'); ?></p>
         </div>
 
-        <p>Total ditemukan <?php echo $total_results; ?> artikel.</p>
+        <p>Total ditemukan <?php echo htmlspecialchars((string)$total_results, ENT_QUOTES, 'UTF-8'); ?> artikel.</p>
         <hr>
 
+        <!-- Daftar Hasil Pencarian Artikel -->
         <div class="search-results-list">
             <?php
             // --- Query utama untuk mengambil data artikel ---
@@ -83,15 +89,15 @@ $total_pages = ceil($total_results / $results_per_page);
                 if ($result && $result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         echo '<div class="article-item">';
-                        echo '  <h4><a href="' . htmlspecialchars($row['identifier1']) . '" target="_blank">' . htmlspecialchars($row['title']) . '</a></h4>';
+                        echo '  <h4><a href="' . htmlspecialchars($row['identifier1'], ENT_QUOTES, 'UTF-8') . '" target="_blank">' . htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8') . '</a></h4>';
                         $creators = array_filter([$row['creator1'], $row['creator2'], $row['creator3']]);
                         if (!empty($creators)) {
-                            echo '  <p class="article-creator">Oleh: ' . htmlspecialchars(implode(', ', $creators)) . '</p>';
+                            echo '  <p class="article-creator">Oleh: ' . htmlspecialchars(implode(', ', $creators), ENT_QUOTES, 'UTF-8') . '</p>';
                         }
                         $description_snippet = substr(strip_tags($row['description'] ?? ''), 0, 300);
-                        echo '  <p class="article-description">' . htmlspecialchars($description_snippet) . '...</p>';
+                        echo '  <p class="article-description">' . htmlspecialchars($description_snippet, ENT_QUOTES, 'UTF-8') . '...</p>';
                         $publication_date = date("d F Y", strtotime($row['date']));
-                        echo '  <p class="article-source">Penerbit: ' . htmlspecialchars($row['publisher']) . ' &bull; Publikasi: ' . $publication_date . '</p>';
+                        echo '  <p class="article-source">Penerbit: ' . htmlspecialchars($row['publisher'], ENT_QUOTES, 'UTF-8') . ' &bull; Publikasi: ' . htmlspecialchars($publication_date, ENT_QUOTES, 'UTF-8') . '</p>';
                         echo '</div>';
                     }
                 } else {
@@ -102,28 +108,34 @@ $total_pages = ceil($total_results / $results_per_page);
             ?>
         </div>
 
+        <!-- Navigasi Paginasi -->
         <nav class="pagination modern">
             <ul>
                 <?php
                 // Logika paginasi
                 if ($total_pages > 1) {
-                    // Previous button logic here...
+                    $safe_koleksi = htmlspecialchars(urlencode($koleksi), ENT_QUOTES, 'UTF-8');
+                    // Previous button logic
                     if ($page > 1) {
-                        echo '<li><a href="koleksi.php?koleksi=' . $koleksi . '&page=' . ($page - 1) . '">&laquo; Previous</a></li>';
+                        $prev_page = htmlspecialchars((string)($page - 1), ENT_QUOTES, 'UTF-8');
+                        echo '<li><a href="koleksi.php?koleksi=' . $safe_koleksi . '&page=' . $prev_page . '">&laquo; Previous</a></li>';
                     }
-                    // Number logic here...
+                    // Number logic
                     $window = 2;
                     for ($i = 1; $i <= $total_pages; $i++) {
                         if ($i == 1 || $i == $total_pages || ($i >= $page - $window && $i <= $page + $window)) {
                             $active_class = ($i == $page) ? 'active' : '';
-                            echo '<li><a href="koleksi.php?koleksi=' . $koleksi . '&page=' . $i . '" class="' . $active_class . '">' . $i . '</a></li>';
+                            $safe_i = htmlspecialchars((string)$i, ENT_QUOTES, 'UTF-8');
+                            $safe_active_class = htmlspecialchars($active_class, ENT_QUOTES, 'UTF-8');
+                            echo '<li><a href="koleksi.php?koleksi=' . $safe_koleksi . '&page=' . $safe_i . '" class="' . $safe_active_class . '">' . $safe_i . '</a></li>';
                         } elseif ($i == $page - $window - 1 || $i == $page + $window + 1) {
                             echo '<li><span class="ellipsis">...</span></li>';
                         }
                     }
-                    // Next button logic here...
+                    // Next button logic
                     if ($page < $total_pages) {
-                        echo '<li><a href="koleksi.php?koleksi=' . $koleksi . '&page=' . ($page + 1) . '">Next &raquo;</a></li>';
+                        $next_page = htmlspecialchars((string)($page + 1), ENT_QUOTES, 'UTF-8');
+                        echo '<li><a href="koleksi.php?koleksi=' . $safe_koleksi . '&page=' . $next_page . '">Next &raquo;</a></li>';
                     }
                 }
                 ?>

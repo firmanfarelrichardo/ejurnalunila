@@ -4,12 +4,10 @@ session_start();
 // Fungsi: Menerima data dari formulir pendaftaran jurnal dan menyimpannya ke database.
 // Skrip ini sekarang mengunggah semua data ke tabel 'jurnal_sumber' dengan status 'pending'.
 
-// Keamanan: Pastikan hanya pengelola yang bisa mengakses skrip ini
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'pengelola') {
     die("Akses ditolak. Kamu harus login sebagai pengelola.");
 }
 
-// Koneksi ke Database
 $host = "localhost";
 $user = "root";
 $pass = "";
@@ -19,13 +17,11 @@ $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die("Koneksi database gagal: " . $conn->connect_error);
 }
-
-// Ambil data dari form yang dikirim melalui POST
 $nama_kontak = $_POST['nama_kontak'] ?? null;
 $email_kontak = $_POST['email_kontak'] ?? null;
 $institusi = $_POST['institusi'] ?? null;
 $judul_jurnal_asli = $_POST['judul_jurnal_asli'] ?? null;
-$judul_jurnal = $judul_jurnal_asli; // Menggunakan judul asli sebagai judul_jurnal sementara
+$judul_jurnal = $judul_jurnal_asli; 
 $doi = $_POST['doi'] ?? null;
 $journal_type = $_POST['journal_type'] ?? 'Journal';
 $p_issn = $_POST['p_issn'] ?? null;
@@ -38,8 +34,8 @@ $start_year = $_POST['start_year'] ?? null;
 $issue_period = $_POST['issue_period'] ?? null;
 $editorial_address = $_POST['editorial_address'] ?? null;
 $aim_and_scope = $_POST['aim_and_scope'] ?? null;
-$has_homepage = 1; // Default true, bisa diubah nanti
-$is_using_ojs = 0; // Default false, bisa diubah nanti
+$has_homepage = 1;
+$is_using_ojs = 0; 
 $ojs_link = $_POST['ojs_link'] ?? null;
 $open_access_link = $_POST['open_access_link'] ?? null;
 $url_editorial_board = $_POST['url_editorial_board'] ?? null;
@@ -57,11 +53,10 @@ $akreditasi_sinta = $_POST['akreditasi_sinta'] ?? 'Belum Terakreditasi';
 $index_scopus = $_POST['index_scopus'] ?? 'Belum Terindeks';
 $fakultas = $_POST['fakultas'] ?? null;
 $editorial_team = $_POST['editorial_team'] ?? null;
-$status = 'pending'; // Status default saat pengajuan
+$status = 'pending'; 
 $submitted_by_nip = $_SESSION['user_id'];
-$pengelola_id = $submitted_by_nip; // Anggap pengelola_id sama dengan nip untuk sementara
+$pengelola_id = $submitted_by_nip; 
 
-// Query INSERT ke tabel jurnal_sumber yang baru
 $stmt = $conn->prepare("INSERT INTO jurnal_sumber (
     pengelola_id, nama_kontak, email_kontak, institusi, judul_jurnal_asli, judul_jurnal, doi, journal_type,
     p_issn, e_issn, penerbit, country_of_publisher, website_url, journal_contact_phone,

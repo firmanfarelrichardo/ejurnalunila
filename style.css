@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. BASE STYLES & RESET
+   1. RESET & BASE STYLES
    ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -34,6 +34,10 @@ body {
     padding: 0 20px;
 }
 
+
+/* ==========================================================================
+   2. TYPOGRAPHY & LINKS
+   ========================================================================== */
 a {
     color: var(--primary-color);
     text-decoration: none;
@@ -49,8 +53,9 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.3;
 }
 
+
 /* ==========================================================================
-   2. HEADER & NAVIGATION (RESPONSIVE FINAL)
+   3. HEADER & NAVIGATION
    ========================================================================== */
 .site-header {
     background-color: var(--header-blue);
@@ -87,23 +92,24 @@ h1, h2, h3, h4, h5, h6 {
 .main-nav a {
     color: var(--white);
     font-weight: 500;
-    transition: all 0.2s ease; /* Transisi dibuat lebih cepat */
-    padding: 10px 15px; /* Padding disesuaikan */
-    border-radius: 5px;
+    transition: all 0.2s ease;
+    padding: 25px 16px;
+    border-radius: 0px;
     white-space: nowrap;
-    border-bottom: 3px solid transparent; /* Garis bawah transparan sebagai dasar */
+    border-bottom: 3px solid transparent;
 }
 
 .main-nav a:hover {
     color: var(--primary-color);
-    background-color: rgba(0, 0, 0, 0.05); /* Latar hover abu-abu tipis */
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .main-nav li.active a {
     color: var(--primary-color);
-    font-weight: 600; /* Ditebalkan saat aktif */
-    border-bottom-color: var(--primary-color); /* Garis bawah solid saat aktif */
-    background-color: transparent; /* Pastikan tidak ada background */
+    font-weight: 600;
+    border-bottom-color: var(--primary-color);
+    background-color: rgba(173, 225, 254, 0.255);
+    opacity: 1;
 }
 
 .user-actions {
@@ -127,7 +133,6 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
 }
 
-/* Tombol Hamburger (disembunyikan di desktop) */
 .mobile-menu-button {
     display: none;
     background: none;
@@ -137,28 +142,26 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
 }
 
-
-/* Tampilan Mobile - breakpoint 992px */
 @media (max-width: 992px) {
     .mobile-menu-button {
-        display: block; /* Tampilkan tombol hamburger */
+        display: block;
     }
 
     .nav-wrapper {
-        display: none; /* Sembunyikan navigasi desktop */
+        display: none;
         position: absolute;
-        top: 70px; /* Sesuaikan dengan tinggi header */
+        top: 70px;
         left: 0;
         width: 100%;
         background-color: var(--header-blue);
-        flex-direction: column; /* Ubah jadi vertikal */
-        align-items: flex-start; /* Rata kiri */
+        flex-direction: column;
+        align-items: flex-start;
         padding: 20px;
         box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     }
 
     .nav-wrapper.open {
-        display: flex; /* Tampilkan saat di-klik */
+        display: flex;
     }
     
     .main-nav {
@@ -188,24 +191,34 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+
 /* ==========================================================================
-   2.2. ACTIVE MENU STYLING
+   4. MAIN CONTENT
    ========================================================================== */
-
-/* Beri sedikit padding pada semua item menu agar background terlihat bagus */
-.main-nav a {
-    padding: 25px 16px;
-    border-radius: 0px;
+main {
+    background-color: #f4f7f9;
 }
 
-/* Gaya khusus untuk menu yang sedang aktif */
-.main-nav li.active a {
-    background-color: rgba(173, 225, 254, 0.255); /* Latar belakang semi-transparan */
-    opacity: 1; /* Pastikan teksnya terlihat jelas */
+.page-container {
+    padding: 60px 20px;
+    background-color: var(--white);
+    min-height: 60vh;
 }
+
+.page-header {
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    font-size: 2.8rem;
+}
+
 
 /* ==========================================================================
-   3. HERO BANNER (HOMEPAGE)
+   5. HERO COMPONENTS (BANNER, SEARCH, ACTIONS)
    ========================================================================== */
 .hero-banner {
     display: flex;
@@ -291,6 +304,7 @@ h1, h2, h3, h4, h5, h6 {
     margin: -8px;
     margin-left: 0;
 }
+
 .hero-search-form button:hover {
     background-color: #0069d9;
 }
@@ -304,17 +318,15 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
     transition: background-color 0.2s ease;
 }
+
 .hero-actions .action-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
+
 .hero-actions i {
     margin-right: 8px;
 }
 
-
-/* ==========================================================================
-   3.1. SUBJECT SELECTION (DI BAWAH SEARCH) - UPDATED FOR TAG CLOUD
-   ========================================================================== */
 .subject-selection {
     margin-top: 35px;
     width: 100%;
@@ -332,12 +344,11 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px; /* Sedikit lebih besar untuk tag cloud */
-    align-items: center; /* Agar tag dengan tinggi berbeda terlihat rapi */
+    gap: 12px;
+    align-items: center;
 }
 
 .subjects-list a {
-    /* Gaya Dasar untuk semua tag */
     display: inline-block;
     background-color: rgba(255, 255, 255, 0.1);
     color: var(--white);
@@ -345,7 +356,7 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid rgba(255, 255, 255, 0.3);
     text-decoration: none;
     transition: background-color 0.2s ease, transform 0.2s ease;
-    line-height: 1; /* Menjaga konsistensi vertikal */
+    line-height: 1;
 }
 
 .subjects-list a:hover {
@@ -354,7 +365,6 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--white);
 }
 
-/* Kelas untuk Ukuran Berbeda */
 .subjects-list a.tag-small {
     font-size: 0.8rem;
     padding: 7px 14px;
@@ -366,8 +376,10 @@ h1, h2, h3, h4, h5, h6 {
     padding: 9px 18px;
     font-weight: 500;
 }
+
+
 /* ==========================================================================
-   3.2. STATS BAR (DI BAWAH SEARCH)
+   6. SHOWCASE & STATS COMPONENTS
    ========================================================================== */
 .stats-bar {
     display: flex;
@@ -375,7 +387,7 @@ h1, h2, h3, h4, h5, h6 {
     gap: 40px;
     margin: 40px auto;
     max-width: 900px;
-    flex-wrap: wrap; /* Agar responsif di layar kecil */
+    flex-wrap: wrap;
 }
 
 .stats-item {
@@ -386,7 +398,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .stats-item i {
-    font-size: 2.2rem; /* Ukuran ikon */
+    font-size: 2.2rem;
     opacity: 0.8;
 }
 
@@ -407,23 +419,22 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
 }
 
-
-/* ==========================================================================
-   4. CONTENT SHOWCASE (KOTAK DI TENGAH)
-   ========================================================================== */
 .content-showcase {
     padding: 80px 20px;
     background-color: var(--light-gray);
     border-bottom: 1px solid #e0e0e0;
 }
+
 .section-header {
     text-align: center;
     margin-bottom: 50px;
 }
+
 .section-header h2 {
     font-size: 2.5rem;
     margin-bottom: 10px;
 }
+
 .section-header p {
     font-size: 1.1rem;
     max-width: 600px;
@@ -446,120 +457,35 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 10px rgba(0,0,0,0.03);
     transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .showcase-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 }
+
 .card-icon {
     font-size: 2.5rem;
     color: var(--primary-color);
     margin-bottom: 20px;
 }
+
 .showcase-card h3 {
     font-size: 1.5rem;
     margin-bottom: 15px;
 }
+
 .showcase-card p {
     margin-bottom: 20px;
 }
+
 .card-link {
     font-weight: 600;
 }
 
 
 /* ==========================================================================
-   5. FOOTER
+   7. PAGE SPECIFIC (FAKULTAS, PUBLISHER, SEARCH)
    ========================================================================== */
-.site-footer {
-    background-color: var(--header-blue);
-    color: #adb5bd;
-    padding: 50px 20px 20px 20px;
-    font-size: 0.95rem;
-}
-.footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 40px;
-    margin-bottom: 40px;
-}
-.footer-column h4 {
-    color: var(--white);
-    margin-bottom: 20px;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-.footer-column ul {
-    list-style: none;
-}
-.footer-column ul li {
-    margin-bottom: 12px;
-}
-.footer-column a {
-    color: #adb5bd;
-}
-.footer-column a:hover {
-    color: var(--white);
-    text-decoration: underline;
-}
-.social-links {
-    display: flex;
-    gap: 20px;
-}
-.social-links a {
-    color: #adb5bd;
-    font-size: 1.3rem;
-}
-.footer-bottom {
-    border-top: 1px solid #495057;
-    padding-top: 20px;
-    font-size: 0.9rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-.legal-links a {
-    color: #adb5bd;
-    margin-right: 20px;
-}
-.legal-links a:last-child {
-    margin-right: 0;
-}
-.legal-links a:hover {
-    color: var(--white);
-}
-.copyright-text i {
-    margin-right: 5px;
-}
-
-
-/* ==========================================================================
-   6. OTHER PAGES & GENERAL STYLES
-   ========================================================================== */
-main {
-    background-color: #f4f7f9;
-}
-.page-container {
-    padding: 60px 20px;
-    background-color: var(--white);
-    min-height: 60vh;
-}
-.page-header {
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 20px;
-    margin-bottom: 40px;
-}
-.page-header h1 {
-    font-size: 2.8rem;
-}
-
-/* =================================
-   STYLING HALAMAN FAKULTAS
-   ================================= */
-
-/* Container Judul Halaman */
 .page-title-container {
     background-color: #f8f9fa;
     padding: 3rem 0;
@@ -585,14 +511,12 @@ main {
     padding-bottom: 3rem;
 }
 
-/* Grid untuk Kartu Fakultas */
 .fakultas-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
 }
 
-/* Kartu Fakultas */
 .fakultas-card {
     background-color: #ffffff;
     border: 1px solid #e0e5ec;
@@ -607,31 +531,27 @@ main {
 .fakultas-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
-    color: #0d6efd; /* Warna biru saat di-hover */
+    color: #0d6efd;
 }
 
-/* Ikon Fakultas */
 .fakultas-icon {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    color: #0d6efd; /* Warna biru */
+    color: #0d6efd;
 }
 
-/* Judul Fakultas di dalam Kartu */
 .fakultas-card h3 {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
-/* Link "Lihat Artikel" */
 .fakultas-link {
     font-weight: 500;
-    color: #0d6efd; /* Warna biru */
+    color: #0d6efd;
     text-decoration: none;
 }
 
-/* Menambahkan panah setelah link */
 .fakultas-link::after {
     content: ' →';
     transition: transform 0.2s ease;
@@ -642,13 +562,13 @@ main {
     transform: translateX(4px);
 }
 
-/* --- Halaman Jurnal per Fakultas --- */
 .publisher-header {
     display: flex;
     align-items: center;
     text-align: left;
     gap: 20px;
 }
+
 .publisher-logo-placeholder {
     width: 80px;
     height: 80px;
@@ -662,11 +582,13 @@ main {
     font-size: 2.5rem;
     color: var(--primary-color);
 }
+
 .publisher-header h2 { margin-bottom: 5px; }
 .publisher-header p { margin-bottom: 5px; color: #666; }
 .publisher-header span { font-weight: 500; }
 
 .journal-list { margin-top: 40px; }
+
 .journal-item {
     display: flex;
     gap: 20px;
@@ -677,9 +599,11 @@ main {
     margin-bottom: 15px;
     transition: box-shadow 0.2s ease;
 }
+
 .journal-item:hover {
     box-shadow: 0 4px 15px rgba(0,0,0,0.07);
 }
+
 .journal-cover {
     width: 80px;
     height: 110px;
@@ -688,14 +612,22 @@ main {
     border-radius: 4px;
     border: 1px solid var(--border-color);
 }
+
 .journal-info h4 { margin: 0 0 5px 0; }
 .journal-info h4 a { font-size: 1.2rem; font-weight: 600; }
-.journal-publisher { font-size: 0.9em; color: var(--text-color); margin-bottom: 10px; }
+
+.journal-publisher { 
+    font-size: 0.9em; 
+    color: var(--text-color); 
+    margin-bottom: 10px; 
+}
+
 .journal-meta {
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
 }
+
 .journal-issn {
     font-size: 0.8em;
     color: #888;
@@ -704,47 +636,76 @@ main {
     border-radius: 3px;
 }
 
-/* --- Halaman Search --- */
-.re-search-container { margin-bottom: 30px; background-color: var(--light-gray); padding: 20px; border-radius: 8px; }
-.re-search-container form { display: flex; gap: 10px; }
-.re-search-container input { flex-grow: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 16px; }
-.re-search-container button { padding: 12px 20px; border: none; background-color: var(--secondary-color); color: white; cursor: pointer; border-radius: 5px; font-size: 16px; }
-.search-results-list { margin-top: 20px; }
-.article-item { background-color: #fff; padding: 20px; border: 1px solid var(--border-color); margin-bottom: 15px; border-radius: 5px; }
-.article-item h4 { margin: 0 0 5px 0; }
-.article-item h4 a { text-decoration: none; color: #0056b3; font-size: 1.2em; }
-.article-item .article-creator { font-size: 0.9em; color: #555; margin-bottom: 10px; }
-.article-item .article-description { color: #666; }
-.article-item .article-source { font-size: 0.85em; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px; }
-
-/* --- Pagination --- */
-.pagination {
-    margin: 40px 0 20px 0;
-    text-align: center;
-}
-.pagination ul { list-style: none; padding: 0; display: inline-flex; gap: 5px; }
-.pagination ul li a {
-    display: block;
-    padding: 8px 15px;
-    color: var(--primary-color);
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    transition: all 0.2s ease;
-}
-.pagination ul li a:hover { background-color: var(--light-gray); }
-.pagination ul li a.active {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-    font-weight: 600;
+.re-search-container { 
+    margin-bottom: 30px; 
+    background-color: var(--light-gray); 
+    padding: 20px; 
+    border-radius: 8px; 
 }
 
-/* ==========================================================================
-   6.1. PUBLISHER LIST PAGE (REVISED - REFERENCE STYLE)
-   ========================================================================== */
+.re-search-container form { 
+    display: flex; 
+    gap: 10px; 
+}
 
-/* Top bar for publisher page (Sort By, Search, Total) */
+.re-search-container input { 
+    flex-grow: 1; 
+    padding: 12px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 5px; 
+    font-size: 16px; 
+}
+
+.re-search-container button { 
+    padding: 12px 20px; 
+    border: none; 
+    background-color: var(--secondary-color); 
+    color: white; 
+    cursor: pointer; 
+    border-radius: 5px; 
+    font-size: 16px; 
+}
+
+.search-results-list { 
+    margin-top: 20px; 
+}
+
+.article-item { 
+    background-color: #fff; 
+    padding: 20px; 
+    border: 1px solid var(--border-color); 
+    margin-bottom: 15px; 
+    border-radius: 5px; 
+}
+
+.article-item h4 { 
+    margin: 0 0 5px 0; 
+}
+
+.article-item h4 a { 
+    text-decoration: none; 
+    color: #0056b3; 
+    font-size: 1.2em; 
+}
+
+.article-item .article-creator { 
+    font-size: 0.9em; 
+    color: #555; 
+    margin-bottom: 10px; 
+}
+
+.article-item .article-description { 
+    color: #666; 
+}
+
+.article-item .article-source { 
+    font-size: 0.85em; 
+    color: #888; 
+    margin-top: 15px; 
+    border-top: 1px dashed #eee; 
+    padding-top: 10px; 
+}
+
 .publisher-page-controls {
     display: flex;
     align-items: center;
@@ -754,7 +715,7 @@ main {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     margin-bottom: 30px;
-    flex-wrap: wrap; /* For responsiveness */
+    flex-wrap: wrap;
     gap: 15px;
 }
 
@@ -783,7 +744,7 @@ main {
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 0.9rem;
-    width: 200px; /* Adjust as needed */
+    width: 200px;
 }
 
 .publisher-page-controls .publisher-search button {
@@ -820,7 +781,6 @@ main {
     text-transform: uppercase;
 }
 
-/* List container for publisher cards */
 .publisher-list-wrapper {
     margin-top: 20px;
 }
@@ -833,8 +793,8 @@ main {
     background-color: var(--white);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    margin-bottom: 10px; /* Jarak antar kartu */
-    text-decoration: none; /* Hilangkan garis bawah link */
+    margin-bottom: 10px;
+    text-decoration: none;
     color: var(--text-color);
     transition: all 0.2s ease;
 }
@@ -854,7 +814,7 @@ main {
 .publisher-entry-card .publisher-card-logo {
     width: 40px;
     height: 40px;
-    border-radius: 5px; /* Sedikit rounded corner untuk logo */
+    border-radius: 5px;
     flex-shrink: 0;
 }
 
@@ -878,7 +838,7 @@ main {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
-    display: block; /* Agar di baris baru */
+    display: block;
     line-height: 1.1;
 }
 
@@ -887,11 +847,43 @@ main {
     color: var(--secondary-text-color);
 }
 
-/* ==========================================================================
-   6.2. PAGE NAVIGATION STYLES (Alphabet & Modern Pagination)
-   ========================================================================== */
 
-/* Gaya untuk Navigasi Abjad A-Z (Versi Lama) */
+/* ==========================================================================
+   8. PAGINATION & NAVIGATION COMPONENTS
+   ========================================================================== */
+.pagination {
+    margin: 40px 0 20px 0;
+    text-align: center;
+}
+
+.pagination ul { 
+    list-style: none; 
+    padding: 0; 
+    display: inline-flex; 
+    gap: 5px; 
+}
+
+.pagination ul li a {
+    display: block;
+    padding: 8px 15px;
+    color: var(--primary-color);
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.pagination ul li a:hover { 
+    background-color: var(--light-gray); 
+}
+
+.pagination ul li a.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: 600;
+}
+
 .alphabet-nav {
     background-color: var(--light-gray);
     padding: 15px;
@@ -911,7 +903,7 @@ main {
 .alphabet-nav ul li a {
     display: block;
     padding: 5px 10px;
-    min-width: 35px; /* Mengembalikan lebar minimal */
+    min-width: 35px;
     text-align: center;
     font-weight: 600;
     color: var(--primary-color);
@@ -934,12 +926,11 @@ main {
     cursor: default;
 }
 
-
-/* Gaya untuk Paginasi Modern (Previous/Next) */
 .pagination.modern {
     margin: 40px 0 20px 0;
     text-align: center;
 }
+
 .pagination.modern ul {
     list-style: none;
     padding: 0;
@@ -947,6 +938,7 @@ main {
     gap: 8px;
     align-items: center;
 }
+
 .pagination.modern ul li a,
 .pagination.modern ul li .ellipsis {
     display: block;
@@ -958,10 +950,12 @@ main {
     transition: all 0.2s ease;
     font-weight: 500;
 }
+
 .pagination.modern ul li a:hover {
     background-color: var(--light-gray);
     border-color: var(--primary-color);
 }
+
 .pagination.modern ul li a.active {
     background-color: var(--primary-color);
     color: white;
@@ -969,17 +963,13 @@ main {
     font-weight: 600;
     cursor: default;
 }
+
 .pagination.modern ul li .ellipsis {
     border: none;
     background: none;
     padding: 10px 5px;
 }
 
-/* ==========================================================================
-   6.3. STATISTICS PAGE (Gaya Gabungan Final dan Diperbaiki)
-   ========================================================================== */
-
-/* Gaya untuk Kotak Ringkasan di Atas */
 .stats-summary-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -998,737 +988,82 @@ main {
     border-radius: 5px;
 }
 
-.summary-card i {
-    font-size: 2.5em;
-    color: var(--primary-color);
-}
-
-.summary-card .summary-info .number {
-    font-size: 2em;
-    font-weight: 600;
-    color: var(--heading-color);
-}
-
-.summary-card .summary-info .label {
-    font-size: 0.9em;
-    color: var(--text-color);
-}
-
-/* Gaya untuk Diagram Batang (Dibuat Lebih Indah) */
-.stats-chart-container {
-    background-color: var(--white);
-    border: 1px solid var(--border-color); /* Border lebih halus */
-    border-radius: 8px; /* Sudut lebih tumpul */
-    margin-bottom: 40px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.07); /* Bayangan lebih lembut */
-}
-
-.chart {
-    display: flex;
-    height: 350px;
-    padding: 20px;
-    gap: 20px;
-    overflow-x: auto;
-    background-size: 100% 50px;
-    background-image: linear-gradient(to top, #f0f0f0 1px, transparent 1px); /* Garis bantu lebih halus */
-}
-
-.chart-bar-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    flex-shrink: 0;
-    width: 50px;
-    height: 100%;
-    position: relative; /* Diperlukan untuk hover */
-    flex-grow: 1;   /* Memungkinkan item untuk meregang */
-    flex-basis: 0;  /* Memastikan peregangan yang adil */
-}
-
-.chart .bar {
-    width: 100%;
-    /* Warna gradien yang lebih hidup */
-    background-image: linear-gradient(to top, #0072ff, #00c6ff);
-    border-radius: 5px 5px 0 0;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transisi lebih halus */
-    animation: rise 1s ease-out;
-    box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1); /* Bayangan dalam untuk efek 3D */
-}
-
-/* Efek hover untuk interaktivitas */
-.chart .chart-bar-wrapper:hover .bar {
-    transform: translateY(-10px); /* Batang sedikit terangkat */
-    box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3); /* Bayangan glow biru */
-}
-
-.chart .chart-bar-wrapper:hover .bar-value {
-    transform: scale(1.1); /* Angka membesar */
-}
-
-.chart .bar-value {
-    color: var(--heading-color);
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    transition: transform 0.3s ease; /* Transisi untuk angka */
-}
-
-.chart .bar-label {
-    margin-top: 10px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-@keyframes rise {
-    from { height: 0; }
-    to { /* Tinggi diatur oleh inline style */ }
-}
-
-/* Gaya untuk Tabel Data (Inspirasi SPSS) */
-.stats-table-container.spss-style {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow: hidden;
-    background-color: var(--white);
-}
-
-.spss-table-header {
-    background-color: #f0f0f0;
-    padding: 10px 15px;
-    border-bottom: 1px solid #ccc;
-}
-
-.spss-table-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.stats-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.stats-table th,
-.stats-table td {
-    padding: 12px 15px;
-    border: none;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-}
-
-.stats-table thead th {
-    background-color: var(--white);
-    color: #333;
-    font-weight: 700;
-    border-bottom: 2px solid #ccc;
-}
-
-.stats-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-.stats-table tbody tr:hover {
-    background-color: #e9ecef;
-}
-
-.stats-table tfoot th {
-    font-weight: 700;
-    background-color: #f0f0f0;
-    border-top: 2px solid #ccc;
-}
 
 /* ==========================================================================
-   6.4. INFO PAGE STYLES
+   9. FOOTER
    ========================================================================== */
-.info-content-wrapper {
+.site-footer {
+    background-color: var(--header-blue);
+    color: #adb5bd;
+    padding: 50px 20px 20px 20px;
+    font-size: 0.95rem;
+}
+
+.footer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
 }
 
-.info-card {
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.info-card i {
-    font-size: 3rem;
-    color: var(--primary-color);
+.footer-column h4 {
+    color: var(--white);
     margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
-.info-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: var(--heading-color);
+.footer-column ul {
+    list-style: none;
 }
 
-.info-card p, .info-card ul {
-    text-align: left;
-    line-height: 1.7;
-    color: var(--text-color);
+.footer-column ul li {
+    margin-bottom: 12px;
 }
 
-.info-card ul {
-    padding-left: 20px;
+.footer-column a {
+    color: #adb5bd;
 }
 
-/* ==========================================================================
-   6.5. FACULTY PAGE STYLES (Modern Redesign)
-   ========================================================================== */
-
-/* Mengganti gaya grid fakultas yang lama */
-.fakultas-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
-    gap: 25px; 
+.footer-column a:hover {
+    color: var(--white);
+    text-decoration: underline;
 }
 
-/* Gaya baru untuk kartu fakultas */
-.fakultas-card { 
-    display: block; 
-    background-color: var(--white); 
-    padding: 25px; 
-    border: 1px solid var(--border-color); 
-    border-radius: 8px; 
-    text-align: center; 
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+.social-links {
+    display: flex;
+    gap: 20px;
 }
 
-.fakultas-card:hover { 
-    transform: translateY(-5px); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    border-color: var(--primary-color);
+.social-links a {
+    color: #adb5bd;
+    font-size: 1.3rem;
 }
 
-/* Gaya untuk ikon */
-.fakultas-icon {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
+.footer-bottom {
+    border-top: 1px solid #495057;
+    padding-top: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.fakultas-card:hover .fakultas-icon {
-    transform: scale(1.1);
-    color: #0056b3;
+.legal-links a {
+    color: #adb5bd;
+    margin-right: 20px;
 }
 
-/* Gaya untuk nama fakultas */
-.fakultas-card h3 { 
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-    color: var(--heading-color); 
+.legal-links a:last-child {
+    margin-right: 0;
 }
 
-/* Gaya untuk jumlah jurnal */
-.fakultas-link {
-    display: inline-block;
-    background-color: var(--light-gray);
-    color: var(--text-color);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.fakultas-card:hover .fakultas-link {
-    background-color: var(--primary-color);
+.legal-links a:hover {
     color: var(--white);
 }
 
-/* Mengatur agar border menyatu */
-.stats-table {
-    border-collapse: collapse;
+.copyright-text i {
+    margin-right: 5px;
 }
-
-/* Memberikan garis pada semua sel tabel */
-.stats-table th,
-.stats-table td {
-    border: 1px solid var(--border-color);
-}
-
-/* Memberi penekanan pada kolom Total di tabel fakultas */
-.stats-table td:nth-child(2),
-.stats-table tfoot th:nth-child(2) {
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-/* Gaya dasar untuk semua header tabel statistik */
-.stats-table thead th {
-    background-color: var(--light-gray);
-    border-bottom: 2px solid var(--border-color);
-    color: var(--heading-color);
-    font-weight: 600;
-}
-
-/* Memberi warna pada header Sinta */
-/* Sinta 1 (Kolom ke-3) */
-.stats-table thead th:nth-child(3) {
-    background-color: rgba(217, 30, 24, 0.7); /* Merah */
-    color: white;
-}
-/* Sinta 2 (Kolom ke-4) */
-.stats-table thead th:nth-child(4) {
-    background-color: rgba(30, 139, 195, 0.7); /* Biru */
-    color: white;
-}
-/* Sinta 3 (Kolom ke-5) */
-.stats-table thead th:nth-child(5) {
-    background-color: rgba(241, 196, 15, 0.7); /* Kuning */
-    color: white
-}
-/* Sinta 4 (Kolom ke-6) */
-.stats-table thead th:nth-child(6) {
-    background-color: rgba(46, 204, 113, 0.7); /* Hijau */
-    color: white;
-}
-/* Sinta 5 (Kolom ke-7) */
-.stats-table thead th:nth-child(7) {
-    background-color: rgba(142, 68, 173, 0.7); /* Ungu */
-    color: white;
-}
-/* Sinta 6 (Kolom ke-8) */
-.stats-table thead th:nth-child(8) {
-    background-color: rgba(230, 126, 34, 0.7); /* Oranye */
-    color: white;
-}
-
-/* ==========================================================================
-   7. ADMIN DASHBOARD
-   ========================================================================== */
-.dashboard-container { max-width: 1200px; margin: 30px auto; padding: 20px; background-color: var(--white);}
-.dashboard-header { margin-bottom: 30px; }
-.dashboard-header h1 { font-size: 2.5em; }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
-.stat-card { background-color: #fff; padding: 25px; border-radius: 10px; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
-.stat-icon { font-size: 2.5em; color: var(--primary-color); }
-.stat-info h4 { text-transform: uppercase; }
-.stat-info p { font-size: 2em; font-weight: 600; }
-.dashboard-panels { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
-.panel { background-color: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
-.panel-header { background-color: var(--light-gray); padding: 20px; border-bottom: 1px solid var(--border-color); }
-.panel-body { padding: 25px; }
-.admin-form .form-group { margin-bottom: 20px; }
-.admin-form label { display: block; margin-bottom: 8px; font-weight: 600; }
-.admin-form input, .admin-form select, .admin-form textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-.admin-form fieldset { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
-.admin-form .submit-btn, .action-btn, .action-btn-secondary { width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; }
-.submit-btn2 { background-color: #27ae60; color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease;}
-
-
-/* ==========================================================================
-   8. MODAL STYLES
-   ========================================================================== */
-.info-modal {
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    width: 100%;
-    max-width: 600px;
-    padding: 0;
-    /* Tambahan untuk memposisikan di tengah */
-    margin: auto; 
-}
-
-/* Style untuk backdrop gelap di belakang modal */
-.info-modal::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
-}
-
-.info-modal .modal-content {
-    padding: 30px;
-    position: relative;
-}
-
-.info-modal .modal-content h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    color: var(--heading-color);
-}
-
-.info-modal .modal-content p {
-    line-height: 1.7;
-    color: var(--text-color);
-}
-
-.info-modal .close-button {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: #aaa;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.info-modal .close-button:hover {
-    color: #333;
-}
-
-/* CSS untuk meniru search.php */
-
- .article-list-container {
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid #e9e9e9;
-    border-radius: 5px;
-}
-
-.search-results-list {
-    margin-top: 20px;
-}
-
-.article-item {
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.article-item:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.article-item h4 {
-    margin: 0 0 5px 0;
-}
-
-.article-item h4 a {
-    text-decoration: none;
-    color: #0d6efd; 
-    font-size: 1.2em;
-}
-
-.article-item h4 a:hover {
-    text-decoration: underline;
-}
-
-.article-item .article-creator {
-    font-size: 0.9em;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.article-item .article-description {
-    color: #666;
-    line-height: 1.6;
-}
-
-.article-item .article-source {
-    font-size: 0.85em;
-    color: #888;
-    margin-top: 10px;
-}
-
-
-.pagination {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.pagination ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.pagination ul li {
-    display: inline-block;
-}
-
-.pagination ul li a {
-    display: block;
-    padding: 8px 15px;
-    text-decoration: none;
-    color: #3498db;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    transition: all 0.2s ease;
-}
-
-.pagination ul li a:hover {
-    background-color: #f0f0f0;
-}
-
-.pagination ul li a.active {
-    background-color: #0d6efd; 
-    color: white;
-    border-color: #0d6efd;
-    cursor: default;
-}
-
-
-.journal-item {
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: box-shadow 0.3s ease;
-}
-
-.journal-item:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.journal-title {
-    color: #2196F3;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    text-decoration: none;
-    display: block;
-    line-height: 1.4;
-}
-
-.journal-title:hover {
-    color: #1976D2;
-    text-decoration: none;
-}
-
-.journal-authors {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.journal-content {
-    color: #333;
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-.journal-publisher {
-    color: #999;
-    font-size: 14px;
-}
-
-.custom-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 30px;
-}
-
-.custom-pagination .page-btn {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    background: white;
-    color: #333;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.custom-pagination .page-btn:hover {
-    background: #f5f5f5;
-    text-decoration: none;
-    color: #333;
-}
-
-.custom-pagination .page-btn.active {
-    background: #2196F3;
-    color: white;
-    border-color: #2196F3;
-}
-
-.custom-pagination .page-btn.disabled {
-    background: #f8f9fa;
-    color: #6c757d;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.search-form {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-.page-header {
-    margin-bottom: 30px;
-}
-
-.results-count {
-    color: #666;
-    font-size: 16px;
-    margin-bottom: 20px;
-} 
-
-/* style.css atau main.scss - TAMBAHKAN DI BAWAH */
-
- .re-search-container {
-    margin-bottom: 30px;
-    background-color: var(--light-gray);
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.re-search-container form {
-    display: flex;
-    gap: 10px;
-}
-
-.re-search-container input {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.re-search-container button {
-    padding: 12px 20px;
-    border: none;
-    background-color: var(--secondary-color);
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.re-search-container button:hover {
-    background-color: #0056b3;
-}
-
-.search-results-list {
-    margin-top: 20px;
-}
-
-.article-item {
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 15px;
-    border-radius: 5px;
-}
-
-.article-item h4 {
-    margin: 0 0 5px 0;
-}
-
-.article-item h4 a {
-    text-decoration: none;
-    color: #0056b3;
-    font-size: 1.2em;
-}
-
-.article-item h4 a:hover {
-    text-decoration: underline;
-    color: #004085;
-}
-
-.article-item .article-creator {
-    font-size: 0.9em;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.article-item .article-description {
-    color: #666;
-    line-height: 1.5;
-}
-
-.article-item .article-source {
-    font-size: 0.85em;
-    color: #888;
-    margin-top: 15px;
-    border-top: 1px dashed #eee;
-    padding-top: 10px;
-}
-
-/* Styles untuk pagination */
-.custom-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 30px;
-}
-
-.custom-pagination .page-btn {
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    background: white;
-    color: #333;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.custom-pagination .page-btn:hover {
-    background: #f5f5f5;
-    text-decoration: none;
-    color: #333;
-}
-
-.custom-pagination .page-btn.active {
-    background: var(--secondary-color);
-    color: white;
-    border-color: var(--secondary-color);
-}
-
-.custom-pagination .page-btn.disabled {
-    background: #f8f9fa;
-    color: #6c757d;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .re-search-container form {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .article-item {
-        padding: 15px;
-    }
-    
-    .custom-pagination {
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-    
-    .custom-pagination .page-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-    }
-} 
-
