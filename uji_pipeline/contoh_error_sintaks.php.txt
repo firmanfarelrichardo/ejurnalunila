@@ -1,0 +1,19 @@
+<?php
+
+// INI ADALAH CONTOH KERUSAKAN KODE (SYNTAX ERROR) PADA PHP
+// Pipeline CI/CD akan gagal pada tahap 'test-php' jika ada file 
+// dengan ekstensi .php yang isinya seperti di bawah ini.
+
+// 1. Kurang titik koma (;)
+echo "Halo dunia, saya akan menyebabkan pipeline merah!"
+
+// 2. Tanda kurung yang tidak ditutup dengan benar
+function cobaFungsi() {
+    if (true) {
+        return "Sesuatu";
+}
+
+// 3. Kesalahan pada operator matematika
+$hitung = 1 + * 2;
+
+?>

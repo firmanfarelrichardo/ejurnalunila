@@ -1,0 +1,16 @@
+// INI ADALAH CONTOH KERUSAKAN KODE JS PADA FRONTEND
+// Jika ditulis langsung (misal di file frontend/src/main.js), 
+// Vite akan gagal melakukan kompilasi ('npx vite build') 
+// di tahapan 'build-frontend'.
+
+// 1. Mengimpor file yang sama sekali tidak ada di project
+import { fungsiGaib } from './file_yang_tidak_pernah_ada.js';
+
+// 2. Syntax / penulisan JS yang hancur berantakan
+const nama == "Ejurnal Budi;
+const arrayData = [1, 2, 3,, ;
+
+// 3. Memakai fungsi yang belum di-define
+console.log(cetakData(nama));
+
+// Pipeline akan menghentikan deployment karena struktur Javascript Anda rusak.
