@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Pengaturan Database
 require_once '../database/config.php';
 $conn = connect_to_database();
 
