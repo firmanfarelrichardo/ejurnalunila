@@ -45,6 +45,7 @@ jobs:
       - name: Install & Build
         working-directory: ./frontend
         run: |
+          rm -rf node_modules
           npm install
           npx vite build
 
