@@ -64,8 +64,8 @@ jobs:
 
       - name: Deploy Staging
         run: |
-          echo "🚀 Memulai deploy ke staging..."
-          echo "✅ Deployment Staging Berhasil!"
+          echo "Memulai deploy ke staging..."
+          echo "Deployment Staging Berhasil!"
 
   # ==========================================
   # TAHAP 4: DEPLOY KE PRODUCTION
@@ -82,5 +82,5 @@ jobs:
 
       - name: Deploy Production
         run: |
-          echo "🚀 Memulai deploy ke production..."
-          echo "✅ Deployment Production Selesai!"
+          echo "Memulai deploy ke production..."
+          echo "Deployment Production Selesai!"
