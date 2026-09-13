@@ -36,8 +36,42 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <li class="<?php if ($current_page == 'tentang.php') { echo 'active'; } ?>"><a href="tentang.php">Tentang</a></li>
                     </ul>
                 </nav>
+                <div class="user-actions">
+                    <button id="theme-toggle" class="action-button" title="Toggle Dark Mode" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; padding: 0 15px;">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
             <button id="mobile-menu-toggle" class="mobile-menu-button">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('theme-toggle');
+            const icon = toggleButton.querySelector('i');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            if (currentTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+
+            toggleButton.addEventListener('click', () => {
+                let theme = document.body.getAttribute('data-theme');
+                if (theme === 'dark') {
+                    document.body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                } else {
+                    document.body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                }
+            });
+        });
+    </script>
